@@ -1,70 +1,76 @@
-# Getting Started with Create React App
+# ScoutJar
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
+ScoutJar is a recruitment platform that connects **Talent Scouts** (recruiters) with **Talents** (job seekers). The application allows users to sign in using social authentication and navigate to their respective dashboards.
 
-## Available Scripts
+## Features
+- **Role Selection**: Users can choose to sign in as either a **Talent Scout** or **Talent**.
+- **Social Authentication**: Users can sign in using Google, LinkedIn, X (Twitter), or Instagram.
+- **Role-Based Navigation**: Once authenticated, users are redirected to their respective dashboards.
+- **Modern UI Design**: Styled to match a professional recruitment platform, following LinkedIn and Upwork themes.
 
-In the project directory, you can run:
+## Folder Structure
+```
+/components
+  /Talent
+    - index.js
+  /TalentScout
+    - index.js
+/public
+/src
+  - App.js
+  - App.css
+  - index.js
+  - README.md
+```
 
-### `npm start`
+## Installation & Setup
+### Prerequisites
+- **Node.js** (v18.20.17 or later)
+- **npm** (installed with Node.js)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Steps
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/your-repo/scoutjar.git
+   cd scoutjar
+   ```
+2. Install dependencies:
+   ```sh
+   npm install
+   ```
+3. Install React Router:
+   ```sh
+   npm install react-router-dom
+   ```
+4. Start the development server:
+   ```sh
+   npm start
+   ```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Usage
+### Selecting a Role
+- On the homepage, users can select either **Talent Scout** or **Talent**.
+- Clicking any social sign-in button will navigate the user to the appropriate dashboard.
 
-### `npm test`
+### User Dashboards
+- **Talent Scout Dashboard**: Designed for recruiters to find talent.
+- **Talent Dashboard**: Provides job seekers access to opportunities.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Technologies Used
+- **React.js**: Frontend framework
+- **React Router**: Navigation and routing
+- **Firebase Authentication**: (To be implemented) for handling social logins
+- **CSS**: Styling based on LinkedIn and Upwork themes
 
-### `npm run build`
+## Future Improvements
+- **Implement Firebase Authentication** for actual user sign-in
+- **Enhance Dashboards** with interactive job search and management features
+- **Add API Integration** to fetch real job listings and applications
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Contributors
+- **[Your Name]** - Developer
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## License
+This project is licensed under the **MIT License**.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
