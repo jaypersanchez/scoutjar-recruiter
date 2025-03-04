@@ -3,10 +3,32 @@ import { useNavigate } from 'react-router-dom';
 import { FaGoogle, FaLinkedin, FaTwitter, FaInstagram } from 'react-icons/fa';
 import scoutjarLogo from '../../assets/images/scoutjar_logo_transparent.png'; // Import the logo
 import '../../App.css'; // Ensure App.css is applied
+import { auth, googleProvider } from '../../firebase/firebaseConfig'
+import { signInWithPopup } from 'firebase/auth';
 
 function AuthPage() {
   const [role, setRole] = useState(null);
   const navigate = useNavigate();
+
+  const handleGoogleSignIn = async () => {
+    if (!role) {
+      alert("Please select your role first");
+      return;
+    }
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      console.log("User signed in:", result.user);
+      // Navigate based on selected role after successful sign-in
+      if (role === "scout") {
+        navigate("/talent-scout");
+      } else if (role === "talent") {
+        navigate("/talent");
+      }
+    } catch (error) {
+      console.error("Error signing in with Google:", error);
+    }
+  };
+  
 
   const handleSignIn = () => {
     if (role === "scout") {
@@ -43,7 +65,7 @@ function AuthPage() {
         </div>
 
         <div className="auth-buttons">
-          <button className="social-login google" onClick={handleSignIn}>
+          <button className="social-login google" onClick={handleGoogleSignIn}>
             <FaGoogle /> Sign in with Google
           </button>
           <button className="social-login linkedin" onClick={handleSignIn}>
