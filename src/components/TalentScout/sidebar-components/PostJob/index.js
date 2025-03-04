@@ -22,9 +22,10 @@ const JobPostingForm = ({ recruiterId, onSubmit }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Prepare data based on schema:
+    
+    // Prepare jobData object to match the API request body
     const jobData = {
       recruiter_id: recruiterId,
       job_title: formData.job_title,
@@ -40,8 +41,27 @@ const JobPostingForm = ({ recruiterId, onSubmit }) => {
       location: formData.location
       // date_posted will default to CURRENT_TIMESTAMP on the database side
     };
-    // Pass jobData to the onSubmit callback (could be an API call)
-    onSubmit(jobData);
+
+    try {
+      // Post the job details to the server API
+      const response = await fetch("http://localhost:5000/jobs", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(jobData)
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        console.log('Job posted successfully:', data);
+        // Optionally, invoke the onSubmit callback to update parent state
+        if (onSubmit) onSubmit(data);
+      } else {
+        console.error('Error posting job:', data);
+      }
+    } catch (error) {
+      console.error('Error posting job:', error);
+    }
   };
 
   return (
