@@ -9,8 +9,16 @@ const MyJobPosts = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        // Fetch all jobs without filtering by recruiter_id
-        const response = await fetch(`http://localhost:5000/jobs`);
+        // Use the /jobs/get endpoint and send a POST request.
+        // You can also add a recruiter_id in the body if needed.
+        const response = await fetch('http://localhost:5000/jobs/get', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({})  // Sending an empty object to fetch all jobs.
+        });
+
         if (!response.ok) {
           throw new Error('Failed to fetch jobs');
         }
