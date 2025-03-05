@@ -8,6 +8,7 @@ function RecruiterSidebar({ setSelectedSection }) {
         {[
           "Scout for Talent",
           "Post a Job",
+          "My Job Posts",
           "Review Candidates",
           "Shortlist Candidates",
           "Schedule Interview",
