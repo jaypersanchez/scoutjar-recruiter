@@ -1,23 +1,23 @@
 import React, { useState } from "react";
 import "@/common/styles/App.css";
 import scoutjarLogo from "../../assets/images/scoutjar_logo_header_bg.png";
-import RecruiterSidebar from "./RecruiterSidebar";
+import RecruiterSidebar from "../../components/TalentScout/RecruiterSidebar";
 
 // Import Components
-import ScoutForTalent from "./sidebar-components/ScoutForTalent";
-import PostJob from "./sidebar-components/PostJob";
-import ReviewCandidates from "./sidebar-components/ReviewCandidates";
-import ShortlistCandidates from "./sidebar-components/ShortlistCandidates";
-import ScheduleInterview from "./sidebar-components/ScheduleInterview";
-import InterviewCandidates from "./sidebar-components/InterviewCandidates";
-import EvaluateCandidates from "./sidebar-components/EvaluateCandidates";
-import SendJobOffer from "./sidebar-components/SendJobOffer";
-import RejectCandidates from "./sidebar-components/RejectCandidates";
-import FinalizeHiring from "./sidebar-components/FinalizeHiring";
-import OnboardCandidate from "./sidebar-components/OnboardCandidate";
-import MyJobPosts from "./sidebar-components/PostJob/MyJobPosts"; // Import your MyJobPosts component
+import ScoutForTalent from "../../components/TalentScout/sidebar-components/ScoutForTalent";
+import PostJob from "../../components/TalentScout/sidebar-components/PostJob";
+import ReviewCandidates from "../../components/TalentScout/sidebar-components/ReviewCandidates";
+import ShortlistCandidates from "../../components/TalentScout/sidebar-components/ShortlistCandidates";
+import ScheduleInterview from "../../components/TalentScout/sidebar-components/ScheduleInterview";
+import InterviewCandidates from "../../components/TalentScout/sidebar-components/InterviewCandidates";
+import EvaluateCandidates from "../../components/TalentScout/sidebar-components/EvaluateCandidates";
+import SendJobOffer from "../../components/TalentScout/sidebar-components/SendJobOffer";
+import RejectCandidates from "../../components/TalentScout/sidebar-components/RejectCandidates";
+import FinalizeHiring from "../../components/TalentScout/sidebar-components/FinalizeHiring";
+import OnboardCandidate from "../../components/TalentScout/sidebar-components/OnboardCandidate";
+import MyJobPosts from "../../components/TalentScout/sidebar-components/PostJob/MyJobPosts"; // Import your MyJobPosts component
 
-function RecruiterDashboard({ user }) {
+export default function RecruiterPage({ user }) {
   const [selectedSection, setSelectedSection] = useState("Scout for Talent");
 
   // Function to render the correct component
@@ -70,7 +70,7 @@ function RecruiterDashboard({ user }) {
             <span>Profile</span>
           </li>
           <li>
-            <a href="/">Sign Out</a>
+            <a href="/auth">Sign Out</a>
           </li>
         </ul>
       </nav>
@@ -82,5 +82,3 @@ function RecruiterDashboard({ user }) {
     </div>
   );
 }
-
-export default RecruiterDashboard;

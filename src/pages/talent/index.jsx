@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "@/common/styles/App.css";
 
-function Talent({ user }) {
+export default function TalentPage({ user }) {
   const [status, setStatus] = useState("");
 
   const handleApplyJob = () => {
@@ -37,5 +37,3 @@ function Talent({ user }) {
     </div>
   );
 }
-
-export default Talent;
