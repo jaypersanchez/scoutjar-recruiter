@@ -424,15 +424,45 @@ body {
   100% { transform: rotate(360deg); }
 }
 
-/* Job Posting Form Styles */
-.form-container {
-  max-width: 600px;
-  margin: 40px auto;
+/* Job Posts Container */
+.job-posts-container {
   background: #fff;
-  padding: 20px;
   border-radius: 8px;
+  padding: 20px;
+  margin: 20px auto;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  max-width: 900px;
 }
+
+/* Job Posts List */
+.job-posts-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Individual Job Post Item */
+.job-post-item {
+  border-bottom: 1px solid #ddd;
+  padding: 15px 0;
+}
+
+.job-post-item:last-child {
+  border-bottom: none;
+}
+
+/* Job Post Title */
+.job-post-item h3 {
+  color: #004182;
+  margin-bottom: 5px;
+}
+
+/* Job Post Paragraphs */
+.job-post-item p {
+  margin: 5px 0;
+  line-height: 1.5;
+}
+
 
 .form-title {
   text-align: center;
