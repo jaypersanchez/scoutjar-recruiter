@@ -10,7 +10,7 @@ export default function AuthLayout() {
   return (
     <FlexBox className="bg-secondary">
       <FlexCol className="min-h-screen px-1 select-none min-w-[375px] max-w-7xl lg:max-w-2xl flex-1 mx-auto">
-        <div className="w-full px-4 pt-8 mx-auto md:px-6 lg:px-8">
+        <div className="w-full px-4 pt-6 mx-auto md:px-6">
           <FlexBox className="gap-2.5">
             <img src="/logo.png" className="w-8" />
             <h6 className="text-xl font-bold leading-9 uppercase tracking-tight text-center text-primary lg:text-start">
