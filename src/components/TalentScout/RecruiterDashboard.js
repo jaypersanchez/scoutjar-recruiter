@@ -15,6 +15,7 @@ import SendJobOffer from './sidebar-components/SendJobOffer';
 import RejectCandidates from './sidebar-components/RejectCandidates';
 import FinalizeHiring from './sidebar-components/FinalizeHiring';
 import OnboardCandidate from './sidebar-components/OnboardCandidate';
+import MyJobPosts from './sidebar-components/PostJob/MyJobPosts'; // Import your MyJobPosts component
 
 function RecruiterDashboard({ user }) {
   const [selectedSection, setSelectedSection] = useState("Scout for Talent");
@@ -26,6 +27,8 @@ function RecruiterDashboard({ user }) {
         return <ScoutForTalent />;
       case "Post a Job":
         return <PostJob />;
+      case "My Job Posts":
+        return <MyJobPosts />; // Make sure user.recruiterId exists
       case "Review Candidates":
         return <ReviewCandidates />;
       case "Shortlist Candidates":
