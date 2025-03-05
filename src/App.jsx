@@ -5,7 +5,7 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom";
-import "./App.css";
+import "@/common/styles/index.css";
 import Talent from "./components/Talent";
 import RecruiterDashboard from "./components/TalentScout/RecruiterDashboard";
 import Header from "./components/Header";

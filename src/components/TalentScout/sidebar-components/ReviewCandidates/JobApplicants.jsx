@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../../../../App.css';
+import '@/common/styles/App.css';
 import ApplicantFilter from './ApplicantFilter';
 
 function JobApplicants() {

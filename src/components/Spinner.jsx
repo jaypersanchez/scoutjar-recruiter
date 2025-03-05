@@ -1,6 +1,6 @@
 // Spinner.js
-import React from 'react';
-import '../../../../App.css'; // Adjust the path to your App.css
+import React from "react";
+import "@/common/styles/App.css"; // Adjust the path to your App.css
 
 function Spinner() {
   return (

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../../../../App.css'; // Ensure that this file is correctly imported
+import '@/common/styles/App.css'; // Ensure that this file is correctly imported
 
 const JobPostingForm = ({ recruiterId, onSubmit }) => {
   const [formData, setFormData] = useState({

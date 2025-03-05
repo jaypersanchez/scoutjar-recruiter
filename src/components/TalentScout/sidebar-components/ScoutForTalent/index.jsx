@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import '../../../../App.css';
-import TalentFilter from './TalentFilter';
-import TalentResults from './TalentResults';
+import React, { useState } from "react";
+import "@/common/styles/App.css";
+import TalentFilter from "./TalentFilter";
+import TalentResults from "./TalentResults";
 
 function TalentScout({ user }) {
   // State to hold the query results returned from the filter component

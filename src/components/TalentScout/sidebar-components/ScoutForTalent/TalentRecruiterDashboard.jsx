@@ -1,8 +1,8 @@
 // TalentRecruiterDashboard.js
-import React, { useState } from 'react';
-import TalentFilter from './TalentFilter';
-import TalentResults from './TalentResults';
-import '../../../../App.css'; // Ensure CSS is imported
+import React, { useState } from "react";
+import TalentFilter from "./TalentFilter";
+import TalentResults from "./TalentResults";
+import "@/common/styles/App.css"; // Ensure CSS is imported
 
 function TalentRecruiterDashboard() {
   const [results, setResults] = useState([]);

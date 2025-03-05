@@ -1,5 +1,5 @@
-import React from 'react';
-import '../../App.css';
+import React from "react";
+import "@/common/styles/App.css";
 
 function RecruiterSidebar({ setSelectedSection }) {
   return (
@@ -17,10 +17,13 @@ function RecruiterSidebar({ setSelectedSection }) {
           "Send Job Offer",
           "Reject Candidates",
           "Finalize Hiring",
-          "Onboard Candidate"
+          "Onboard Candidate",
         ].map((item) => (
           <li key={item}>
-            <button className="sidebar-button" onClick={() => setSelectedSection(item)}>
+            <button
+              className="sidebar-button"
+              onClick={() => setSelectedSection(item)}
+            >
               {item}
             </button>
           </li>

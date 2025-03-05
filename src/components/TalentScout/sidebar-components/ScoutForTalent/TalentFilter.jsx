@@ -1,13 +1,13 @@
 // TalentFilter.js
-import React, { useState } from 'react';
-import '../../../../App.css'; // Ensure the correct path to your App.css
+import React, { useState } from "react";
+import "@/common/styles/App.css"; // Ensure the correct path to your App.css
 
 function TalentFilter({ onResults }) {
   // Local state for filter fields
-  const [minSalary, setMinSalary] = useState('');
-  const [maxSalary, setMaxSalary] = useState('');
-  const [location, setLocation] = useState('');
-  const [skills, setSkills] = useState('');
+  const [minSalary, setMinSalary] = useState("");
+  const [maxSalary, setMaxSalary] = useState("");
+  const [location, setLocation] = useState("");
+  const [skills, setSkills] = useState("");
 
   // Function to execute the query using filters
   const handleExecuteQuery = async () => {
@@ -15,15 +15,15 @@ function TalentFilter({ onResults }) {
       min_salary: minSalary ? parseFloat(minSalary) : 0,
       max_salary: maxSalary ? parseFloat(maxSalary) : null,
       filter_location: location || null,
-      required_skill: skills || null
+      required_skill: skills || null,
     };
 
     console.log("Sending API Request with:", filterData);
 
     try {
-      const response = await fetch('http://localhost:5000/talent-profiles', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("http://localhost:5000/talent-profiles", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(filterData),
       });
 
@@ -32,8 +32,8 @@ function TalentFilter({ onResults }) {
 
       onResults(data || []);
     } catch (error) {
-      console.error('Error executing query:', error);
-      alert('Error executing query.');
+      console.error("Error executing query:", error);
+      alert("Error executing query.");
     }
   };
 
@@ -41,8 +41,8 @@ function TalentFilter({ onResults }) {
   const handleClearFilters = () => {
     setMinSalary(0);
     setMaxSalary(0);
-    setLocation('');
-    setSkills('');
+    setLocation("");
+    setSkills("");
     console.log("🔹 Filters cleared.");
   };
 
@@ -93,7 +93,11 @@ function TalentFilter({ onResults }) {
         <button type="button" onClick={handleExecuteQuery}>
           Query for Talents
         </button>
-        <button type="button" onClick={handleClearFilters} className="clear-button">
+        <button
+          type="button"
+          onClick={handleClearFilters}
+          className="clear-button"
+        >
           Clear Filters
         </button>
       </div>

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FaGoogle, FaLinkedin, FaTwitter, FaInstagram } from 'react-icons/fa';
-import scoutjarLogo from '../../assets/images/scoutjar_logo_transparent.png'; // Import the logo
-import '../../App.css'; // Ensure App.css is applied
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { FaGoogle, FaLinkedin, FaTwitter, FaInstagram } from "react-icons/fa";
+import scoutjarLogo from "../../assets/images/scoutjar_logo_transparent.png"; // Import the logo
+import "@/common/styles/App.css"; // Ensure App.css is applied
 
 function AuthPage() {
   const [role, setRole] = useState(null);
@@ -28,14 +28,14 @@ function AuthPage() {
         <p>Select your role:</p>
 
         <div className="role-selection">
-          <button 
-            onClick={() => setRole("scout")} 
+          <button
+            onClick={() => setRole("scout")}
             className={`role-button ${role === "scout" ? "selected" : ""}`}
           >
             Talent Scout
           </button>
-          <button 
-            onClick={() => setRole("talent")} 
+          <button
+            onClick={() => setRole("talent")}
             className={`role-button ${role === "talent" ? "selected" : ""}`}
           >
             Talent

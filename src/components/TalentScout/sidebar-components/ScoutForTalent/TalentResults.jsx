@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import '../../../../App.css'; // Ensure the correct path to App.css
+import React, { useState } from "react";
+import "@/common/styles/App.css"; // Ensure the correct path to App.css
 
 function TalentResults({ results }) {
   const [currentPage, setCurrentPage] = useState(0);
@@ -46,17 +46,22 @@ function TalentResults({ results }) {
               <td>{profile.email}</td>
               <td>${profile.desired_salary}</td>
               <td>{profile.location}</td>
-              <td>{profile.skills && profile.skills.join(', ')}</td>
-              <td>{profile.work_preferences && profile.work_preferences.work_mode}</td>
+              <td>{profile.skills && profile.skills.join(", ")}</td>
+              <td>
+                {profile.work_preferences && profile.work_preferences.work_mode}
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <div className="pagination" style={{ marginTop: '10px', textAlign: 'center' }}>
+      <div
+        className="pagination"
+        style={{ marginTop: "10px", textAlign: "center" }}
+      >
         <button onClick={handlePrevious} disabled={currentPage === 0}>
           Previous
         </button>
-        <span style={{ margin: '0 10px' }}>
+        <span style={{ margin: "0 10px" }}>
           Page {currentPage + 1} of {totalPages}
         </span>
         <button onClick={handleNext} disabled={currentPage === totalPages - 1}>
