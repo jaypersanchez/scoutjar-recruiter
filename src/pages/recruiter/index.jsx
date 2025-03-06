@@ -27,11 +27,11 @@ export default function RecruiterPage({ user }) {
         return <ScoutForTalent />;
       case "Post a Job":
         return <PostJob />;
-      case "My Job Posts":
+      case "Scout's Job Posts":
         return <MyJobPosts />; // Make sure user.recruiterId exists
-      case "Review Candidates":
+      case "Review Talent Applicants":
         return <ReviewCandidates />;
-      case "Shortlist Candidates":
+      case "ScoutJar Talents":
         return <ShortlistCandidates />;
       case "Schedule Interview":
         return <ScheduleInterview />;
