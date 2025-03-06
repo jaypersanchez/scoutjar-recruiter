@@ -33,12 +33,12 @@ function JobApplicants() {
     fetchApplicants();
   }, []);
 
-  // Client-side filtering based on email or talent_id
-  const handleFilter = ({ email, talent_id }) => {
+  // Client-side filtering based on email, talent_id, job_id and job_title
+  const handleFilter = ({ email, talent_id, job_id, job_title }) => {
     setCurrentPage(1); // Reset to first page on filter change
     let filtered = allApplicants;
 
-    // Filter by email if provided (assuming applicant.email exists in the future)
+    // Filter by email if provided
     if (email) {
       filtered = filtered.filter(applicant =>
         applicant.email && applicant.email.toLowerCase().includes(email.toLowerCase())
@@ -49,6 +49,20 @@ function JobApplicants() {
     if (talent_id) {
       filtered = filtered.filter(applicant =>
         String(applicant.talent_id).includes(talent_id)
+      );
+    }
+
+    // Filter by job_id if provided
+    if (job_id) {
+      filtered = filtered.filter(applicant =>
+        String(applicant.job_id).includes(job_id)
+      );
+    }
+
+    // Filter by job_title if provided
+    if (job_title) {
+      filtered = filtered.filter(applicant =>
+        applicant.job_title && applicant.job_title.toLowerCase().includes(job_title.toLowerCase())
       );
     }
 

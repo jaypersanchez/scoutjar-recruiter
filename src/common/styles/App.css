@@ -463,7 +463,6 @@ body {
   line-height: 1.5;
 }
 
-
 .form-title {
   text-align: center;
   color: #004182;
@@ -512,4 +511,9 @@ body {
   background-color: #30a14e;
 }
 
+.talent-content {
+  flex: 1;
+  padding: 20px;
+  margin-left: 270px; /* Adjust this value to align with your sidebar width */
+}
 
