@@ -1,13 +1,6 @@
-import { Outlet, Navigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import { useAuth } from "@/common/hooks";
 
 export default function RootLayout() {
-  // if (true) {
-  //   return <Navigate to="/auth" />;
-  // }
-
-  return (
-    <>
-      <Outlet />
-    </>
-  );
+  return <Outlet />;
 }

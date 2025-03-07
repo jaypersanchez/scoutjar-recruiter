@@ -4,12 +4,15 @@ import { Divider } from "@/common/components/ui";
 import { FlexCol, FlexColCenter } from "@/common/components/flexbox";
 import { SSO } from "./components";
 import Forms from "./components/Forms";
+import { useAuth } from "@/common/hooks";
 
 export default function LoginPage() {
+  const { login } = useAuth();
   const [role, setRole] = useState(null);
   const navigate = useNavigate();
 
   const handleSignIn = () => {
+    login({ id: "XYZABC123456", name: "John Doe" });
     navigate("/");
   };
 

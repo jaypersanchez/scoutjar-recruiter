@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-
+import { useAuth } from "@/common/hooks";
 import {
   Avatar,
   AvatarFallback,
@@ -12,7 +12,6 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
 } from "@/common/components/ui";
-
 import { FaUserCircle } from "react-icons/fa";
 import { FaPowerOff } from "react-icons/fa6";
 
@@ -24,7 +23,13 @@ const menu = [
 ];
 
 export default function UserMenu() {
+  const { logout } = useAuth();
   const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/auth", { replace: true });
+  };
 
   return (
     <DropdownMenu>
@@ -57,7 +62,7 @@ export default function UserMenu() {
           {menu.map((item, index) => (
             <DropdownMenuItem
               key={index}
-              className="font-semibold text-primary focus:text-primary focus:bg-primary/20"
+              className="font-semibold h-9 text-primary focus:text-primary focus:bg-primary/20"
               onSelect={() =>
                 location.pathname !== item.link && navigate(item.link)
               }
@@ -68,13 +73,15 @@ export default function UserMenu() {
           ))}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          className="font-semibold !text-red-500 focus:bg-red-500/20"
-          onSelect={() => navigate("/auth")}
-        >
-          <FaPowerOff className="text-red-500" />
-          <span>Sign out</span>
-        </DropdownMenuItem>
+        <DropdownMenuGroup>
+          <DropdownMenuItem
+            className="font-semibold h-9 !text-red-500 focus:bg-red-500/20"
+            onSelect={handleLogout}
+          >
+            <FaPowerOff className="text-red-500" />
+            <span>Sign out</span>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );

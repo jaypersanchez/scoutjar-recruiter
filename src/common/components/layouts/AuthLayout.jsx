@@ -1,10 +1,15 @@
-import { Outlet, useRouteLoaderData, useNavigation } from "react-router-dom";
+import { Outlet, useRouteLoaderData, useNavigation,Navigate } from "react-router-dom";
+import { useAuth } from "@/common/hooks";
 import { FlexBox, FlexCol } from "@/common/components/flexbox";
 import Footer from "./Footer";
 
 export default function AuthLayout() {
-  const data = useRouteLoaderData("main");
   const navigation = useNavigation();
+  const { isAuthenticated } = useAuth();
+
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <FlexBox className="bg-secondary">
