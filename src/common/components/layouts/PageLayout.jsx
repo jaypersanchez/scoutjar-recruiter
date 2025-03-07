@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { IoIosArrowUp } from "react-icons/io";
 import { Button } from "@/common/components/ui";
-import Footer from "../templates/Footer";
+import { Navbar, Sidebar } from "@/common/components/navigations";
+import Footer from "./Footer";
 
 export default function PageLayout() {
   const [isVisible, setIsVisible] = useState(false);
@@ -28,9 +29,9 @@ export default function PageLayout() {
 
   return (
     <div className="min-h-screen min-w-[360px] select-none flex">
-      {/* <Sidebar /> */}
+      <Sidebar />
       <main className="relative flex flex-col flex-1 min-h-full overflow-hidden">
-        {/* <Navbar /> */}
+        <Navbar />
         <div className="flex-1 px-6 py-10 overflow-hidden desktop:px-10">
           <Outlet />
         </div>

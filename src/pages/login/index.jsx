@@ -2,18 +2,15 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Divider } from "@/common/components/ui";
 import { FlexCol, FlexColCenter } from "@/common/components/flexbox";
-import { Roles, SSO } from "./components";
+import { SSO } from "./components";
+import Forms from "./components/Forms";
 
 export default function LoginPage() {
   const [role, setRole] = useState(null);
   const navigate = useNavigate();
 
   const handleSignIn = () => {
-    if (role === "talent-scout") {
-      navigate("/");
-    } else if (role === "talent") {
-      navigate("/talent");
-    }
+    navigate("/");
   };
 
   return (
@@ -23,14 +20,13 @@ export default function LoginPage() {
           Welcome back!
         </h2>
         <p className="text-balance text-sm text-gray-400">
-          Select your role to continue
+          Enter your email below to login to your account
         </p>
       </div>
 
       <div className="w-full max-w-md mt-6 space-y-8">
-        <Roles onRoleChange={(value) => setRole(value)} />
-
-        <Divider label="Sign in with" />
+        <Forms />
+        <Divider label="Or continue with" />
         <SSO
           onSignIn={(slug) => {
             console.log({ "sso-login": slug });

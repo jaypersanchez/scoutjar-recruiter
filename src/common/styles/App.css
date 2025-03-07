@@ -1,16 +1,7 @@
-/* Global Styles */
-body {
-  font-family: 'Arial', sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f3f2ef;
-  color: #333;
-}
-
 /* Adjusted Navbar */
 .navbar {
   display: flex;
-  justify-content: flex-start;  /* Align items to the left instead of space-between */
+  justify-content: flex-start; /* Align items to the left instead of space-between */
   align-items: center;
   background-color: #004182;
   padding: 10px 20px;
@@ -52,12 +43,11 @@ body {
   }
 }
 
-
 /* Navbar (Header) - Always at the top */
 /* Navbar (Header) - Always at the top */
 .navbar {
   display: flex;
-  justify-content: flex-start;  /* Align items to the left instead of space-between */
+  justify-content: flex-start; /* Align items to the left instead of space-between */
   align-items: center;
   background-color: #004182;
   padding: 10px 20px;
@@ -74,9 +64,9 @@ body {
 .nav-links {
   list-style: none;
   display: flex;
-  gap: 15px;      /* reduce gap between items */
-  margin-right: 10px;  /* reduce right margin */
-  margin-left: 10px;   /* add left margin to shift the list to the left */
+  gap: 15px; /* reduce gap between items */
+  margin-right: 10px; /* reduce right margin */
+  margin-left: 10px; /* add left margin to shift the list to the left */
 }
 
 /* For smaller screens, adjust spacing */
@@ -280,7 +270,7 @@ body {
   padding: 20px;
   margin: 20px auto;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   max-width: 900px;
 }
 
@@ -330,7 +320,7 @@ body {
   padding: 20px;
   margin: 20px auto;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   max-width: 900px;
 }
 
@@ -410,7 +400,7 @@ body {
 
 /* Spinner styles */
 .spinner {
-  border: 8px solid #f3f3f3;   /* Light grey background */
+  border: 8px solid #f3f3f3; /* Light grey background */
   border-top: 8px solid #004182; /* Blue color for the spinner */
   border-radius: 50%;
   width: 50px;
@@ -420,8 +410,12 @@ body {
 
 /* Keyframes for the spin animation */
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Job Posts Container */
@@ -430,7 +424,7 @@ body {
   border-radius: 8px;
   padding: 20px;
   margin: 20px auto;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   max-width: 900px;
 }
 
@@ -516,4 +510,3 @@ body {
   padding: 20px;
   margin-left: 270px; /* Adjust this value to align with your sidebar width */
 }
-

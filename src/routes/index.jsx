@@ -1,6 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import { RootLayout } from "@/common/components/layouts";
-import { Page404 } from "@/common/components/templates";
+import { RootLayout, Page404 } from "@/common/components/layouts";
 import AuthRoutes from "./auth-routes";
 import PageRoutes from "./page-routes";
 
