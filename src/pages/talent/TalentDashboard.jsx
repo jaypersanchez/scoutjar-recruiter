@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import '../../App.css';
-import scoutjarLogo from '../../assets/images/scoutjar_logo_header_bg.png';
-import TalentSidebar from './TalentSidebar';
+import React, { useState } from "react";
+import "@/common/styles/App.css";
+import TalentSidebar from "@/pages/talent/TalentSidebar";
+
+import SearchForJob from "./sidebar-components/job-search";
+import ApplyForJob from "./sidebar-components/apply-for-jobs";
 
 // Import your sidebar components – these should be created in a similar fashion to your recruiter sidebar-components.
-import SearchForJob from './sidebar-components/job-search/';
-import ApplyForJob from './sidebar-components/apply-for-jobs/';
 
 function TalentDashboard({ user }) {
   const [selectedSection, setSelectedSection] = useState("Search for Job");
@@ -23,7 +23,7 @@ function TalentDashboard({ user }) {
 
   return (
     <div className="talent-dashboard">
-      <nav className="navbar">
+      {/* <nav className="navbar">
         <div className="logo">
           <img src={scoutjarLogo} alt="ScoutJar Logo" className="scoutjar-logo" />
         </div>
@@ -32,13 +32,11 @@ function TalentDashboard({ user }) {
           <li><span>Profile</span></li>
           <li><a href="/">Sign Out</a></li>
         </ul>
-      </nav>
+      </nav> */}
 
-      <div className="dashboard-wrapper">
-        <TalentSidebar setSelectedSection={setSelectedSection} />
-        <div className="talent-content">
-          {renderSection()}
-        </div>
+      <div className="">
+        {/* <TalentSidebar setSelectedSection={setSelectedSection} /> */}
+        <div className="">{renderSection()}</div>
       </div>
     </div>
   );

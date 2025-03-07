@@ -16,7 +16,7 @@ export default function SSO({ onSignIn }) {
         <Button
           key={data.id}
           variant="outline"
-          className="border-gray-300 h-11"
+          className="border-gray-300 h-11 hover:bg-gray-300/70"
           onClick={() => onSignIn(data.slug)}
         >
           <data.icon className="w-8 h-8" />

@@ -1,12 +1,48 @@
-import { ComponentProps, ReactElement, ReactNode } from "react";
+import { ComponentProps, ReactNode } from "react";
 import { cn } from "@/common/lib/utils";
+import { cva, type VariantProps } from "class-variance-authority";
 import { FlexCol } from "@/common/components/flexbox";
 
-interface TextFieldProps extends Omit<ComponentProps<"input">, "className"> {
+const inputVariants = cva(
+  "peer w-full text-base font-medium text-primary py-2.5 border rounded-md border-gray-400 hover:border-gray-500",
+  {
+    variants: {
+      error: {
+        true: "border-red-300 hover:border-red-500 !outline-red-500 focus:text-primary",
+      },
+      size: {
+        sm: "py-1.5 h-10 px-2 text-sm",
+        md: "py-2.5 h-12 px-3 text-base",
+        lg: "py-3 h-14 px-4 text-lg",
+      },
+    },
+    defaultVariants: {
+      size: "md",
+    },
+  }
+);
+
+const labelVariants = cva(
+  "text-sm font-semibold px-1 mb-1 text-gray-400 group-hover:text-gray-500 peer-focus:text-tertiary select-none order-first",
+  {
+    variants: {
+      error: {
+        true: "border-red-300 group-hover:border-red-500 group-hover:text-red-500 peer-focus:text-red-500",
+      },
+      required: {
+        true: "after:content-['*'] after:ml-1 after:text-sm after:text-red-500",
+      },
+    },
+  }
+);
+
+interface TextFieldProps
+  extends Omit<ComponentProps<"input">, "className" | "size"> {
   label?: string;
   id: string;
   name: string;
   type: "text" | "email" | "number" | "password" | "tel";
+  size?: "sm" | "md" | "lg";
   startAdornment?: ReactNode;
   endAdornment?: ReactNode;
   slotProps?: {
@@ -21,27 +57,62 @@ interface TextFieldProps extends Omit<ComponentProps<"input">, "className"> {
 export default function TextField({
   label,
   id,
+  size = "md",
+  floatingLabel = false,
+  startAdornment,
+  endAdornment,
   slotProps,
   helperText,
-  floatingLabel = false,
+  error,
+  disabled,
+  readOnly,
+  required,
   ...props
-}: TextFieldProps): ReactElement {
+}: TextFieldProps & VariantProps<typeof inputVariants>) {
   return (
     <div className="w-full">
-      <FlexCol className="relative group">
+      <FlexCol className="relative group w-full">
         <input
           {...props}
           id={id}
+          disabled={disabled}
+          readOnly={readOnly}
+          required={required}
           className={cn(
-            "relative w-full text-base bg-transparent rounded-sm appearance-none focus:outline-none focus:ring-0 border shadow-sm peer select-none text-gray-500 placeholder:text-gray-400 focus:text-gray-900 group-hover:text-gray-900",
-            "read-only:cursor-default read-only:select-none read-only:!border-gray-400 read-only:!text-gray-400",
-            "disabled:cursor-default disabled:group-hover:border-gray-400 disabled:border-gray-400 disabled:!text-gray-400",
-            "py-2.5 h-14 px-3.5",
-            props.error
-              ? "border-red-500 group-hover:border-red-400"
-              : "border-gray-400 group-hover:border-gray-900 focus:border-gray-600"
+            inputVariants({ size, error }),
+            "placeholder:text-gray-400",
+            "focus:outline-tertiary focus:text-primary",
+            "disabled:outline-0 disabled:pointer-events-none disabled:border-gray-400 disabled:hover:border-gray-400 disabled:text-gray-400 disabled:focus:text-gray-400",
+            "read-only:outline-0 read-only:pointer-events-none read-only:border-gray-400 read-only:hover:border-gray-400 read-only:text-primary read-only:focus:text-primary"
           )}
         />
+
+        {label && !floatingLabel ? (
+          <label
+            htmlFor={id}
+            className={cn(
+              labelVariants({ error, required }),
+              "peer-disabled:outline-0 peer-disabled:pointer-events-none peer-disabled:border-gray-300 peer-disabled:hover:border-gray-300 peer-disabled:text-gray-400 peer-disabled:group-hover:text-gray-400 peer-disabled:peer-focus:text-gray-400",
+              "peer-read-only:outline-0 peer-read-only:pointer-events-none peer-read-only:border-gray-500 peer-read-only:hover:border-gray-500 peer-read-only:text-gray-400 peer-read-only:group-hover:text-gray-400 peer-read-only:peer-focus:text-gray-400"
+            )}
+          >
+            {label}
+          </label>
+        ) : null}
+
+        {helperText && (
+          <p
+            className={cn(
+              "mt-1 ml-1 text-xs font-medium h-4 text-gray-500 peer-disabled:text-gray-400",
+              error && "text-red-500"
+            )}
+          >
+            {helperText}
+          </p>
+        )}
+
+        {/* {startAdornment}
+        {endAdornment}
 
         {floatingLabel && (
           <label
@@ -62,37 +133,8 @@ export default function TextField({
           >
             {label}
           </label>
-        )}
-
-        {label && !floatingLabel ? (
-          <label
-            htmlFor={id}
-            className={cn(
-              "text-gray-500 font-semibold px-1 peer-focus:text-gray-900 select-none group-hover:text-gray-900 peer-read-only:text-gray-500 mb-1 order-first",
-              "peer-read-only:!text-gray-500",
-              props.error
-                ? "text-red-600 group-hover:text-red-500"
-                : props.disabled && "text-gray-400 group-hover:text-gray-500",
-              props.required &&
-                "after:content-['*'] after:ml-1 after:text-sm after:text-red-600"
-            )}
-          >
-            {label}
-          </label>
-        ) : null}
+        )} */}
       </FlexCol>
-
-      {helperText && (
-        <p
-          className={cn(
-            "mt-1 ml-1 text-xs font-medium h-4",
-            props.error ? "text-red-500" : "text-gray-500",
-            props.error ?? helperText ? "visible" : "invisible"
-          )}
-        >
-          {helperText}
-        </p>
-      )}
     </div>
   );
 }

@@ -14,15 +14,18 @@ function RecruiterSidebar({ setSelectedSection }) {
     "Send Job Offer",
     "Reject Candidates",
     "Finalize Hiring",
-    "Onboard Candidate"
+    "Onboard Candidate",
   ];
 
   return (
-    <aside className="recruiter-sidebar">
+    <aside className="h-full w-72">
       <ul>
         {items.map((item, index) => (
-          <li key={item} style={{ display: index < 5 ? 'list-item' : 'none' }}>
-            <button className="sidebar-button" onClick={() => setSelectedSection(item)}>
+          <li key={item} style={{ display: index < 5 ? "list-item" : "none" }}>
+            <button
+              className="sidebar-button"
+              onClick={() => setSelectedSection(item)}
+            >
               {item}
             </button>
           </li>

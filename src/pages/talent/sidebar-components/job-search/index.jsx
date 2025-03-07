@@ -1,5 +1,5 @@
-import React from 'react';
-import '../../../../App.css'; // Corrected path to App.css
+import React from "react";
+import "@/common/styles/App.css"; // Corrected path to App.css
 
 function SearchForJob() {
   return (

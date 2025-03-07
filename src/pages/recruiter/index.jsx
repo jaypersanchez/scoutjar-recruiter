@@ -16,6 +16,7 @@ import RejectCandidates from "../../components/TalentScout/sidebar-components/Re
 import FinalizeHiring from "../../components/TalentScout/sidebar-components/FinalizeHiring";
 import OnboardCandidate from "../../components/TalentScout/sidebar-components/OnboardCandidate";
 import MyJobPosts from "../../components/TalentScout/sidebar-components/PostJob/MyJobPosts"; // Import your MyJobPosts component
+import { FlexBox } from "@/common/components/flexbox";
 
 export default function RecruiterPage({ user }) {
   const [selectedSection, setSelectedSection] = useState("Scout for Talent");
@@ -53,8 +54,8 @@ export default function RecruiterPage({ user }) {
   };
 
   return (
-    <div className="recruiter-dashboard">
-      <nav className="navbar">
+    <div>
+      {/* <nav className="navbar">
         <div className="logo">
           <img
             src={scoutjarLogo}
@@ -73,12 +74,14 @@ export default function RecruiterPage({ user }) {
             <a href="/auth">Sign Out</a>
           </li>
         </ul>
-      </nav>
+      </nav> */}
 
-      <div className="dashboard-wrapper">
+      <FlexBox className="items-start gap-2">
         <RecruiterSidebar setSelectedSection={setSelectedSection} />
-        <div className="recruiter-content">{renderSection()}</div>
-      </div>
+        <div className="w-full">
+          <div>{renderSection()}</div>
+        </div>
+      </FlexBox>
     </div>
   );
 }
