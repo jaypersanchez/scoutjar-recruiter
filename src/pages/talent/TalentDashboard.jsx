@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import "@/common/styles/App.css";
-import TalentSidebar from "@/pages/talent/TalentSidebar";
-
+import TalentSidebar from "./TalentSidebar";
 import SearchForJob from "./sidebar-components/job-search";
 import ApplyForJob from "./sidebar-components/apply-for-jobs";
+import { FlexBox } from "@/common/components/flexbox";
 
 // Import your sidebar components – these should be created in a similar fashion to your recruiter sidebar-components.
 
@@ -22,23 +22,10 @@ function TalentDashboard({ user }) {
   };
 
   return (
-    <div className="talent-dashboard">
-      {/* <nav className="navbar">
-        <div className="logo">
-          <img src={scoutjarLogo} alt="ScoutJar Logo" className="scoutjar-logo" />
-        </div>
-        <ul className="nav-links">
-          <li><span>Messages</span></li>
-          <li><span>Profile</span></li>
-          <li><a href="/">Sign Out</a></li>
-        </ul>
-      </nav> */}
-
-      <div className="">
-        {/* <TalentSidebar setSelectedSection={setSelectedSection} /> */}
-        <div className="">{renderSection()}</div>
-      </div>
-    </div>
+    <FlexBox className="gap-8">
+      <TalentSidebar setSelectedSection={setSelectedSection} />
+      <div>{renderSection()}</div>
+    </FlexBox>
   );
 }
 

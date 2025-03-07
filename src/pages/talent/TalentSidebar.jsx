@@ -3,7 +3,7 @@ import "@/common/styles/App.css";
 
 function TalentSidebar({ setSelectedSection }) {
   return (
-    <aside className="recruiter-sidebar">
+    <aside>
       <ul>
         {["Search for Job", "Apply for Job"].map((item) => (
           <li key={item}>

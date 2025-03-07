@@ -23,27 +23,22 @@ const navigations = [
   {
     icon: MdDashboard,
     name: "Scout for Talent",
-    link: "/scout-talent",
+    link: "/scout-for-talent",
+  },
+  {
+    icon: MdDashboard,
+    name: "Finalize Hiring",
+    link: "/finalize-hiring",
   },
   {
     icon: MdDashboard,
     name: "Post a Job",
-    link: "/post-job",
+    link: "/post-a-job",
   },
   {
     icon: MdDashboard,
-    name: "Scout's Job Posts",
-    link: "/my-job-posts",
-  },
-  {
-    icon: MdDashboard,
-    name: "Review Talent Applicants",
-    link: "/review-applicants",
-  },
-  {
-    icon: MdDashboard,
-    name: "ScoutJar Talents",
-    link: "/talents",
+    name: "Send Job Offer",
+    link: "/send-job-offer",
   },
   {
     icon: MdDashboard,
@@ -52,33 +47,38 @@ const navigations = [
   },
   {
     icon: MdDashboard,
-    name: "Interview Candidates",
-    link: "/interview",
-  },
-  {
-    icon: MdDashboard,
     name: "Evaluate Candidates",
-    link: "/evaluate",
+    link: "/evaluate-candidates",
   },
   {
     icon: MdDashboard,
-    name: "Send Job Offer",
-    link: "/job-offer",
+    name: "Interview Candidates",
+    link: "/interview-candidates",
+  },
+  {
+    icon: MdDashboard,
+    name: "Onboard Candidates",
+    link: "/onboard-candidates",
   },
   {
     icon: MdDashboard,
     name: "Reject Candidates",
-    link: "/reject",
+    link: "/reject-candidates",
   },
   {
     icon: MdDashboard,
-    name: "Finalize Hiring",
-    link: "/finalize",
+    name: "Review Candidates",
+    link: "/review-candidates",
   },
   {
     icon: MdDashboard,
-    name: "Onboard Candidate",
-    link: "/onboard",
+    name: "Shortlist Candidates",
+    link: "/shortlist-candidates",
+  },
+  {
+    icon: MdDashboard,
+    name: "Talent",
+    link: "/talent",
   },
 ];
 
@@ -154,7 +154,7 @@ export default function Sidebar({ className }) {
                 <TooltipTrigger
                   className={cn(
                     "w-full font-semibold rounded-sm flex items-center",
-                    // "disabled:opacity-75",
+                    "disabled:opacity-75",
                     isWrapped
                       ? "flex-col text-[10px] p-1 w-11 min-h-11 mx-auto justify-center gap-0.5 text-center text-pretty"
                       : "flex-row gap-4 py-2 pl-4 pr-2 min-h-12 text-sm",
@@ -165,7 +165,6 @@ export default function Sidebar({ className }) {
                   onClick={() =>
                     location.pathname !== nav.link && navigate(nav.link)
                   }
-                  disabled
                 >
                   <nav.icon className={cn(isWrapped ? "h-6 w-6" : "h-5 w-5")} />
                   <p className={cn(isWrapped ? "hidden" : "block")}>

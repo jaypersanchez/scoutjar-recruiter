@@ -5,14 +5,6 @@ function TalentResults({ results }) {
   const [currentPage, setCurrentPage] = useState(0);
   const rowsPerPage = 15;
 
-  if (!results || results.length === 0) {
-    return (
-      <div className="talent-results">
-        <p>No results found.</p>
-      </div>
-    );
-  }
-
   const totalPages = Math.ceil(results.length / rowsPerPage);
   const startIndex = currentPage * rowsPerPage;
   const currentResults = results.slice(startIndex, startIndex + rowsPerPage);
@@ -24,6 +16,14 @@ function TalentResults({ results }) {
   const handleNext = () => {
     setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1));
   };
+
+  if (!results || results.length === 0) {
+    return (
+      <div className="talent-results">
+        <p>No results found.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="talent-results">

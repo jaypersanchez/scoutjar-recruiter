@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-function OnboardCandidate() {
+function OnboardCandidates() {
   return (
     <div>
       <h2>Onboard Candidate</h2>
@@ -9,4 +9,4 @@ function OnboardCandidate() {
   );
 }
 
-export default OnboardCandidate;
+export default OnboardCandidates;
