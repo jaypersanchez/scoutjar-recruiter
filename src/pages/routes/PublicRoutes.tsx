@@ -1,24 +1,24 @@
 import { PageRouteProps } from "@/common/types/routes.types";
 
 // Public Routes
-import DashboardPage from "@/pages/Public/Dashboard";
-import TalentPage from "@/pages/Public/Talent";
-import FinalizeHiringPage from "@/pages/Public/FinalizeHiring";
-import ScoutForTalentPage from "@/pages/Public/ScoutForTalent";
-import PostJobPage from "@/pages/Public/PostJob";
-import SendJobOfferPage from "@/pages/Public/SendJobOffer";
-import ScheduleInterviewPage from "@/pages/Public/ScheduleInterview";
-import EvaluateCandidatesPage from "@/pages/Public/Candidates/EvaluateCandidates";
+import DashboardPage from "@/pages/main/Dashboard";
+import TalentPage from "@/pages/main/Talent";
+import FinalizeHiringPage from "@/pages/main/FinalizeHiring";
+import ScoutForTalentPage from "@/pages/main/ScoutForTalent";
+import PostJobPage from "@/pages/main/PostJob";
+import SendJobOfferPage from "@/pages/main/SendJobOffer";
+import ScheduleInterviewPage from "@/pages/main/ScheduleInterview";
+import EvaluateCandidatesPage from "@/pages/main/Candidates/EvaluateCandidates";
 
 // Candidates Routes
-import InterviewCandidatesPage from "@/pages/Public/Candidates/InterviewCandidates";
-import OnboardCandidatesPage from "@/pages/Public/Candidates/OnboardCandidates";
-import RejectCandidatesPage from "@/pages/Public/Candidates/RejectCandidates";
-import ReviewCandidatesPage from "@/pages/Public/Candidates/ReviewCandidates";
-import ShortlistCandidatesPage from "@/pages/Public/Candidates/ShortlistCandidates";
+import InterviewCandidatesPage from "@/pages/main/Candidates/InterviewCandidates";
+import OnboardCandidatesPage from "@/pages/main/Candidates/OnboardCandidates";
+import RejectCandidatesPage from "@/pages/main/Candidates/RejectCandidates";
+import ReviewCandidatesPage from "@/pages/main/Candidates/ReviewCandidates";
+import ShortlistCandidatesPage from "@/pages/main/Candidates/ShortlistCandidates";
 
 // User Routes
-import ProfilePage from "@/pages/Public/Users/Profile";
+import ProfilePage from "@/pages/main/Users/Profile";
 
 import {
   RiDashboardFill,
