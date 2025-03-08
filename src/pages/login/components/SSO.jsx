@@ -11,7 +11,7 @@ const SSOProviders = [
 
 export default function SSO({ onSignIn }) {
   return (
-    <FlexCol className="gap-2">
+    <div className="grid grid-cols-2 gap-2">
       {SSOProviders.map((data) => (
         <Button
           key={data.id}
@@ -25,6 +25,6 @@ export default function SSO({ onSignIn }) {
           </p>
         </Button>
       ))}
-    </FlexCol>
+    </div>
   );
 }

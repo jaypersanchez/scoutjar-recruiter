@@ -23,7 +23,7 @@ export default function LoginPage() {
           Welcome back!
         </h2>
         <p className="text-balance text-sm text-gray-400">
-          Enter your email below to login to your account
+          Sign in to your account
         </p>
       </div>
 
