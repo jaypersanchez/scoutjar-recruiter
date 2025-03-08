@@ -15,7 +15,7 @@ export default function ScoutForTalentPage() {
 
   return (
     <div>
-      <p>{user ? `Welcome back, ${user.displayName}` : ""}</p>
+      <p>{user ? `Welcome back, ${user.name}` : ""}</p>
       {/* Render the filter component and pass the callback */}
       <TalentFilter onResults={handleResults} />
       {/* Render the results component below the filter */}
