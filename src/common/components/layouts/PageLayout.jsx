@@ -3,7 +3,7 @@ import { Outlet, Navigate } from "react-router-dom";
 import { useAuth } from "@/common/hooks";
 import { Button } from "@/common/components/ui";
 import { Navbar, Sidebar } from "@/common/components/navigations";
-import Footer from "./Footer";
+import { Footer } from "@/common/components/layouts";
 import { IoIosArrowUp } from "react-icons/io";
 
 export default function PageLayout() {

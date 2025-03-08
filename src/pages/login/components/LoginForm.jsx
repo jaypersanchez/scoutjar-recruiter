@@ -6,7 +6,7 @@ import { TextField } from "@/common/components/input-fields";
 import { LuEye, LuEyeClosed } from "react-icons/lu";
 import { Button } from "@/common/components/ui";
 
-export default function Forms() {
+export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
 
   return (

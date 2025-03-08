@@ -1,7 +1,12 @@
-import { Outlet, useRouteLoaderData, useNavigation,Navigate } from "react-router-dom";
+import {
+  Outlet,
+  useRouteLoaderData,
+  useNavigation,
+  Navigate,
+} from "react-router-dom";
 import { useAuth } from "@/common/hooks";
 import { FlexBox, FlexCol } from "@/common/components/flexbox";
-import Footer from "./Footer";
+import { Footer } from "@/common/components/layouts";
 
 export default function AuthLayout() {
   const navigation = useNavigation();
@@ -20,7 +25,7 @@ export default function AuthLayout() {
             ScoutJar
           </p>
         </FlexBox>
-        <section className="flex flex-col justify-center flex-grow w-full max-w-md lg:max-w-sm xl:max-w-md px-4 py-6 mx-auto">
+        <section className="flex flex-col justify-center flex-grow w-full max-w-md lg:max-w-md xl:max-w-lg px-4 py-6 mx-auto">
           <div className="px-4 py-12 md:px-6 lg:px-8">
             <Outlet />
           </div>

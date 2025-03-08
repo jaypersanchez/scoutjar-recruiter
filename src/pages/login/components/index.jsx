@@ -1,3 +1,4 @@
-import SSO from "./SSO";
+import SSOLogin from "./SSOLogin";
+import LoginForm from "./LoginForm";
 
-export { SSO };
+export { SSOLogin, LoginForm };

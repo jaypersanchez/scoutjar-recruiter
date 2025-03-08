@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import RecruiterSidebar from "../../../components/TalentScout/RecruiterSidebar";
+import RecruiterSidebar from "../../../components_old/TalentScout/RecruiterSidebar";
 import JobApplicants from "./JobApplicants";
 import ReviewCandidates from "./JobApplicants"; // if needed for other display
 
