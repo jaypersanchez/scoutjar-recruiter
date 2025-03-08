@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/common/hooks";
 import { Divider } from "@/common/components/ui";
 import { FlexCol, FlexColCenter } from "@/common/components/flexbox";
-import { LoginForm, SSOLogin } from "../Login/components";
+import { LoginForm, SSOLogin } from "./components";
 
 export default function LoginPage() {
   const { login } = useAuth();

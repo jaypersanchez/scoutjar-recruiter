@@ -1,6 +1,6 @@
 import { AuthLayout } from "@/common/components/layouts";
-import { Outlet } from "react-router-dom";
-import LoginPage from "@/pages/login";
+
+import LoginPage from "@/pages/Auth/Login";
 
 const AuthRoutes = {
   id: "auth",
