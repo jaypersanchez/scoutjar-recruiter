@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { FlexCol } from "@/common/components/flexbox";
 import { TextField } from "@/common/components/input-fields";
 
 import { LuEye, LuEyeClosed } from "react-icons/lu";

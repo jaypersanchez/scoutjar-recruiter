@@ -1,20 +1,18 @@
-import {
-  Outlet,
-  useRouteLoaderData,
-  useNavigation,
-  Navigate,
-} from "react-router-dom";
+import { useEffect } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "@/common/hooks";
 import { FlexBox, FlexCol } from "@/common/components/flexbox";
 import { Footer } from "@/common/components/layouts";
 
 export default function AuthLayout() {
-  const navigation = useNavigation();
   const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
-  if (isAuthenticated) {
-    return <Navigate to="/" replace />;
-  }
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   return (
     <FlexBox className="bg-secondary">

@@ -9,13 +9,14 @@ import tsParser from "@typescript-eslint/parser";
 const configs = {
   languageOptions: {
     ecmaVersion: 2020,
-    globals: globals.browser,
+    globals: { ...globals.browser, ...globals.node },
   },
   plugins: {
     react,
     "react-hooks": reactHooks,
     "react-refresh": reactRefresh,
   },
+  settings: { react: { version: "19" } },
   rules: {
     ...js.configs.recommended.rules,
     ...react.configs.recommended.rules,
@@ -26,8 +27,10 @@ const configs = {
       { allowConstantExport: true },
     ],
     "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off",
   },
 };
+
 export default [
   { ignores: ["dist", "eslint.config.js"] },
 
@@ -42,6 +45,7 @@ export default [
         sourceType: "module",
       },
     },
+    settings: configs.settings,
     plugins: configs.plugins,
     rules: configs.rules,
   },
@@ -53,7 +57,8 @@ export default [
       parser: tsParser,
       ...configs.languageOptions,
     },
-    plugins: configs.plugins,
+    settings: configs.settings,
+    plugins: { ...configs.plugins, "@typescript-eslint": tsEslint },
     rules: {
       ...tsEslint.configs.recommended.rules,
       ...configs.rules,

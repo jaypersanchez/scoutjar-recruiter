@@ -149,7 +149,7 @@ export default function TextField({
           </p>
         )}
 
-        {Boolean(startAdornment) ? (
+        {startAdornment ? (
           <FlexCenter
             className={cn(
               adornmentVariants({ size, error }),
@@ -161,7 +161,7 @@ export default function TextField({
           </FlexCenter>
         ) : null}
 
-        {Boolean(endAdornment) ? (
+        {endAdornment ? (
           <FlexCenter
             className={cn(
               adornmentVariants({

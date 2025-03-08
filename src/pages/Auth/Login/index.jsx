@@ -1,13 +1,12 @@
-import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/common/hooks";
 import { Divider } from "@/common/components/ui";
-import { FlexCol, FlexColCenter } from "@/common/components/flexbox";
+import { FlexCol } from "@/common/components/flexbox";
 import { LoginForm, SSOLogin } from "./components";
 
 export default function LoginPage() {
   const { login } = useAuth();
-  const [role, setRole] = useState(null);
+
   const navigate = useNavigate();
 
   const handleSignIn = () => {
@@ -27,6 +26,7 @@ export default function LoginPage() {
       </div>
 
       <div className="w-full max-w-md mt-6 space-y-8">
+        <LoginForm />
         <Divider label="Or continue with" />
         <SSOLogin
           onSignIn={(slug) => {
