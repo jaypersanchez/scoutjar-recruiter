@@ -1,7 +1,7 @@
 import { PageRouteProps } from "@/common/types/routes.types";
 import { AuthLayout } from "@/common/components/layouts";
 
-import LoginPage from "@/pages/auth/Login";
+import LoginPage from "@/pages/Auth/Login";
 
 const AUTH_ROUTES: Array<PageRouteProps> = [
   {
