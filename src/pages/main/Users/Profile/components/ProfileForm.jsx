@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { cn } from "@/common/lib/utils";
 
 import { WidgetBox } from "@/common/components/layouts";
@@ -6,6 +7,26 @@ import { TextField } from "@/common/components/input-fields";
 import { FaUserCircle } from "react-icons/fa";
 
 export default function ProfileForm() {
+  const [ssoData, setSsoData] = useState({
+    full_name: "",
+    email: "",
+  });
+
+  useEffect(() => {
+    const data = sessionStorage.getItem("sso-login");
+    if (data) {
+      try {
+        const parsed = JSON.parse(data);
+        setSsoData({
+          full_name: parsed.full_name || "",
+          email: parsed.email || "",
+        });
+      } catch (error) {
+        console.error("Error parsing sso-login data", error);
+      }
+    }
+  }, []);
+
   return (
     <form className="grid grid-cols-2 gap-6">
       <WidgetBox className="flex-col gap-6">
@@ -64,6 +85,8 @@ export default function ProfileForm() {
               id="fullname"
               autoComplete="fullname"
               placeholder="John Doe"
+              value={ssoData.full_name}
+              readOnly
               required
             />
             <TextField
@@ -73,6 +96,8 @@ export default function ProfileForm() {
               id="email"
               autoComplete="email"
               placeholder="john.doe@example.com"
+              value={ssoData.email}
+              readOnly
               required
             />
           </div>
