@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "@/common/styles/App.css";
 
-const MyJobPosts = () => {
+export default function JobsPosted() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -91,6 +91,4 @@ const MyJobPosts = () => {
       )}
     </div>
   );
-};
-
-export default MyJobPosts;
+}

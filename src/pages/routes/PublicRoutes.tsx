@@ -5,10 +5,13 @@ import DashboardPage from "@/pages/main/Dashboard";
 import TalentPage from "@/pages/main/Talent";
 import FinalizeHiringPage from "@/pages/main/FinalizeHiring";
 import ScoutForTalentPage from "@/pages/main/ScoutForTalent";
-import PostJobPage from "@/pages/main/PostJob";
 import SendJobOfferPage from "@/pages/main/SendJobOffer";
 import ScheduleInterviewPage from "@/pages/main/ScheduleInterview";
 import EvaluateCandidatesPage from "@/pages/main/Candidates/EvaluateCandidates";
+
+// Jobs Routes
+import CreateAJob from "@/pages/main/Jobs/CreateAJob";
+import JobsPosted from "@/pages/main/Jobs/JobsPosted";
 
 // Candidates Routes
 import InterviewCandidatesPage from "@/pages/main/Candidates/InterviewCandidates";
@@ -25,8 +28,8 @@ import {
   RiCalendarScheduleFill,
   RiUserSearchFill,
 } from "react-icons/ri";
-import { PiListDashesFill } from "react-icons/pi";
-import { BsFillPersonCheckFill } from "react-icons/bs";
+import { IoMdListBox } from "react-icons/io";
+import { BsFillPersonCheckFill, BsFillBriefcaseFill } from "react-icons/bs";
 import { MdPersonSearch, MdNoteAdd } from "react-icons/md";
 import { IoIosMail } from "react-icons/io";
 import {
@@ -35,6 +38,7 @@ import {
   FaUserMinus,
   FaListCheck,
 } from "react-icons/fa6";
+import { PiListChecksFill } from "react-icons/pi";
 import { FaUserFriends, FaUserCircle } from "react-icons/fa";
 
 const PAGE_ROUTES: Array<PageRouteProps> = [
@@ -60,7 +64,7 @@ const PAGE_ROUTES: Array<PageRouteProps> = [
       {
         path: "talent",
         label: "Talent",
-        icon: PiListDashesFill,
+        icon: IoMdListBox,
         Component: TalentPage,
         hidden: true,
       },
@@ -70,13 +74,6 @@ const PAGE_ROUTES: Array<PageRouteProps> = [
         icon: BsFillPersonCheckFill,
         Component: FinalizeHiringPage,
         hidden: true,
-      },
-      {
-        path: "post-a-job",
-        label: "Post A Job",
-        icon: MdNoteAdd,
-        Component: PostJobPage,
-        hidden: false,
       },
       {
         path: "send-job-offer",
@@ -95,6 +92,30 @@ const PAGE_ROUTES: Array<PageRouteProps> = [
     ],
   },
 
+  // Jobs Routes
+  {
+    id: "jobs",
+    path: "jobs",
+    parentId: "public",
+    icon: BsFillBriefcaseFill,
+    children: [
+      {
+        path: "create",
+        label: "Create",
+        icon: MdNoteAdd,
+        Component: CreateAJob,
+        hidden: false,
+      },
+      {
+        path: "posted",
+        label: "Postings",
+        icon: IoMdListBox,
+        Component: JobsPosted,
+        hidden: false,
+      },
+    ],
+  },
+
   // Candidates Routes
   {
     id: "candidates",
@@ -104,42 +125,42 @@ const PAGE_ROUTES: Array<PageRouteProps> = [
     children: [
       {
         path: "interview",
-        label: "Interview Candidates",
+        label: "Interview",
         icon: FaUserGroup,
         Component: InterviewCandidatesPage,
         hidden: true,
       },
       {
         path: "evaluate",
-        label: "Evaluate Candidates",
+        label: "Evaluate",
         icon: RiUserSearchFill,
         Component: EvaluateCandidatesPage,
         hidden: true,
       },
       {
         path: "onboard",
-        label: "Onboard Candidates",
+        label: "Onboard",
         icon: FaUserCheck,
         Component: OnboardCandidatesPage,
         hidden: true,
       },
       {
         path: "reject",
-        label: "Reject Candidates",
+        label: "Reject",
         icon: FaUserMinus,
         Component: RejectCandidatesPage,
         hidden: true,
       },
       {
         path: "review",
-        label: "Review Candidates",
-        icon: MdPersonSearch,
+        label: "Review",
+        icon: PiListChecksFill,
         Component: ReviewCandidatesPage,
         hidden: false,
       },
       {
         path: "shortlist",
-        label: "Shortlist Candidates",
+        label: "Shortlist",
         icon: FaListCheck,
         Component: ShortlistCandidatesPage,
         hidden: true,

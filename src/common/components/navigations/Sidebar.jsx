@@ -67,7 +67,7 @@ const NavItem = ({ item, isWrapped, isActive, navigate }) => {
       {item.children && isOpen && (
         <ul
           className={cn(
-            "mt-1 flex flex-col gap-1 animate-in fade-in duration-300"
+            "ml-6 mt-1 flex flex-col gap-1 animate-in fade-in duration-300"
           )}
         >
           {item.children.map((child, idx) => (
