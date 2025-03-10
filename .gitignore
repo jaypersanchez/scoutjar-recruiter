@@ -16,6 +16,9 @@ lerna-debug.log*
 .env.production.local
 .env
 
+# Firebase
+src/firbase/firebaseConfig.json
+
 # production
 build
 

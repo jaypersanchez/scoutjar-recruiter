@@ -1,6 +1,6 @@
-import React, { createContext, useEffect, useState } from "react";
+// src/common/providers/AuthProvider.jsx
+import React, { createContext, useEffect, useState, useContext } from "react";
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext({
   user: null,
   login: () => {},
@@ -8,9 +8,14 @@ export const AuthContext = createContext({
   isAuthenticated: false,
 });
 
+export function useAuth() {
+  return useContext(AuthContext);
+}
+
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
+  // On mount, restore user from localStorage if available
   useEffect(() => {
     const storedUser = localStorage.getItem("authUser");
     if (storedUser) {
@@ -28,7 +33,7 @@ export default function AuthProvider({ children }) {
     localStorage.removeItem("authUser");
   };
 
-  // Sync storage whenever `user` changes
+  // Sync localStorage whenever `user` changes
   useEffect(() => {
     if (user) {
       localStorage.setItem("authUser", JSON.stringify(user));
