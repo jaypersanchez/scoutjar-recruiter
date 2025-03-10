@@ -6,7 +6,7 @@ import { ProfileForm } from "./components";
 export default function Profile() {
   return (
     <FlexCol className="flex flex-col gap-6">
-      <PageHeader title="Profile" canGoBack />
+      <PageHeader title="Profile" />
       <ProfileForm />
     </FlexCol>
   );
