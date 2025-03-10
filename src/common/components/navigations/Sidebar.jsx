@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/common/lib/utils";
 import PAGE_ROUTES from "@/pages/routes/PublicRoutes";
@@ -8,44 +8,55 @@ import { FlexBox } from "@/common/components/flexbox";
 
 import { FaAngleLeft } from "react-icons/fa6";
 import { IoChevronDownOutline } from "react-icons/io5";
+import { cva } from "class-variance-authority";
+
+const navItemVariants = cva(
+  "w-full font-semibold rounded-sm flex items-center disabled:opacity-75 flex-row gap-4 py-2 pl-4 pr-2 min-h-12 text-sm hover:bg-primary/20 disabled:hover:bg-transparent disabled:cursor-default text-primary hover:text-tertiary cursor-pointer",
+  {
+    variants: {
+      isWrapped: {
+        true: "flex-col text-[10px] w-12 min-h-12 pr-4 pl-5 justify-center gap-0.5 text-center text-pretty group-hover:flex-row group-hover:gap-4 group-hover:py-2 group-hover:pl-4 group-hover:pr-2 group-hover:min-h-12 group-hover:text-sm group-hover:justify-start group-hover:mx-0 group-hover:w-full",
+      },
+      isActive: {
+        true: "bg-primary/20 text-tertiary hover:bg-primary/20 cursor-default",
+      },
+      isCategory: {
+        true: "bg-transparent text-primary hover:bg-transparent hover:text-tertiary",
+      },
+    },
+  }
+);
 
 const NavItem = ({ item, isWrapped, isActive, navigate }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleClick = () => {
-    if (item.children) {
+    if (item?.children) {
       setIsOpen((prev) => !prev);
     } else if (item.path) {
       navigate(item.path);
     }
   };
 
+  const isCategory = useMemo(
+    () => item?.children && item?.children?.length > 0,
+    [item?.children]
+  );
+
   return (
     <li className="flex flex-col">
       <button
         className={cn(
-          "w-full font-semibold rounded-sm flex items-center",
-          "disabled:opacity-75",
-          isWrapped
-            ? "flex-col text-[10px] p-1 w-11 min-h-11 mx-auto justify-center gap-0.5 text-center text-pretty group-hover:flex-row group-hover:gap-4 group-hover:py-2 group-hover:pl-4 group-hover:pr-2 group-hover:min-h-12 group-hover:text-sm group-hover:justify-start group-hover:mx-0 group-hover:w-full"
-            : "flex-row gap-4 py-2 pl-4 pr-2 min-h-12 text-sm",
-          isActive(item.path)
-            ? "bg-primary/20 text-primary hover:bg-primary/20 cursor-default"
-            : "hover:bg-primary/20 disabled:hover:bg-transparent disabled:cursor-default text-primary cursor-pointer",
-          isActive(item.path) && isOpen && "bg-primary/20 text-primary"
+          navItemVariants({
+            isWrapped,
+            isActive: isActive(item.path),
+            isCategory,
+          })
         )}
         onClick={handleClick}
       >
         <div className="flex items-center gap-4 flex-1">
-          {item.icon && (
-            <item.icon
-              className={cn(
-                isWrapped
-                  ? "h-6 w-6 group-hover:h-5 group-hover:w-5"
-                  : "h-5 w-5"
-              )}
-            />
-          )}
+          {item.icon && <item.icon className="h-5 w-5" />}
           <p className={cn(isWrapped ? "hidden group-hover:block" : "block")}>
             {item.label}
           </p>
@@ -67,7 +78,8 @@ const NavItem = ({ item, isWrapped, isActive, navigate }) => {
       {item.children && isOpen && (
         <ul
           className={cn(
-            "ml-6 mt-1 flex flex-col gap-1 animate-in fade-in duration-300"
+            "ml-6 mt-1 flex flex-col gap-1 animate-in fade-in duration-300",
+            isWrapped && "ml-0 group-hover:ml-6"
           )}
         >
           {item.children.map((child, idx) => (
@@ -100,13 +112,13 @@ export default function Sidebar({ className }) {
     <aside
       className={cn(
         "hidden lg:block relative group peer",
-        isWrapped ? "w-[78px] hover:w-72" : "w-72"
+        isWrapped ? "w-[82px] hover:w-72" : "w-72"
       )}
     >
       <div
         className={cn(
           "fixed h-full border-r border-gray-300 overflow-auto z-40 bg-secondary px-4",
-          isWrapped ? "w-[78px] group-hover:w-72" : "w-72",
+          isWrapped ? "w-[82px] group-hover:w-72" : "w-72",
           className
         )}
       >

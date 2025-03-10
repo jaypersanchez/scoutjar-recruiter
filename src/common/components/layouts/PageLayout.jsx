@@ -1,14 +1,11 @@
 import { useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-import { useAuth } from "@/common/hooks";
+import { Outlet } from "react-router-dom";
 import { Button } from "@/common/components/ui";
 import { Navbar, Sidebar } from "@/common/components/navigations";
 import { Footer } from "@/common/components/layouts";
 import { IoIosArrowUp } from "react-icons/io";
 
 export default function PageLayout() {
-  const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
   const [isVisible, setIsVisible] = useState(false);
 
   const scrollToTop = () => {
@@ -29,12 +26,6 @@ export default function PageLayout() {
       window.removeEventListener("scroll", toggleVisibility);
     };
   }, []);
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/auth", { replace: true });
-    }
-  }, [isAuthenticated, navigate]);
 
   return (
     <div className="min-h-screen min-w-[360px] select-none flex">

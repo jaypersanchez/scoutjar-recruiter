@@ -86,8 +86,9 @@ export function navigations(
     return {
       icon: route.icon || null,
       label: getLabelFromPath(fullPath),
+      // TODO: Add handlers for routes with dynamic paths like /:id which will be omitted from the navigation
       children: route.children
-        ?.filter((child) => !child.hidden)
+        ?.filter((child) => !child.hidden && !child.path?.includes(":"))
         .map((child) => ({
           icon: child.icon || null,
           label: child.label,

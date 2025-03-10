@@ -1,19 +1,8 @@
-import { useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-import { useAuth } from "@/common/hooks";
+import { Outlet } from "react-router-dom";
 import { FlexBox, FlexCol } from "@/common/components/flexbox";
 import { Footer } from "@/common/components/layouts";
 
 export default function AuthLayout() {
-  const { isAuthenticated } = useAuth();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/", { replace: true });
-    }
-  }, [isAuthenticated, navigate]);
-
   return (
     <FlexBox className="bg-secondary">
       <FlexCol className="min-h-screen px-1 select-none min-w-[375px] max-w-7xl lg:max-w-2xl flex-1 mx-auto">

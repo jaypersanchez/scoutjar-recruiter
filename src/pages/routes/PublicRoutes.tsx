@@ -182,6 +182,23 @@ const PAGE_ROUTES: Array<PageRouteProps> = [
       },
     ],
   },
+
+  // Nested Routes with dynamic paths
+  // {
+  //   id: "view-jobs",
+  //   path: "view-jobs",
+  //   parentId: "jobs",
+  //   icon: BsFillBriefcaseFill,
+  //   children: [
+  //     {
+  //       path: "view/:id", // This will be omitted from the navigation
+  //       label: "View",
+  //       icon: MdNoteAdd,
+  //       Component: CreateAJob,
+  //       hidden: false,
+  //     },
+  //   ],
+  // },
 ];
 
 export default PAGE_ROUTES;

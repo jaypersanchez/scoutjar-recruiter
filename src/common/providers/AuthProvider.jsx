@@ -1,4 +1,5 @@
 import { useEffect, useState, createContext } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext({
@@ -9,34 +10,40 @@ export const AuthContext = createContext({
 });
 
 export default function AuthProvider({ children }) {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
-
-  // On mount, restore user from localStorage if available
-  useEffect(() => {
-    const storedUser = localStorage.getItem("authUser");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
 
   const login = (userData) => {
     setUser(userData);
-    localStorage.setItem("authUser", JSON.stringify(userData));
+    localStorage.setItem("token", JSON.stringify(userData));
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("authUser");
+    localStorage.removeItem("token");
   };
+
+  // On mount, restore user from token if available
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setUser(JSON.parse(storedToken));
+    }
+  }, []);
 
   // Sync localStorage whenever `user` changes
   useEffect(() => {
     if (user) {
-      localStorage.setItem("authUser", JSON.stringify(user));
+      localStorage.setItem("token", JSON.stringify(user));
+
+      const isAuthPage = location.pathname === "/auth";
+      navigate(isAuthPage ? "/" : location.pathname);
     } else {
-      localStorage.removeItem("authUser");
+      localStorage.removeItem("token");
+      navigate("/auth");
     }
-  }, [user]);
+  }, [user, location.pathname, navigate]);
 
   return (
     <AuthContext.Provider
