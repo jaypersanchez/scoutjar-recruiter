@@ -45,8 +45,8 @@ export default [
         sourceType: "module",
       },
     },
-    settings: configs.settings,
     plugins: configs.plugins,
+    settings: configs.settings,
     rules: configs.rules,
   },
 
@@ -57,8 +57,8 @@ export default [
       parser: tsParser,
       ...configs.languageOptions,
     },
-    settings: configs.settings,
     plugins: { ...configs.plugins, "@typescript-eslint": tsEslint },
+    settings: configs.settings,
     rules: {
       ...tsEslint.configs.recommended.rules,
       ...configs.rules,

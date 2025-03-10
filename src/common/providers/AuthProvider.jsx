@@ -1,16 +1,12 @@
-// src/common/providers/AuthProvider.jsx
-import React, { createContext, useEffect, useState, useContext } from "react";
+import { useEffect, useState, createContext } from "react";
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext({
   user: null,
   login: () => {},
   logout: () => {},
   isAuthenticated: false,
 });
-
-export function useAuth() {
-  return useContext(AuthContext);
-}
 
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
