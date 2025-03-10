@@ -56,7 +56,15 @@ const NavItem = ({ item, isWrapped, isActive, navigate }) => {
         onClick={handleClick}
       >
         <div className="flex items-center gap-4 flex-1">
-          {item.icon && <item.icon className="h-5 w-5" />}
+          {item.icon && (
+            <item.icon
+              className={cn(
+                isWrapped
+                  ? "h-6 w-6 group-hover:h-5 group-hover:w-5 animate-in duration-200"
+                  : "h-5 w-5 animate-out duration-200"
+              )}
+            />
+          )}
           <p className={cn(isWrapped ? "hidden group-hover:block" : "block")}>
             {item.label}
           </p>

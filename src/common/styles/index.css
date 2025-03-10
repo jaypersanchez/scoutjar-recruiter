@@ -50,6 +50,30 @@ body {
   --sidebar-accent-foreground: oklch(0.21 0.034 264.665);
   --sidebar-border: oklch(0.928 0.006 264.531);
   --sidebar-ring: oklch(0.707 0.022 261.325);
+
+  --shadow-1: 0px 1px 3px rgba(0, 0, 0, 0.2), 0px 1px 2px rgba(0, 0, 0, 0.14),
+    0px 1px 1px rgba(0, 0, 0, 0.12);
+
+  --shadow-2: 0px 1px 5px rgba(0, 0, 0, 0.2), 0px 2px 2px rgba(0, 0, 0, 0.14),
+    0px 3px 1px rgba(0, 0, 0, 0.12);
+
+  --shadow-3: 0px 1px 8px rgba(0, 0, 0, 0.2), 0px 3px 4px rgba(0, 0, 0, 0.14),
+    0px 3px 3px rgba(0, 0, 0, 0.12);
+
+  --shadow-4: 0px 2px 4px rgba(0, 0, 0, 0.2), 0px 4px 5px rgba(0, 0, 0, 0.14),
+    0px 1px 10px rgba(0, 0, 0, 0.12);
+
+  --shadow-6: 0px 3px 5px rgba(0, 0, 0, 0.2), 0px 5px 8px rgba(0, 0, 0, 0.14),
+    0px 1px 14px rgba(0, 0, 0, 0.12);
+
+  --shadow-8: 0px 4px 5px rgba(0, 0, 0, 0.2), 0px 3px 14px rgba(0, 0, 0, 0.14),
+    0px 8px 10px rgba(0, 0, 0, 0.12);
+
+  --shadow-16: 0px 6px 10px rgba(0, 0, 0, 0.2), 0px 1px 18px rgba(0, 0, 0, 0.14),
+    0px 3px 5px rgba(0, 0, 0, 0.12);
+
+  --shadow-24: 0px 12px 17px rgba(0, 0, 0, 0.2),
+    0px 5px 22px rgba(0, 0, 0, 0.14), 0px 7px 8px rgba(0, 0, 0, 0.12);
 }
 
 .dark {
@@ -128,6 +152,14 @@ body {
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --shadow-1: var(--shadow-1);
+  --shadow-2: var(--shadow-2);
+  --shadow-3: var(--shadow-3);
+  --shadow-4: var(--shadow-4);
+  --shadow-6: var(--shadow-6);
+  --shadow-8: var(--shadow-8);
+  --shadow-16: var(--shadow-16);
+  --shadow-24: var(--shadow-24);
 }
 
 @layer base {
