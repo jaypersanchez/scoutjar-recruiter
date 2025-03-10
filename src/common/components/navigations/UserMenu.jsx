@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/common/hooks";
 import {
@@ -25,9 +26,20 @@ const menu = [
 export default function UserMenu() {
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const [ssoData, setSsoData] = useState(null);
+
+  useEffect(() => {
+    const data = sessionStorage.getItem("sso-login");
+    if (data) {
+      try {
+        setSsoData(JSON.parse(data));
+      } catch (error) {
+        console.error("Error parsing sso-login data", error);
+      }
+    }
+  }, []);
 
   const handleLogout = () => {
-    // Remove the sso-login flag from session storage
     sessionStorage.removeItem("sso-login");
     logout();
     navigate("/auth", { replace: true });
@@ -38,7 +50,7 @@ export default function UserMenu() {
       <DropdownMenuTrigger asChild>
         <div className="ml-auto rounded-full cursor-pointer group outline hover:outline-2 outline-offset-1 outline-primary data-[state=open]:outline-2">
           <Avatar>
-            <AvatarImage src="" />
+            <AvatarImage src={ssoData?.profile_picture || ""} />
             <AvatarFallback>
               <FaUserCircle className="text-primary h-full w-full" />
             </AvatarFallback>
@@ -53,10 +65,10 @@ export default function UserMenu() {
         <DropdownMenuGroup className="pb-2">
           <DropdownMenuLabel>
             <div className="text-sm font-bold uppercase break-all text-pretty text-primary">
-              firstname lastname
+              {ssoData?.full_name || "Default Name"}
             </div>
             <div className="text-xs font-semibold break-all text-pretty text-neutral-400">
-              fname.lastname@email.com
+              {ssoData?.email || "default@email"}
             </div>
           </DropdownMenuLabel>
         </DropdownMenuGroup>

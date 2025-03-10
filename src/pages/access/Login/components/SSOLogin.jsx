@@ -98,13 +98,14 @@ export default function SSOLogin({ onSignIn }) {
             // Call the onSignIn callback with the Firebase user object
             onSignIn(combinedData);
           } catch (apiError) {
-
+            sessionStorage.removeItem("sso-login") //in case an error occurs
             console.error(apiError);
             alert("There was an error processing your profile.");
           }
           
         })
         .catch((error) => {
+          sessionStorage.removeItem("sso-login") //in case an error occurs
           console.error("Error signing in with Google:", error);
           alert("Google sign-in failed: " + error.message);
         }); 
