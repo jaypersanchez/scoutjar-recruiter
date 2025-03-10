@@ -27,6 +27,8 @@ export default function UserMenu() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
+    // Remove the sso-login flag from session storage
+    sessionStorage.removeItem("sso-login");
     logout();
     navigate("/auth", { replace: true });
   };
@@ -79,7 +81,7 @@ export default function UserMenu() {
             onSelect={handleLogout}
           >
             <FaPowerOff className="text-red-500" />
-            <span>Sign out</span>
+            <span>Sign Out</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
