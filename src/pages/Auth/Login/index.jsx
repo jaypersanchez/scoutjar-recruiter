@@ -31,6 +31,7 @@ export default function LoginPage() {
         <SSOLogin
           onSignIn={(slug) => {
             console.log({ "sso-login": slug });
+            //sessionStorage.setItem("sso-login", slug)
             handleSignIn();
           }}
         />
