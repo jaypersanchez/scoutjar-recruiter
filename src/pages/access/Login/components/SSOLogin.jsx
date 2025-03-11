@@ -51,7 +51,7 @@ export default function SSOLogin({ onSignIn }) {
       photoURL: user.photoURL,
     };
 
-    sessionStorage.setItem("sso-login", JSON.stringify(ssoData));
+    //sessionStorage.setItem("sso-login", JSON.stringify(ssoData));
     console.log(ssoData);
   }
 
@@ -64,44 +64,36 @@ export default function SSOLogin({ onSignIn }) {
                   result.user.email, result.user.displayName,
                   result.user.photoURL);
                   sessionStorage.setItem("sso-login", JSON.stringify(result.user));*/
-          createSSOData(result.user)
+          //createSSOData(result.user)
           // Now call the API to create/fetch user profile
           try {
-            const profile = await createUserProfile(result.user);
-            console.log("User profile from backend:", profile);
-            // Retrieve the SSO data from session storage
-            //const ssoData = JSON.parse(sessionStorage.getItem("sso-login"));
+  const profile = await createUserProfile(result.user);
+  console.log("User profile from backend:", profile);
+  
+  // Build the combined object that includes user_id and recruiter_id among other info
+  const combinedData = {
+    // Data from user_profiles
+    user_id: profile.user.user_id,
+    email: profile.user.email,
+    full_name: profile.user.full_name,
+    profile_picture: profile.user.profile_picture,
+    // Data from talent_recruiters (may be null if not found)
+    recruiter_id: profile.recruiter?.recruiter_id,
+    company_name: profile.recruiter?.company_name,
+    company_website: profile.recruiter?.company_website,
+    industry: profile.recruiter?.industry,
+    company_logo: profile.recruiter?.company_logo,
+    created_at: profile.recruiter?.created_at,
+  };
 
-            // Combine the SSO data with the recruiter record.
-            // Build the combined object that includes the user_id and recruiter_id along with other info
-            const combinedData = {
-              // Data from user_profiles
-              user_id: profile.user.user_id,
-              email: profile.user.email,
-              full_name: profile.user.full_name,
-              profile_picture: profile.user.profile_picture,
-              // Data from talent_recruiters
-              recruiter_id: profile.recruiter.recruiter_id,
-              company_name: profile.recruiter.company_name,
-              company_website: profile.recruiter.company_website,
-              industry: profile.recruiter.industry,
-              company_logo: profile.recruiter.company_logo,
-              created_at: profile.recruiter.created_at,
-              // Additional SSO data
-              //displayName: ssoData.displayName,
-              //photoURL: ssoData.photoURL,
-            };
-
-            console.log("Combined SSO + Recruiter Data:", combinedData);
-            // Save combinedData as the complete user session info
-            sessionStorage.setItem("sso-login", JSON.stringify(combinedData));
-            // Call the onSignIn callback with the Firebase user object
-            onSignIn(combinedData);
-          } catch (apiError) {
-            sessionStorage.removeItem("sso-login") //in case an error occurs
-            console.error(apiError);
-            alert("There was an error processing your profile.");
-          }
+  console.log("Combined SSO + Recruiter Data:", combinedData);
+  sessionStorage.setItem("sso-login", JSON.stringify(combinedData));
+  onSignIn(combinedData);
+} catch (apiError) {
+  sessionStorage.removeItem("sso-login");
+  console.error(apiError);
+  alert("There was an error processing your profile.");
+}
           
         })
         .catch((error) => {
