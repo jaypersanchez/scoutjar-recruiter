@@ -2,10 +2,9 @@ import React, { useState, useEffect } from "react";
 import "@/common/styles/App.css";
 
 export default function CreateAJob() {
-  // Retrieve user info from sessionStorage and parse the JSON
+  // Retrieve user info from sessionStorage (if needed)
   const storedUser = sessionStorage.getItem("sso-login");
   const user = storedUser ? JSON.parse(storedUser) : null;
-  // Use the recruiter_id from the stored user, or fallback to null
   const recruiterId = user ? user.recruiter_id : null;
 
   // Optional callback when the job is successfully posted
@@ -17,7 +16,7 @@ export default function CreateAJob() {
     job_title: "",
     job_description: "",
     required_skills: "", // comma-separated list
-    experience_level: "",
+    experience_level: "",  // Now selected from dropdown
     employment_type: "Full-time",
     salary_min: "",
     salary_max: "",
@@ -155,19 +154,24 @@ export default function CreateAJob() {
           />
         </div>
 
-        {/* Experience Level */}
+        {/* Experience Level (Updated to Select Dropdown) */}
         <div className="form-group">
           <label className="form-label" htmlFor="experience_level">
             Experience Level
           </label>
-          <input
-            type="text"
+          <select
             id="experience_level"
             name="experience_level"
             className="form-input"
             value={formData.experience_level}
             onChange={handleChange}
-          />
+            required
+          >
+            <option value="">Select experience level</option>
+            <option value="Senior">Senior</option>
+            <option value="Intermediate">Intermediate</option>
+            <option value="Junior">Junior</option>
+          </select>
         </div>
 
         {/* Employment Type */}
