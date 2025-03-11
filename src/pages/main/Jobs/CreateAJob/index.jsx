@@ -2,8 +2,12 @@ import React, { useState, useEffect } from "react";
 import "@/common/styles/App.css";
 
 export default function CreateAJob() {
-  // TODO: Get the recruiterId from the user context (if applicable)
-  const recruiterId = null;
+  // Retrieve user info from sessionStorage and parse the JSON
+  const storedUser = sessionStorage.getItem("sso-login");
+  const user = storedUser ? JSON.parse(storedUser) : null;
+  // Use the recruiter_id from the stored user, or fallback to null
+  const recruiterId = user ? user.recruiter_id : null;
+
   // Optional callback when the job is successfully posted
   const onSubmit = () => {
     console.log("Job posted successfully");
