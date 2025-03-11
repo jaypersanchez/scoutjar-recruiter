@@ -1,3 +1,4 @@
+// TalentResults.jsx
 import React, { useState } from "react";
 import "@/common/styles/App.css"; // Ensure the correct path to App.css
 
@@ -32,6 +33,7 @@ function TalentResults({ results }) {
         <thead>
           <tr>
             <th>Candidate ID</th>
+            <th>Full Name</th>
             <th>Email</th>
             <th>Desired Salary</th>
             <th>Location</th>
@@ -43,6 +45,7 @@ function TalentResults({ results }) {
           {currentResults.map((profile) => (
             <tr key={profile.talent_id}>
               <td>{profile.talent_id}</td>
+              <td>{profile.full_name}</td>
               <td>{profile.email}</td>
               <td>${profile.desired_salary}</td>
               <td>{profile.location}</td>

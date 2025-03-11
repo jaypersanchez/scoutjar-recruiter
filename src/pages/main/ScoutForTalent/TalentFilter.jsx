@@ -1,8 +1,9 @@
 // TalentFilter.jsx
 import React, { useState } from "react";
+import TalentResults from "./TalentResults";
 import "@/common/styles/App.css"; // Ensure the correct path to your App.css
 
-function TalentFilter({ onResults }) {
+function TalentFilter() {
   // Local state for filter fields
   const [minSalary, setMinSalary] = useState("");
   const [maxSalary, setMaxSalary] = useState("");
@@ -12,6 +13,8 @@ function TalentFilter({ onResults }) {
   const [workMode, setWorkMode] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [matchPercentage, setMatchPercentage] = useState(50); // Default set to 50%
+  // State to hold search results
+  const [results, setResults] = useState([]);
 
   // Function to execute the query using filters
   const handleExecuteQuery = async () => {
@@ -38,7 +41,7 @@ function TalentFilter({ onResults }) {
 
       const data = await response.json();
       console.log("API Response Received:", data);
-      onResults(data || []);
+      setResults(data || []);
     } catch (error) {
       console.error("Error executing query:", error);
       alert("Error executing query.");
@@ -55,6 +58,7 @@ function TalentFilter({ onResults }) {
     setWorkMode("");
     setJobDescription("");
     setMatchPercentage(50);
+    setResults([]);
     console.log("🔹 Filters cleared.");
   };
 
@@ -156,6 +160,8 @@ function TalentFilter({ onResults }) {
           Clear Filters
         </button>
       </div>
+      {/* Display the results below the filter form */}
+      <TalentResults results={results} />
     </div>
   );
 }
