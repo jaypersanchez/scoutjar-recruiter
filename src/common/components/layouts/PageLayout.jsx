@@ -32,9 +32,11 @@ export default function PageLayout() {
       <Sidebar />
       <main className="relative flex flex-col flex-1 min-h-full overflow-hidden">
         <Navbar />
-        <div className="flex-1 px-6 py-10 mt-16 overflow-hidden desktop:px-10 bg-secondary">
+
+        <div className="flex-1 px-6 py-10 mt-16 overflow-hidden lg:px-14 xl:px-28 bg-secondary">
           <Outlet />
         </div>
+
         <Footer className="justify-end" />
 
         {isVisible && (

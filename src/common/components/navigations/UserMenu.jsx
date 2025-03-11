@@ -18,7 +18,7 @@ import { FaPowerOff } from "react-icons/fa6";
 const menu = [
   {
     label: "Profile",
-    link: "/user/profile",
+    link: "/profile",
   },
 ];
 
@@ -38,7 +38,7 @@ export default function UserMenu() {
           <Avatar>
             <AvatarImage src="" />
             <AvatarFallback>
-              <FaUserCircle className="text-primary h-full w-full" />
+              <FaUserCircle className="text-primary h-full w-full bg-secondary" />
             </AvatarFallback>
           </Avatar>
         </div>
