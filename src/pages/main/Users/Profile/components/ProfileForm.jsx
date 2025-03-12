@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/common/lib/utils";
 import { WidgetBox } from "@/common/components/layouts";
 import {
@@ -61,6 +61,26 @@ export default function ProfileForm() {
       console.log({ fileType, fileSize, file, fileName });
     }
   };
+
+  const [ssoData, setSsoData] = useState({
+    full_name: "",
+    email: "",
+  });
+
+  useEffect(() => {
+    const data = sessionStorage.getItem("sso-login");
+    if (data) {
+      try {
+        const parsed = JSON.parse(data);
+        setSsoData({
+          full_name: parsed.full_name || "",
+          email: parsed.email || "",
+        });
+      } catch (error) {
+        console.error("Error parsing sso-login data", error);
+      }
+    }
+  }, []);
 
   return (
     <div className="relative mt-20">
@@ -172,6 +192,8 @@ export default function ProfileForm() {
                   id="company_name"
                   autoComplete="company_name"
                   placeholder="Enter your company name"
+                  value={ssoData.full_name}
+                  readOnly
                   required
                 />
               </div>
@@ -185,6 +207,8 @@ export default function ProfileForm() {
                   id="company_website"
                   autoComplete="company_website"
                   placeholder="www.company.com"
+                  value={ssoData.email}
+                  readOnly
                   required
                   startAdornment={
                     <div className="text-gray-500 font-semibold text-sm">

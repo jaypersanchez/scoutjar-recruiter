@@ -1,11 +1,13 @@
-import React, { useState } from "react";
-import "@/common/styles/App.css"; // Ensure that this file is correctly imported
+import React, { useState, useEffect } from "react";
+import "@/common/styles/App.css";
 
 export default function CreateAJob() {
-  // TODO: Get the recruiterId from the user
-  const recruiterId = null;
+  // Retrieve user info from sessionStorage (if needed)
+  const storedUser = sessionStorage.getItem("sso-login");
+  const user = storedUser ? JSON.parse(storedUser) : null;
+  const recruiterId = user ? user.recruiter_id : null;
 
-  // TODO: Implement the onSubmit function, though this can be handled it here
+  // Optional callback when the job is successfully posted
   const onSubmit = () => {
     console.log("Job posted successfully");
   };
@@ -13,25 +15,55 @@ export default function CreateAJob() {
   const [formData, setFormData] = useState({
     job_title: "",
     job_description: "",
-    required_skills: "", // comma-separated list; can be split before sending to API
-    experience_level: "",
+    required_skills: "", // comma-separated list
+    experience_level: "",  // Now selected from dropdown
     employment_type: "Full-time",
     salary_min: "",
     salary_max: "",
     work_mode: "Remote",
-    location: "",
+    country: "",
+    city: "",
   });
 
+  const [countries, setCountries] = useState([]);
+  const [cities, setCities] = useState([]);
+
+  // Fetch the list of countries when the component mounts
+  useEffect(() => {
+    fetch("http://localhost:5000/locations/countries")
+      .then((res) => res.json())
+      .then((data) => setCountries(data))
+      .catch((err) => console.error("Error fetching countries:", err));
+  }, []);
+
+  // When a country is selected, update formData and fetch its cities
+  const handleCountryChange = async (e) => {
+    const selectedCountry = e.target.value;
+    setFormData((prev) => ({ ...prev, country: selectedCountry, city: "" }));
+    fetch(`http://localhost:5000/locations/cities?country=${selectedCountry}`)
+      .then((res) => res.json())
+      .then((data) => setCities(data))
+      .catch((err) => console.error("Error fetching cities:", err));
+  };
+
+  // Standard change handler for other inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
     }));
   };
 
+  // When the form is submitted, build the job object and post it to the API
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Combine city and country into a location string (if both are provided)
+    const location =
+      formData.city && formData.country
+        ? `${formData.city}, ${formData.country}`
+        : "";
 
     // Prepare jobData object to match the API request body
     const jobData = {
@@ -48,23 +80,19 @@ export default function CreateAJob() {
         formData.salary_max ? parseFloat(formData.salary_max) : null,
       ],
       work_mode: formData.work_mode,
-      location: formData.location,
+      location: location,
       // date_posted will default to CURRENT_TIMESTAMP on the database side
     };
 
     try {
-      // Post the job details to the server API
       const response = await fetch("http://localhost:5000/jobs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(jobData),
       });
-
       const data = await response.json();
-
       if (response.ok) {
         console.log("Job posted successfully:", data);
-        // Optionally, invoke the onSubmit callback to update parent state
         if (onSubmit) onSubmit(data);
       } else {
         console.error("Error posting job:", data);
@@ -80,6 +108,7 @@ export default function CreateAJob() {
         Create a new job
       </h2>
       <form onSubmit={handleSubmit}>
+        {/* Job Title */}
         <div className="form-group">
           <label className="form-label" htmlFor="job_title">
             Job Title
@@ -95,6 +124,7 @@ export default function CreateAJob() {
           />
         </div>
 
+        {/* Job Description */}
         <div className="form-group">
           <label className="form-label" htmlFor="job_description">
             Job Description
@@ -109,6 +139,7 @@ export default function CreateAJob() {
           ></textarea>
         </div>
 
+        {/* Required Skills */}
         <div className="form-group">
           <label className="form-label" htmlFor="required_skills">
             Required Skills (comma-separated)
@@ -123,20 +154,27 @@ export default function CreateAJob() {
           />
         </div>
 
+        {/* Experience Level (Updated to Select Dropdown) */}
         <div className="form-group">
           <label className="form-label" htmlFor="experience_level">
             Experience Level
           </label>
-          <input
-            type="text"
+          <select
             id="experience_level"
             name="experience_level"
             className="form-input"
             value={formData.experience_level}
             onChange={handleChange}
-          />
+            required
+          >
+            <option value="">Select experience level</option>
+            <option value="Senior">Senior</option>
+            <option value="Intermediate">Intermediate</option>
+            <option value="Junior">Junior</option>
+          </select>
         </div>
 
+        {/* Employment Type */}
         <div className="form-group">
           <label className="form-label" htmlFor="employment_type">
             Employment Type
@@ -156,6 +194,7 @@ export default function CreateAJob() {
           </select>
         </div>
 
+        {/* Salary Range */}
         <div className="form-group">
           <label className="form-label">Salary Range</label>
           <div className="salary-range-inputs">
@@ -180,6 +219,7 @@ export default function CreateAJob() {
           </div>
         </div>
 
+        {/* Work Mode */}
         <div className="form-group">
           <label className="form-label" htmlFor="work_mode">
             Work Mode
@@ -197,18 +237,49 @@ export default function CreateAJob() {
           </select>
         </div>
 
+        {/* Country Dropdown */}
         <div className="form-group">
-          <label className="form-label" htmlFor="location">
-            Location
+          <label className="form-label" htmlFor="country">
+            Country
           </label>
-          <input
-            type="text"
-            id="location"
-            name="location"
+          <select
+            id="country"
+            name="country"
             className="form-input"
-            value={formData.location}
+            value={formData.country}
+            onChange={handleCountryChange}
+            required
+          >
+            <option value="">Select a country</option>
+            {countries.map((country, index) => (
+              <option key={index} value={country}>
+                {country}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* City Dropdown */}
+        <div className="form-group">
+          <label className="form-label" htmlFor="city">
+            City
+          </label>
+          <select
+            id="city"
+            name="city"
+            className="form-input"
+            value={formData.city}
             onChange={handleChange}
-          />
+            required
+            disabled={!formData.country}
+          >
+            <option value="">Select a city</option>
+            {cities.map((city, index) => (
+              <option key={index} value={city}>
+                {city}
+              </option>
+            ))}
+          </select>
         </div>
 
         <button type="submit" className="form-button">
