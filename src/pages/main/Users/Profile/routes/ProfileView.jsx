@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/common/lib/utils";
 import { WidgetBox } from "@/common/components/layouts";
@@ -33,16 +34,33 @@ const getInitials = (name) => {
 export default function ProfileView() {
   const navigate = useNavigate();
 
-  const data = {
+  const [ssoData, setSsoData] = useState({
     photo: "/logo.png",
     name: "FirstName LastName",
     email: "firstname.lastname@gmail.com",
-    company: {
-      name: "Company Name",
-      website: "https://company.website.com",
-      logo: "/logo.png",
-    },
+  });
+
+  const companyData = {
+    name: "Company Name",
+    website: "https://company.website.com",
+    logo: "/logo.png",
   };
+
+  useEffect(() => {
+    const data = sessionStorage.getItem("sso-login");
+    if (data) {
+      try {
+        const parsed = JSON.parse(data);
+        setSsoData((prev) => ({
+          ...prev,
+          full_name: parsed.full_name || "Anonymous",
+          email: parsed.email || "anonymous@email.com",
+        }));
+      } catch (error) {
+        console.error("Error parsing sso-login data", error);
+      }
+    }
+  }, []);
 
   return (
     <div className="relative mt-20">
@@ -51,7 +69,7 @@ export default function ProfileView() {
           "absolute -top-20 inset-x-0 mx-auto border-2 border-primary w-40 h-40 p-0.5 overflow-hidden rounded-full"
         )}
       >
-        <AvatarImage src={data.photo} className="rounded-full" />
+        <AvatarImage src={ssoData.photo} className="rounded-full" />
         <AvatarFallback className="bg-secondary">
           <FaUserCircle className="text-primary h-full w-full" />
         </AvatarFallback>
@@ -73,10 +91,10 @@ export default function ProfileView() {
           {/* User name and Email */}
           <div className="px-4 sm:px-0 text-center select-text">
             <h3 className="text-4xl font-bold text-gray-900 break-all text-pretty">
-              {data.name}
+              {ssoData.name}
             </h3>
             <p className="mt-1 max-w-2xl text-sm/6 text-gray-500 break-all">
-              {data.email}
+              {ssoData.email}
             </p>
           </div>
 
@@ -94,9 +112,9 @@ export default function ProfileView() {
 
                 <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
                   <Avatar className="w-12 h-12">
-                    <AvatarImage src={data.company.logo} />
+                    <AvatarImage src={companyData.logo} />
                     <AvatarFallback>
-                      {getInitials(data.company.name)}
+                      {getInitials(companyData.name)}
                     </AvatarFallback>
                   </Avatar>
                 </dd>
@@ -106,7 +124,7 @@ export default function ProfileView() {
               <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="text-sm/6 font-medium text-gray-900">Name</dt>
                 <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0 select-text break-all text-pretty">
-                  {data.company.name}
+                  {companyData.name}
                 </dd>
               </div>
 
@@ -114,7 +132,7 @@ export default function ProfileView() {
               <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                 <dt className="text-sm/6 font-medium text-gray-900">Website</dt>
                 <dd className="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0 select-text break-all text-pretty">
-                  {data.company.website}
+                  {companyData.website}
                 </dd>
               </div>
             </dl>
