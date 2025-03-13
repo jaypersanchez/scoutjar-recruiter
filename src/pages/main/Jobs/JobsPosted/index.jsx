@@ -6,17 +6,21 @@ export default function JobsPosted() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Retrieve user info from sessionStorage
+  const storedUser = sessionStorage.getItem("sso-login");
+  const user = storedUser ? JSON.parse(storedUser) : null;
+  const recruiterId = user ? user.recruiter_id : null;
+
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        // Use the /jobs/get endpoint and send a POST request.
-        // You can also add a recruiter_id in the body if needed.
+        // Send recruiter_id in the request body to filter jobs by the logged-in recruiter
         const response = await fetch("http://localhost:5000/jobs/get", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({}), // Sending an empty object to fetch all jobs.
+          body: JSON.stringify({ recruiter_id: recruiterId }),
         });
 
         if (!response.ok) {
@@ -31,8 +35,13 @@ export default function JobsPosted() {
       }
     };
 
-    fetchJobs();
-  }, []);
+    if (recruiterId !== null) {
+      fetchJobs();
+    } else {
+      setError("Recruiter not logged in.");
+      setLoading(false);
+    }
+  }, [recruiterId]);
 
   if (loading) return <p>Loading job posts...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -65,8 +74,7 @@ export default function JobsPosted() {
               )}
               {job.salary_range && job.salary_range.length === 2 && (
                 <p>
-                  <strong>Salary Range:</strong> {job.salary_range[0]} -{" "}
-                  {job.salary_range[1]}
+                  <strong>Salary Range:</strong> {job.salary_range[0]} - {job.salary_range[1]}
                 </p>
               )}
               {job.work_mode && (
@@ -81,8 +89,7 @@ export default function JobsPosted() {
               )}
               {job.date_posted && (
                 <p>
-                  <strong>Date Posted:</strong>{" "}
-                  {new Date(job.date_posted).toLocaleString()}
+                  <strong>Date Posted:</strong> {new Date(job.date_posted).toLocaleString()}
                 </p>
               )}
             </li>

@@ -31,6 +31,7 @@ const createUserProfile = async (user) => {
     email: user.email,
     full_name: user.displayName,
     profile_picture: user.photoURL,
+    user_type: "Scout",
   };
 
   const response = await fetch("http://localhost:5000/user_profiles", {
@@ -47,30 +48,59 @@ const createUserProfile = async (user) => {
 };
 
 export default function SSOLogin({ onSignIn }) {
+  const createSSOData = (user) => {
+    const ssoData = {
+      email: user.email,
+      displayName: user.displayName,
+      photoURL: user.photoURL,
+    };
+
+    //sessionStorage.setItem("sso-login", JSON.stringify(ssoData));
+    console.log(ssoData);
+  };
+
   // Generic function to handle sign in with a given provider
   const handleSSOLogin = (slug) => {
     if (slug === "google") {
       signInWithPopup(auth, googleProvider)
         .then(async (result) => {
-          console.log(
-            "User signed in with Google:",
-            result.user.email,
-            result.user.displayName,
-            result.user.photoURL
-          );
-          sessionStorage.setItem("sso-login", result.user);
+          /*console.log("User signed in with Google:", 
+                  result.user.email, result.user.displayName,
+                  result.user.photoURL);
+                  sessionStorage.setItem("sso-login", JSON.stringify(result.user));*/
+          //createSSOData(result.user)
           // Now call the API to create/fetch user profile
           try {
             const profile = await createUserProfile(result.user);
             console.log("User profile from backend:", profile);
+
+            // Build the combined object that includes user_id and recruiter_id among other info
+            const combinedData = {
+              // Data from user_profiles
+              user_id: profile.user.user_id,
+              email: profile.user.email,
+              full_name: profile.user.full_name,
+              profile_picture: profile.user.profile_picture,
+              // Data from talent_recruiters (may be null if not found)
+              recruiter_id: profile.recruiter?.recruiter_id,
+              company_name: profile.recruiter?.company_name,
+              company_website: profile.recruiter?.company_website,
+              industry: profile.recruiter?.industry,
+              company_logo: profile.recruiter?.company_logo,
+              created_at: profile.recruiter?.created_at,
+            };
+
+            console.log("Combined SSO + Recruiter Data:", combinedData);
+            sessionStorage.setItem("sso-login", JSON.stringify(combinedData));
+            onSignIn(combinedData);
           } catch (apiError) {
+            sessionStorage.removeItem("sso-login");
             console.error(apiError);
             alert("There was an error processing your profile.");
           }
-          // Call the onSignIn callback with the Firebase user object
-          onSignIn(result.user);
         })
         .catch((error) => {
+          sessionStorage.removeItem("sso-login"); //in case an error occurs
           console.error("Error signing in with Google:", error);
           alert("Google sign-in failed: " + error.message);
         });
@@ -78,7 +108,8 @@ export default function SSOLogin({ onSignIn }) {
       signInWithPopup(auth, githubProvider)
         .then((result) => {
           console.log("User signed in with GitHub:", result.user);
-          sessionStorage.setItem("sso-login", result.user);
+          //sessionStorage.setItem("sso-login", result.user);
+          createSSOData(result.user);
           onSignIn(result.user);
         })
         .catch((error) => {
@@ -89,7 +120,8 @@ export default function SSOLogin({ onSignIn }) {
       signInWithPopup(auth, twitterProvider)
         .then((result) => {
           console.log("User signed in with Twitter:", result.user);
-          sessionStorage.setItem("sso-login", result.user);
+          //sessionStorage.setItem("sso-login", result.user);
+          createSSOData(result.user);
           onSignIn(result.user);
         })
         .catch((error) => {

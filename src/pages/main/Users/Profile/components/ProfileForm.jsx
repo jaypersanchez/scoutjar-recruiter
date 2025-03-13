@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/common/lib/utils";
 import { WidgetBox } from "@/common/components/layouts";
 import {
@@ -14,17 +14,16 @@ import { FaUserCircle } from "react-icons/fa";
 import { IoCamera } from "react-icons/io5";
 
 export default function ProfileForm() {
-  const [companyLogo, setCompanyLogo] = useState(null);
-  const data = {
+  const [ssoData, setSsoData] = useState({
     photo: "/logo.png",
+    full_name: "",
+    email: "",
+  });
+  const [companyData, setCompanyData] = useState({
     name: "",
-    email: "firstname.lastname@gmail.com",
-    company: {
-      name: "Company Name",
-      website: "https://company.website.com",
-      logo: "/logo.png",
-    },
-  };
+    website: "",
+    logo: null,
+  });
 
   const handleImageUpload = (e) => {
     e.preventDefault();
@@ -54,13 +53,33 @@ export default function ProfileForm() {
 
       const reader = new FileReader();
       reader.onloadend = () => {
-        setCompanyLogo(reader.result);
+        setCompanyData((prev) => ({
+          ...prev,
+          logo: reader.result,
+        }));
       };
       reader.readAsDataURL(file);
 
+      // send this file below to the backend
       console.log({ fileType, fileSize, file, fileName });
     }
   };
+
+  useEffect(() => {
+    const data = sessionStorage.getItem("sso-login");
+    if (data) {
+      try {
+        const parsed = JSON.parse(data);
+        setSsoData((prev) => ({
+          ...prev,
+          full_name: parsed.full_name || "",
+          email: parsed.email || "",
+        }));
+      } catch (error) {
+        console.error("Error parsing sso-login data", error);
+      }
+    }
+  }, []);
 
   return (
     <div className="relative mt-20">
@@ -69,7 +88,7 @@ export default function ProfileForm() {
           "absolute -top-20 inset-x-0 mx-auto border-2 border-primary w-40 h-40 p-0.5 overflow-hidden rounded-full"
         )}
       >
-        <AvatarImage src={data.photo ?? ""} className="rounded-full" />
+        <AvatarImage src={ssoData.photo} className="rounded-full" />
         <AvatarFallback className="bg-secondary">
           <FaUserCircle className="text-primary h-full w-full" />
         </AvatarFallback>
@@ -80,7 +99,7 @@ export default function ProfileForm() {
           {/* User Email */}
           <div className="px-4 sm:px-0 text-center select-text">
             <p className="mt-1 max-w-2xl text-sm/6 text-gray-500 break-all">
-              {data.email}
+              {ssoData.email}
             </p>
           </div>
 
@@ -98,11 +117,18 @@ export default function ProfileForm() {
                 <TextField
                   label="Full Name"
                   type="text"
+                  value={ssoData.full_name}
                   name="full_name"
                   id="full_name"
                   autoComplete="full_name"
                   placeholder="Enter your full name"
                   required
+                  onChange={(e) =>
+                    setSsoData((prev) => ({
+                      ...prev,
+                      full_name: e.target.value,
+                    }))
+                  }
                 />
               </div>
             </dl>
@@ -129,9 +155,9 @@ export default function ProfileForm() {
                     "flex flex-col items-center justify-center text-xs font-semibold leading-6 text-center rounded-md cursor-pointer border-2 border-dashed group border-gray-600/20 hover:border-gray-600/40 hover:bg-gray-500/10 py-6"
                   )}
                 >
-                  {companyLogo ? (
+                  {companyData.logo ? (
                     <Avatar className="w-14 h-14 mb-2">
-                      <AvatarImage src={companyLogo} />
+                      <AvatarImage src={companyData.logo} />
                       <AvatarFallback>N/A</AvatarFallback>
                     </Avatar>
                   ) : (
@@ -172,6 +198,14 @@ export default function ProfileForm() {
                   id="company_name"
                   autoComplete="company_name"
                   placeholder="Enter your company name"
+                  value={companyData.name}
+                  onChange={(e) =>
+                    setCompanyData((prev) => ({
+                      ...prev,
+                      name: e.target.value,
+                    }))
+                  }
+                  readOnly
                   required
                 />
               </div>
@@ -185,7 +219,13 @@ export default function ProfileForm() {
                   id="company_website"
                   autoComplete="company_website"
                   placeholder="www.company.com"
-                  required
+                  value={companyData.website}
+                  onChange={(e) =>
+                    setCompanyData((prev) => ({
+                      ...prev,
+                      website: e.target.value,
+                    }))
+                  }
                   startAdornment={
                     <div className="text-gray-500 font-semibold text-sm">
                       https://
@@ -197,6 +237,8 @@ export default function ProfileForm() {
                       start: "left-4",
                     },
                   }}
+                  readOnly
+                  required
                 />
               </div>
             </dl>
