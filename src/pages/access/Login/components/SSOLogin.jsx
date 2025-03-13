@@ -1,4 +1,12 @@
 import { Button } from "@/common/components/ui";
+import { signInWithPopup } from "firebase/auth";
+import {
+  auth,
+  googleProvider,
+  githubProvider,
+  twitterProvider,
+} from "@/firebase/firebaseConfig";
+
 import {
   FaGoogle,
   FaLinkedin,
@@ -7,9 +15,6 @@ import {
   FaGithub,
   FaApple,
 } from "react-icons/fa";
-import { signInWithPopup } from "firebase/auth";
-import { auth, googleProvider, githubProvider, twitterProvider } from "../../../../firebase/firebaseConfig";
-
 
 const SSOProviders = [
   { id: 0, slug: "github", icon: FaGithub },
@@ -33,11 +38,11 @@ const createUserProfile = async (user) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  
+
   if (!response.ok) {
     throw new Error("Error inserting/fetching user profile");
   }
-  
+
   return response.json();
 };
 
@@ -47,9 +52,12 @@ export default function SSOLogin({ onSignIn }) {
     if (slug === "google") {
       signInWithPopup(auth, googleProvider)
         .then(async (result) => {
-          console.log("User signed in with Google:", 
-                  result.user.email, result.user.displayName,
-                  result.user.photoURL);
+          console.log(
+            "User signed in with Google:",
+            result.user.email,
+            result.user.displayName,
+            result.user.photoURL
+          );
           sessionStorage.setItem("sso-login", result.user);
           // Now call the API to create/fetch user profile
           try {
@@ -65,7 +73,7 @@ export default function SSOLogin({ onSignIn }) {
         .catch((error) => {
           console.error("Error signing in with Google:", error);
           alert("Google sign-in failed: " + error.message);
-        }); 
+        });
     } else if (slug === "github") {
       signInWithPopup(auth, githubProvider)
         .then((result) => {
@@ -90,7 +98,9 @@ export default function SSOLogin({ onSignIn }) {
         });
     } else if (slug === "linkedin") {
       //sessionStorage.setItem("sso-login", result.user);
-      alert("LinkedIn sign-in is not supported by Firebase Authentication by default. You'll need a custom OAuth flow or a third-party solution.");
+      alert(
+        "LinkedIn sign-in is not supported by Firebase Authentication by default. You'll need a custom OAuth flow or a third-party solution."
+      );
     } else if (slug === "instagram") {
       alert("Instagram sign-in is not implemented yet.");
     } else if (slug === "apple") {

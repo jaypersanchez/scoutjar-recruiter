@@ -5,8 +5,12 @@ import { TextField } from "@/common/components/input-fields";
 import { LuEye, LuEyeClosed } from "react-icons/lu";
 import { Button } from "@/common/components/ui";
 
-export default function LoginForm() {
+export default function LoginForm({ onSignIn }) {
   const [showPassword, setShowPassword] = useState(false);
+
+  const handleLogin = () => {
+    onSignIn({ id: "XYZABC123456", name: "John Doe" });
+  };
 
   return (
     <form className="space-y-4">
@@ -56,9 +60,10 @@ export default function LoginForm() {
           </Link>
         </div>
         <Button
-          type="submit"
+          // type="submit"
           variant="secondary"
           className="w-full h-12 ml-auto text-lg font-semibold tracking-wider uppercase bg-primary mobile:w-1/3 text-neutral-100 hover:bg-primary/90"
+          onClick={handleLogin}
         >
           Sign in
         </Button>
