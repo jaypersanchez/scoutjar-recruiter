@@ -205,7 +205,6 @@ export default function ProfileForm() {
                       name: e.target.value,
                     }))
                   }
-                  readOnly
                   required
                 />
               </div>
@@ -237,7 +236,6 @@ export default function ProfileForm() {
                       start: "left-4",
                     },
                   }}
-                  readOnly
                   required
                 />
               </div>
