@@ -11,12 +11,23 @@ export default function JobApplicants() {
   const itemsPerPage = 15;
 
   useEffect(() => {
+    // Retrieve user info from sessionStorage
+    const storedUser = sessionStorage.getItem("sso-login");
+    const user = storedUser ? JSON.parse(storedUser) : null;
+    const recruiterId = user ? user.recruiter_id : null;
+
     async function fetchApplicants() {
+      if (!recruiterId) {
+        setError("Recruiter not logged in.");
+        setLoading(false);
+        return;
+      }
       try {
+        // Send recruiter_id in the request body to filter applicants
         const response = await fetch("http://localhost:5000/job-applicants", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({}), // No filter; fetch all records
+          body: JSON.stringify({ recruiter_id: recruiterId }),
         });
         if (!response.ok) {
           throw new Error("Error fetching applicants");
@@ -38,7 +49,6 @@ export default function JobApplicants() {
     setCurrentPage(1); // Reset to first page on filter change
     let filtered = allApplicants;
 
-    // Filter by email if provided
     if (email) {
       filtered = filtered.filter(
         (applicant) =>
@@ -47,21 +57,18 @@ export default function JobApplicants() {
       );
     }
 
-    // Filter by talent_id if provided
     if (talent_id) {
       filtered = filtered.filter((applicant) =>
         String(applicant.talent_id).includes(talent_id)
       );
     }
 
-    // Filter by job_id if provided
     if (job_id) {
       filtered = filtered.filter((applicant) =>
         String(applicant.job_id).includes(job_id)
       );
     }
 
-    // Filter by job_title if provided
     if (job_title) {
       filtered = filtered.filter(
         (applicant) =>
@@ -73,13 +80,10 @@ export default function JobApplicants() {
     setFilteredApplicants(filtered);
   };
 
-  // Calculate pagination indices based on filtered applicants.
+  // Pagination calculations
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentApplicants = filteredApplicants.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
+  const currentApplicants = filteredApplicants.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredApplicants.length / itemsPerPage);
 
   const handlePrevPage = () => {
@@ -105,8 +109,6 @@ export default function JobApplicants() {
   return (
     <div className="job-posts-container">
       <h2>Job Applicants</h2>
-
-      {/* Applicant Filter above the list */}
       <ApplicantFilter onFilter={handleFilter} />
 
       <table className="results-table">
@@ -138,7 +140,6 @@ export default function JobApplicants() {
         </tbody>
       </table>
 
-      {/* Pagination Controls */}
       <div style={{ marginTop: "20px", textAlign: "center" }}>
         <button onClick={handlePrevPage} disabled={currentPage === 1}>
           Previous

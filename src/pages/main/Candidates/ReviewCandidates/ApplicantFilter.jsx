@@ -1,20 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "@/common/styles/App.css";
 
 export default function ApplicantFilter({ onFilter }) {
   const [email, setEmail] = useState("");
   const [talentId, setTalentId] = useState("");
-  const [jobId, setJobId] = useState("");
-  const [jobTitle, setJobTitle] = useState("");
+  const [selectedJob, setSelectedJob] = useState("");
+  const [jobs, setJobs] = useState([]);
+
+  useEffect(() => {
+    // Get the logged in recruiter from sessionStorage.
+    const storedUser = sessionStorage.getItem("sso-login");
+    const user = storedUser ? JSON.parse(storedUser) : null;
+    const recruiterId = user ? user.recruiter_id : null;
+
+    if (recruiterId) {
+      // Fetch jobs posted by this recruiter.
+      fetch(`http://localhost:5000/jobs?recruiter_id=${recruiterId}`)
+        .then((response) => response.json())
+        .then((data) => setJobs(data))
+        .catch((error) =>
+          console.error("Error fetching recruiter jobs:", error)
+        );
+    }
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Send the filter values to the parent.
     onFilter({
       email: email.trim(),
       talent_id: talentId.trim(),
-      job_id: jobId.trim(),
-      job_title: jobTitle.trim(),
+      job_id: selectedJob, // Pass along the selected job id
     });
   };
 
@@ -46,26 +61,20 @@ export default function ApplicantFilter({ onFilter }) {
             />
           </div>
           <div className="filter-field">
-            <label htmlFor="jobId">Job ID:</label>
-            <input
-              type="text"
-              id="jobId"
-              value={jobId}
-              onChange={(e) => setJobId(e.target.value)}
+            <label htmlFor="jobSelect">Select Job:</label>
+            <select
+              id="jobSelect"
+              value={selectedJob}
+              onChange={(e) => setSelectedJob(e.target.value)}
               className="form-input"
-              placeholder="Enter Job ID"
-            />
-          </div>
-          <div className="filter-field">
-            <label htmlFor="jobTitle">Job Title:</label>
-            <input
-              type="text"
-              id="jobTitle"
-              value={jobTitle}
-              onChange={(e) => setJobTitle(e.target.value)}
-              className="form-input"
-              placeholder="Enter Job Title"
-            />
+            >
+              <option value="">All Jobs</option>
+              {jobs.map((job) => (
+                <option key={job.job_id} value={job.job_id}>
+                  {job.job_title}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
         <div className="filter-buttons">
