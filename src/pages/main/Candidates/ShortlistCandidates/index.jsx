@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "@/common/styles/App.css";
-//import TalentDetailModal from "../RejectCandidates/TalentDetailModal";
+import TalentDetailModal from "../ReviewCandidates/TalentDetailModal";
 
 export default function ShortlistedCandidates() {
   const [groupedCandidates, setGroupedCandidates] = useState([]);
@@ -104,6 +104,8 @@ export default function ShortlistedCandidates() {
             <tr className="bg-gray-200">
               <th className="px-4 py-2 border">Shortlist ID</th>
               <th className="px-4 py-2 border">Talent ID</th>
+              <th className="px-4 py-2 border">Full Name</th>
+              <th className="px-4 py-2 border">Email</th>
               <th className="px-4 py-2 border">Added At</th>
             </tr>
           </thead>
@@ -114,12 +116,10 @@ export default function ShortlistedCandidates() {
                 className="hover:bg-gray-100 cursor-pointer"
                 onClick={() => handleCandidateClick(candidate)}
               >
-                <td className="px-4 py-2 border text-center">
-                  {candidate.shortlist_id}
-                </td>
-                <td className="px-4 py-2 border text-center">
-                  {candidate.talent_id}
-                </td>
+                <td className="px-4 py-2 border text-center">{candidate.shortlist_id}</td>
+                <td className="px-4 py-2 border text-center">{candidate.talent_id}</td>
+                <td className="px-4 py-2 border text-center">{candidate.full_name}</td>
+                <td className="px-4 py-2 border text-center">{candidate.email}</td>
                 <td className="px-4 py-2 border text-center">
                   {new Date(candidate.added_at).toLocaleString()}
                 </td>
