@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "@/common/styles/App.css";
-//import TalentDetailModal from "../RejectCandidates/TalentDetailModal";
+import TalentDetailModal from "./TalentDetailModal";
 
 export default function ShortlistedCandidates() {
   const [groupedCandidates, setGroupedCandidates] = useState([]);
@@ -10,7 +10,7 @@ export default function ShortlistedCandidates() {
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  // Get recruiter_id from sessionStorage
+  // Retrieve recruiter id from session storage
   const storedUser = sessionStorage.getItem("sso-login");
   const user = storedUser ? JSON.parse(storedUser) : null;
   const recruiterId = user ? user.recruiter_id : null;
@@ -33,6 +33,7 @@ export default function ShortlistedCandidates() {
         }
         const data = await response.json();
         setGroupedCandidates(data);
+        // Set default selected job to the first available job_id (if any)
         if (data.length > 0) {
           setSelectedJob(data[0].job_id);
         }
@@ -59,21 +60,20 @@ export default function ShortlistedCandidates() {
     setSelectedCandidate(null);
   };
 
-  // Find the candidate group for the selected job
+  // Find the group corresponding to the selected job
   const selectedGroup = groupedCandidates.find(
     (group) => String(group.job_id) === String(selectedJob)
   );
 
   if (loading) {
     return (
-      <div className="spinner-container flex items-center justify-center">
+      <div className="spinner-container">
         <div className="spinner"></div>
       </div>
     );
   }
-
   if (error) {
-    return <div className="text-red-500 text-center">{error}</div>;
+    return <div className="text-red-500">{error}</div>;
   }
 
   return (
@@ -128,7 +128,7 @@ export default function ShortlistedCandidates() {
           </tbody>
         </table>
       ) : (
-        <p className="text-center">No shortlisted candidates for this job.</p>
+        <p>No shortlisted candidates for this job.</p>
       )}
       {showModal && selectedCandidate && (
         <TalentDetailModal applicant={selectedCandidate} onClose={closeModal} />

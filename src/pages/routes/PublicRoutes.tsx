@@ -163,7 +163,7 @@ const PAGE_ROUTES: Array<PageRouteProps> = [
         label: "Shortlist",
         icon: FaListCheck,
         Component: ShortlistCandidatesPage,
-        hidden: true,
+        hidden: false,
       },
     ],
   },
