@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "@/common/styles/App.css";
 import ApplicantFilter from "./ApplicantFilter";
+import TalentDetailModal from "./TalentDetailModal"; // Import the modal component
 
 export default function JobApplicants() {
   const [allApplicants, setAllApplicants] = useState([]);
@@ -9,6 +10,8 @@ export default function JobApplicants() {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
+  const [selectedApplicant, setSelectedApplicant] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     // Retrieve user info from sessionStorage
@@ -94,6 +97,18 @@ export default function JobApplicants() {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
 
+  // Handler for right-click to open modal with applicant details
+  const handleContextMenu = (e, applicant) => {
+    e.preventDefault();
+    setSelectedApplicant(applicant);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedApplicant(null);
+  };
+
   if (loading) {
     return (
       <div className="spinner-container">
@@ -127,7 +142,10 @@ export default function JobApplicants() {
         </thead>
         <tbody>
           {currentApplicants.map((applicant) => (
-            <tr key={applicant.application_id}>
+            <tr
+              key={applicant.application_id}
+              onContextMenu={(e) => handleContextMenu(e, applicant)}
+            >
               <td>{applicant.application_id}</td>
               <td>{applicant.talent_id}</td>
               <td>{applicant.user_id}</td>
@@ -142,17 +160,29 @@ export default function JobApplicants() {
         </tbody>
       </table>
 
-      <div style={{ marginTop: "20px", textAlign: "center" }}>
-        <button onClick={handlePrevPage} disabled={currentPage === 1}>
+      <div className="mt-4 text-center">
+        <button
+          onClick={handlePrevPage}
+          disabled={currentPage === 1}
+          className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 mr-2"
+        >
           Previous
         </button>
-        <span style={{ margin: "0 10px" }}>
+        <span className="mx-2">
           Page {currentPage} of {totalPages}
         </span>
-        <button onClick={handleNextPage} disabled={currentPage === totalPages}>
+        <button
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 ml-2"
+        >
           Next
         </button>
       </div>
+
+      {showModal && selectedApplicant && (
+        <TalentDetailModal applicant={selectedApplicant} onClose={closeModal} />
+      )}
     </div>
   );
 }

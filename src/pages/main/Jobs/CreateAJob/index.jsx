@@ -25,8 +25,19 @@ export default function CreateAJob() {
     city: "",
   });
 
+  // New state to hold job title options from the reference table
+  const [jobTitleOptions, setJobTitleOptions] = useState([]);
+
   const [countries, setCountries] = useState([]);
   const [cities, setCities] = useState([]);
+
+  // Fetch job title options from your backend on mount
+  useEffect(() => {
+    fetch("http://localhost:5000/job-titles")
+      .then((res) => res.json())
+      .then((data) => setJobTitleOptions(data))
+      .catch((err) => console.error("Error fetching job titles:", err));
+  }, []);
 
   // Fetch the list of countries when the component mounts
   useEffect(() => {
@@ -52,6 +63,20 @@ export default function CreateAJob() {
     setFormData((prev) => ({
       ...prev,
       [name]: value,
+    }));
+  };
+
+  // Handler for when a job title is selected from the dropdown.
+  // It finds the selected job title object and updates both job_title and job_description.
+  const handleJobTitleSelect = (e) => {
+    const selectedId = e.target.value;
+    const selectedOption = jobTitleOptions.find(
+      (option) => String(option.job_title_id) === selectedId
+    );
+    setFormData((prev) => ({
+      ...prev,
+      job_title: selectedOption ? selectedOption.job_title : "",
+      job_description: selectedOption ? selectedOption.job_description : "",
     }));
   };
 
@@ -108,23 +133,31 @@ export default function CreateAJob() {
         Create a new job
       </h2>
       <form onSubmit={handleSubmit}>
-        {/* Job Title */}
+        {/* Job Title Dropdown */}
         <div className="form-group">
           <label className="form-label" htmlFor="job_title">
             Job Title
           </label>
-          <input
-            type="text"
+          <select
             id="job_title"
             name="job_title"
             className="form-input"
-            value={formData.job_title}
-            onChange={handleChange}
+            value={jobTitleOptions.find(
+              (option) => option.job_title === formData.job_title
+            )?.job_title_id || ""}
+            onChange={handleJobTitleSelect}
             required
-          />
+          >
+            <option value="">Select a job title</option>
+            {jobTitleOptions.map((option) => (
+              <option key={option.job_title_id} value={option.job_title_id}>
+                {option.job_title}
+              </option>
+            ))}
+          </select>
         </div>
 
-        {/* Job Description */}
+        {/* Job Description - Displayed automatically when a job title is selected */}
         <div className="form-group">
           <label className="form-label" htmlFor="job_description">
             Job Description
@@ -136,10 +169,11 @@ export default function CreateAJob() {
             value={formData.job_description}
             onChange={handleChange}
             required
+            readOnly /* Optional: remove readOnly if you want users to edit it */
           ></textarea>
         </div>
 
-        {/* Required Skills */}
+        {/* The rest of your fields remain unchanged */}
         <div className="form-group">
           <label className="form-label" htmlFor="required_skills">
             Required Skills (comma-separated)
@@ -154,7 +188,6 @@ export default function CreateAJob() {
           />
         </div>
 
-        {/* Experience Level (Updated to Select Dropdown) */}
         <div className="form-group">
           <label className="form-label" htmlFor="experience_level">
             Experience Level
@@ -174,7 +207,6 @@ export default function CreateAJob() {
           </select>
         </div>
 
-        {/* Employment Type */}
         <div className="form-group">
           <label className="form-label" htmlFor="employment_type">
             Employment Type
@@ -194,7 +226,6 @@ export default function CreateAJob() {
           </select>
         </div>
 
-        {/* Salary Range */}
         <div className="form-group">
           <label className="form-label">Salary Range</label>
           <div className="salary-range-inputs">
@@ -219,7 +250,6 @@ export default function CreateAJob() {
           </div>
         </div>
 
-        {/* Work Mode */}
         <div className="form-group">
           <label className="form-label" htmlFor="work_mode">
             Work Mode
@@ -237,7 +267,6 @@ export default function CreateAJob() {
           </select>
         </div>
 
-        {/* Country Dropdown */}
         <div className="form-group">
           <label className="form-label" htmlFor="country">
             Country
@@ -259,7 +288,6 @@ export default function CreateAJob() {
           </select>
         </div>
 
-        {/* City Dropdown */}
         <div className="form-group">
           <label className="form-label" htmlFor="city">
             City
