@@ -1,35 +1,25 @@
 import React, { useState } from "react";
+import MessageTalentModal from "../ReviewCandidates/MessageTalentModal";
 
 export default function TalentDetailModal({ applicant, onClose }) {
-  const [loading, setLoading] = useState(false);
-
-  const handleShortlist = async () => {
-    if (!window.confirm("Are you sure you want to shortlist this candidate?")) return;
-    setLoading(true);
-    try {
-      const response = await fetch("http://localhost:5000/shortlisted-candidates/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          recruiter_id: applicant.recruiter_id,
-          talent_id: applicant.talent_id,
-          job_id: applicant.job_id,
-        }),
-      });
-      const data = await response.json();
-      if (response.ok) {
-        alert("Candidate shortlisted successfully!");
-        onClose();
-      } else {
-        alert("Error: " + data.error);
-      }
-    } catch (error) {
-      alert("Error: " + error.message);
-    } finally {
-      setLoading(false);
-    }
+  const [showMessageModal, setShowMessageModal] = useState(false);
+  
+  const handleOpenMessage = () => {
+    setShowMessageModal(true);
   };
-
+  
+  const closeMessageModal = () => {
+    setShowMessageModal(false);
+  };
+  
+  const handleMailto = () => {
+    const subject = encodeURIComponent("Job Opportunity");
+    const body = encodeURIComponent(
+      `Hi ${applicant.full_name},\n\nI would like to discuss an opportunity with you.\n\nRegards,\nYour Recruiter`
+    );
+    window.location.href = `mailto:${applicant.email}?subject=${subject}&body=${body}`;
+  };
+  
   return (
     <div
       className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
@@ -49,36 +39,35 @@ export default function TalentDetailModal({ applicant, onClose }) {
         </div>
         <h3 className="text-xl font-semibold mb-4">Talent Details</h3>
         <div className="space-y-2 mb-4">
-          <p>
-            <span className="font-semibold">Application ID:</span>{" "}
-            {applicant.application_id}
-          </p>
-          <p>
-            <span className="font-semibold">Talent ID:</span> {applicant.talent_id}
-          </p>
-          <p>
-            <span className="font-semibold">User ID:</span> {applicant.user_id}
-          </p>
-          <p>
-            <span className="font-semibold">Email:</span> {applicant.email}
-          </p>
-          {/* Additional fields (e.g., resume link, bio) can be added here */}
+          <p><span className="font-semibold">Application ID:</span> {applicant.application_id}</p>
+          <p><span className="font-semibold">Talent ID:</span> {applicant.talent_id}</p>
+          <p><span className="font-semibold">User ID:</span> {applicant.user_id}</p>
+          <p><span className="font-semibold">Full Name:</span> {applicant.full_name}</p>
+          <p><span className="font-semibold">Email:</span> {applicant.email}</p>
         </div>
         <div className="flex justify-end space-x-2">
           <button
-            onClick={handleShortlist}
-            disabled={loading}
+            onClick={handleOpenMessage}
+            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+          >
+            Message In-App
+          </button>
+          <button
+            onClick={handleMailto}
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
           >
-            {loading ? "Shortlisting..." : "Shortlist Candidate"}
+            Send Email
           </button>
           <button
             onClick={onClose}
             className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
           >
-            Cancel
+            Close
           </button>
         </div>
+        {showMessageModal && (
+          <MessageTalentModal applicant={applicant} onClose={closeMessageModal} />
+        )}
       </div>
     </div>
   );
