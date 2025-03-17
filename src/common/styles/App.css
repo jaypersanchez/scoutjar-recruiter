@@ -372,6 +372,7 @@
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  table-layout: fixed;
 }
 
 .results-table th,
@@ -379,6 +380,7 @@
   padding: 10px;
   border: 1px solid #ccc;
   text-align: left;
+  word-wrap: break-word;
 }
 
 .results-table th {
