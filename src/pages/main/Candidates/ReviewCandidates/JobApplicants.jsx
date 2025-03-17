@@ -44,7 +44,7 @@ export default function JobApplicants() {
     fetchApplicants();
   }, []);
 
-  // Client-side filtering based on email, talent_id, job_id and job_title
+  // Client-side filtering based on email, talent_id, and job_id
   const handleFilter = ({ email, talent_id, job_id, job_title }) => {
     setCurrentPage(1); // Reset to first page on filter change
     let filtered = allApplicants;
@@ -117,6 +117,7 @@ export default function JobApplicants() {
             <th>Application ID</th>
             <th>Talent ID</th>
             <th>User ID</th>
+            <th>Email</th>
             <th>Job ID</th>
             <th>Job Title</th>
             <th>Recruiter ID</th>
@@ -130,6 +131,7 @@ export default function JobApplicants() {
               <td>{applicant.application_id}</td>
               <td>{applicant.talent_id}</td>
               <td>{applicant.user_id}</td>
+              <td>{applicant.email}</td>
               <td>{applicant.job_id}</td>
               <td>{applicant.job_title}</td>
               <td>{applicant.recruiter_id}</td>
