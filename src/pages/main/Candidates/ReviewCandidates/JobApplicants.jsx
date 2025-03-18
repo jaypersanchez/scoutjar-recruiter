@@ -49,7 +49,7 @@ export default function JobApplicants() {
 
   // Client-side filtering based on email, talent_id, and job_id
   const handleFilter = ({ email, talent_id, job_id, job_title }) => {
-    setCurrentPage(1); // Reset to first page on filter change
+    setCurrentPage(1);
     let filtered = allApplicants;
 
     if (email) {
@@ -59,19 +59,16 @@ export default function JobApplicants() {
           applicant.email.toLowerCase().includes(email.toLowerCase())
       );
     }
-
     if (talent_id) {
       filtered = filtered.filter((applicant) =>
         String(applicant.talent_id).includes(talent_id)
       );
     }
-
     if (job_id) {
       filtered = filtered.filter((applicant) =>
         String(applicant.job_id).includes(job_id)
       );
     }
-
     if (job_title) {
       filtered = filtered.filter(
         (applicant) =>
@@ -79,7 +76,6 @@ export default function JobApplicants() {
           applicant.job_title.toLowerCase().includes(job_title.toLowerCase())
       );
     }
-
     setFilteredApplicants(filtered);
   };
 
@@ -97,9 +93,10 @@ export default function JobApplicants() {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
 
-  // Handler for right-click to open modal with applicant details
+  // Right-click handler to open the modal with applicant details
   const handleContextMenu = (e, applicant) => {
     e.preventDefault();
+    console.log("Right click on applicant:", applicant);
     setSelectedApplicant(applicant);
     setShowModal(true);
   };
@@ -116,7 +113,6 @@ export default function JobApplicants() {
       </div>
     );
   }
-
   if (error) {
     return <div>Error: {error}</div>;
   }
@@ -143,8 +139,19 @@ export default function JobApplicants() {
         <tbody>
           {currentApplicants.map((applicant) => (
             <tr
-              key={applicant.application_id}
-              onContextMenu={(e) => handleContextMenu(e, applicant)}
+            key={applicant.application_id}
+            onContextMenu={(e) => {
+              e.preventDefault();
+              console.log("Right click on applicant:", applicant);
+              setSelectedApplicant(applicant);
+              setShowModal(true);
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              console.log("Left click on applicant:", applicant);
+              setSelectedApplicant(applicant);
+              setShowModal(true);
+            }}
             >
               <td>{applicant.application_id}</td>
               <td>{applicant.talent_id}</td>
@@ -181,7 +188,11 @@ export default function JobApplicants() {
       </div>
 
       {showModal && selectedApplicant && (
-        <TalentDetailModal applicant={selectedApplicant} onClose={closeModal} />
+        <TalentDetailModal
+          applicant={selectedApplicant}
+          onClose={closeModal}
+          showShortlist={true}
+        />
       )}
     </div>
   );

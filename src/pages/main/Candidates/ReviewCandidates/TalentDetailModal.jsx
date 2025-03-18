@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import MessageTalentModal from "../ReviewCandidates/MessageTalentModal";
 
-export default function TalentDetailModal({ applicant, onClose }) {
+export default function TalentDetailModal({ applicant, onClose, showShortlist = false }) {
   const [showMessageModal, setShowMessageModal] = useState(false);
   const [shortlistStatus, setShortlistStatus] = useState(null);
   const [isShortlisting, setIsShortlisting] = useState(false);
+
+
 
   // Handler to shortlist candidate via API
   const handleShortlist = async () => {
@@ -23,7 +25,7 @@ export default function TalentDetailModal({ applicant, onClose }) {
       const payload = {
         recruiter_id: recruiterId,
         talent_id: applicant.talent_id,
-        job_id: applicant.job_id, // ensure job_id is included in applicant
+        job_id: applicant.job_id, // make sure applicant includes job_id
       };
       const response = await fetch("http://localhost:5000/shortlisted-candidates/add", {
         method: "POST",
@@ -34,10 +36,11 @@ export default function TalentDetailModal({ applicant, onClose }) {
         const errorData = await response.json();
         setShortlistStatus(`Error: ${errorData.error}`);
       } else {
-        const data = await response.json();
+        // No need to store the data if it's not used
+        await response.json();
         setShortlistStatus("Candidate shortlisted successfully!");
       }
-    } catch (error) {
+    } catch {
       setShortlistStatus("Error shortlisting candidate.");
     } finally {
       setIsShortlisting(false);
@@ -115,13 +118,15 @@ export default function TalentDetailModal({ applicant, onClose }) {
               Send Email
             </button>
           </div>
-          <button
-            onClick={handleShortlist}
-            className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
-            disabled={isShortlisting}
-          >
-            {isShortlisting ? "Shortlisting..." : "Shortlist Candidate"}
-          </button>
+          {showShortlist && (
+            <button
+              onClick={handleShortlist}
+              className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
+              disabled={isShortlisting}
+            >
+              {isShortlisting ? "Shortlisting..." : "Shortlist Candidate"}
+            </button>
+          )}
           <button
             onClick={onClose}
             className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
