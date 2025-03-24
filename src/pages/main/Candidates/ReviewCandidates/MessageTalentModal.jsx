@@ -12,14 +12,15 @@ export default function MessageTalentModal({ applicant, onClose }) {
       // Retrieve the recruiter (scout) user info from sessionStorage
       const storedUser = sessionStorage.getItem("sso-login");
       const user = storedUser ? JSON.parse(storedUser) : null;
-      const sender_id = user ? user.user_id : null;
+      const sender_id = user ? user.recruiter_id : null;
 
       const response = await fetch("http://localhost:5000/messages/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           sender_id, 
-          recipient_id: applicant.user_id, // talent's user id
+          // Use applicant.talent_id as the recipient id
+          recipient_id: applicant.talent_id, 
           content: message,
         }),
       });
@@ -30,6 +31,7 @@ export default function MessageTalentModal({ applicant, onClose }) {
       } else {
         setErrorMessage("Error sending message: " + data.error);
       }
+      
     } catch (error) {
       setErrorMessage("Error sending message: " + error.message);
     } finally {

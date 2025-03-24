@@ -94,12 +94,12 @@ export default function JobApplicants() {
   };
 
   // Right-click handler to open the modal with applicant details
-  const handleContextMenu = (e, applicant) => {
+  /*const handleContextMenu = (e, applicant) => {
     e.preventDefault();
     console.log("Right click on applicant:", applicant);
     setSelectedApplicant(applicant);
     setShowModal(true);
-  };
+  };*/
 
   const closeModal = () => {
     setShowModal(false);
