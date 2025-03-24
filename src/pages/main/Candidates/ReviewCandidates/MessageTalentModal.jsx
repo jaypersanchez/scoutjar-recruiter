@@ -1,37 +1,66 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export default function MessageTalentModal({ applicant, onClose }) {
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  
+  const [history, setHistory] = useState([]);
+  const [loadingHistory, setLoadingHistory] = useState(false);
+  const [historyError, setHistoryError] = useState("");
+
+  // Retrieve the recruiter (scout) user info from sessionStorage
+  const storedUser = sessionStorage.getItem("sso-login");
+  const user = storedUser ? JSON.parse(storedUser) : null;
+  const recruiterId = user ? user.recruiter_id : null;
+
+  // Fetch message history when the modal loads
+  useEffect(() => {
+    const fetchHistory = async () => {
+      setLoadingHistory(true);
+      setHistoryError("");
+      try {
+        const response = await fetch(
+          `http://localhost:5000/messages/history?sender_id=${recruiterId}&recipient_id=${applicant.talent_id}`
+        );
+        const data = await response.json();
+        if (response.ok) {
+          setHistory(data);
+        } else {
+          setHistoryError("Error loading history: " + data.error);
+        }
+      } catch (error) {
+        setHistoryError("Error loading history: " + error.message);
+      } finally {
+        setLoadingHistory(false);
+      }
+    };
+
+    fetchHistory();
+  }, [applicant.talent_id, recruiterId]);
 
   const handleSendMessage = async () => {
     setSending(true);
     setErrorMessage("");
     try {
-      // Retrieve the recruiter (scout) user info from sessionStorage
-      const storedUser = sessionStorage.getItem("sso-login");
-      const user = storedUser ? JSON.parse(storedUser) : null;
-      const sender_id = user ? user.recruiter_id : null;
-
       const response = await fetch("http://localhost:5000/messages/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          sender_id, 
-          // Use applicant.talent_id as the recipient id
-          recipient_id: applicant.talent_id, 
+          sender_id: recruiterId,
+          recipient_id: applicant.talent_id,
           content: message,
         }),
       });
       const data = await response.json();
       if (response.ok) {
         alert("Message sent successfully!");
-        onClose();
+        // Update the history with the new message (assuming API returns the message object)
+        setHistory(prevHistory => [...prevHistory, data]);
+        setMessage("");
       } else {
         setErrorMessage("Error sending message: " + data.error);
       }
-      
     } catch (error) {
       setErrorMessage("Error sending message: " + error.message);
     } finally {
@@ -59,6 +88,30 @@ export default function MessageTalentModal({ applicant, onClose }) {
         <h3 className="text-xl font-semibold mb-4">
           Message to {applicant.full_name}
         </h3>
+        
+        {/* Message history */}
+        <div className="mb-4 max-h-64 overflow-y-auto border p-2">
+          {loadingHistory ? (
+            <p>Loading messages...</p>
+          ) : historyError ? (
+            <p className="text-red-500">{historyError}</p>
+          ) : history.length > 0 ? (
+            history.map((msg) => (
+              <div key={msg.message_id} className="mb-2">
+                <strong>
+                  {msg.sender_id === recruiterId ? "You" : applicant.full_name}:
+                </strong>{" "}
+                <span>{msg.content}</span>
+                <div className="text-xs text-gray-500">
+                  {new Date(msg.sent_at).toLocaleString()}
+                </div>
+              </div>
+            ))
+          ) : (
+            <p>No messages yet.</p>
+          )}
+        </div>
+        
         {errorMessage && (
           <p className="text-red-500 mb-4">{errorMessage}</p>
         )}
