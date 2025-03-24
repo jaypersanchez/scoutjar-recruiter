@@ -4,7 +4,7 @@ export default function MessageTalentModal({ applicant, onClose }) {
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  
+
   const [history, setHistory] = useState([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [historyError, setHistoryError] = useState("");
@@ -14,28 +14,29 @@ export default function MessageTalentModal({ applicant, onClose }) {
   const user = storedUser ? JSON.parse(storedUser) : null;
   const recruiterId = user ? user.recruiter_id : null;
 
+  // Define fetchHistory so that it can be reused
+  const fetchHistory = async () => {
+    setLoadingHistory(true);
+    setHistoryError("");
+    try {
+      const response = await fetch(
+        `http://localhost:5000/messages/history?sender_id=${recruiterId}&recipient_id=${applicant.talent_id}`
+      );
+      const data = await response.json();
+      if (response.ok) {
+        setHistory(data);
+      } else {
+        setHistoryError("Error loading history: " + data.error);
+      }
+    } catch (error) {
+      setHistoryError("Error loading history: " + error.message);
+    } finally {
+      setLoadingHistory(false);
+    }
+  };
+
   // Fetch message history when the modal loads
   useEffect(() => {
-    const fetchHistory = async () => {
-      setLoadingHistory(true);
-      setHistoryError("");
-      try {
-        const response = await fetch(
-          `http://localhost:5000/messages/history?sender_id=${recruiterId}&recipient_id=${applicant.talent_id}`
-        );
-        const data = await response.json();
-        if (response.ok) {
-          setHistory(data);
-        } else {
-          setHistoryError("Error loading history: " + data.error);
-        }
-      } catch (error) {
-        setHistoryError("Error loading history: " + error.message);
-      } finally {
-        setLoadingHistory(false);
-      }
-    };
-
     fetchHistory();
   }, [applicant.talent_id, recruiterId]);
 
@@ -55,9 +56,11 @@ export default function MessageTalentModal({ applicant, onClose }) {
       const data = await response.json();
       if (response.ok) {
         alert("Message sent successfully!");
-        // Update the history with the new message (assuming API returns the message object)
-        setHistory(prevHistory => [...prevHistory, data]);
         setMessage("");
+        // Wait 3 seconds before refreshing the conversation history
+        setTimeout(() => {
+          fetchHistory();
+        }, 3000);
       } else {
         setErrorMessage("Error sending message: " + data.error);
       }
@@ -89,7 +92,7 @@ export default function MessageTalentModal({ applicant, onClose }) {
           Message to {applicant.full_name}
         </h3>
         
-        {/* Message history */}
+        {/* Message History */}
         <div className="mb-4 max-h-64 overflow-y-auto border p-2">
           {loadingHistory ? (
             <p>Loading messages...</p>
