@@ -109,7 +109,7 @@ export default function TalentDetailModal({ applicant, onClose, showShortlist = 
               onClick={handleOpenMessage}
               className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
             >
-              Message In-App
+              Approach
             </button>
             <button
               onClick={handleMailto}
