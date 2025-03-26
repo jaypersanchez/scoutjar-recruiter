@@ -49,10 +49,36 @@ export default function ShortlistedCandidates() {
     setSelectedJob(e.target.value);
   };
 
-  const handleCandidateClick = (candidate) => {
+  /*const handleCandidateClick = (candidate) => {
     setSelectedCandidate(candidate);
     setShowModal(true);
+  };*/
+
+  const handleCandidateClick = async (candidate) => {
+    try {
+      const response = await fetch(`http://localhost:5000/talent-profiles/${candidate.talent_id}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch full profile");
+      }
+  
+      const fullProfile = await response.json();
+  
+      // Merge shortlist data with full profile
+      const merged = {
+        ...fullProfile,
+        shortlist_id: candidate.shortlist_id,
+        job_id: selectedJob, // include job ID from selection
+        added_at: candidate.added_at,
+      };
+  
+      setSelectedCandidate(merged);
+      setShowModal(true);
+    } catch (err) {
+      console.error("Error loading talent profile:", err);
+      alert("Could not load full profile for this candidate.");
+    }
   };
+ 
 
   const closeModal = () => {
     setShowModal(false);
