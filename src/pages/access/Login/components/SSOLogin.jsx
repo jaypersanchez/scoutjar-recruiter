@@ -7,9 +7,13 @@ import {
   FaGithub,
   FaApple,
 } from "react-icons/fa";
-import { signInWithPopup } from "firebase/auth";
-import { auth, googleProvider, githubProvider, twitterProvider } from "../../../../firebase/firebaseConfig";
-
+import { signInWithPopup, fetchSignInMethodsForEmail } from "firebase/auth";
+import {
+  auth,
+  googleProvider,
+  githubProvider,
+  twitterProvider,
+} from "../../../../firebase/firebaseConfig";
 
 const SSOProviders = [
   { id: 0, slug: "github", icon: FaGithub },
@@ -17,7 +21,7 @@ const SSOProviders = [
   { id: 2, slug: "linkedin", icon: FaLinkedin },
   { id: 3, slug: "twitter", icon: FaTwitter },
   { id: 4, slug: "instagram", icon: FaInstagram },
-  { id: 5, slug: "apple", icon: FaApple },
+  /*{ id: 5, slug: "apple", icon: FaApple },*/
 ];
 
 // Helper function to create or fetch user profile via API call
@@ -26,7 +30,7 @@ const createUserProfile = async (user) => {
     email: user.email,
     full_name: user.displayName,
     profile_picture: user.photoURL,
-    user_type: "Scout"
+    user_type: "Scout",
   };
 
   const response = await fetch("http://localhost:5000/user_profiles", {
@@ -34,16 +38,15 @@ const createUserProfile = async (user) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  
+
   if (!response.ok) {
     throw new Error("Error inserting/fetching user profile");
   }
-  
+
   return response.json();
 };
 
 export default function SSOLogin({ onSignIn }) {
-
   const createSSOData = (user) => {
     const ssoData = {
       email: user.email,
@@ -51,74 +54,129 @@ export default function SSOLogin({ onSignIn }) {
       photoURL: user.photoURL,
     };
 
-    //sessionStorage.setItem("sso-login", JSON.stringify(ssoData));
     console.log(ssoData);
-  }
+  };
 
-  // Generic function to handle sign in with a given provider
   const handleSSOLogin = (slug) => {
+    console.log("SSO Login triggered for:", slug);
+
     if (slug === "google") {
       signInWithPopup(auth, googleProvider)
         .then(async (result) => {
-          /*console.log("User signed in with Google:", 
-                  result.user.email, result.user.displayName,
-                  result.user.photoURL);
-                  sessionStorage.setItem("sso-login", JSON.stringify(result.user));*/
-          //createSSOData(result.user)
-          // Now call the API to create/fetch user profile
           try {
-  const profile = await createUserProfile(result.user);
-  console.log("User profile from backend:", profile);
-  
-  // Build the combined object that includes user_id and recruiter_id among other info
-  const combinedData = {
-    // Data from user_profiles
-    user_id: profile.user.user_id,
-    email: profile.user.email,
-    full_name: profile.user.full_name,
-    profile_picture: profile.user.profile_picture,
-    // Data from talent_recruiters (may be null if not found)
-    recruiter_id: profile.recruiter?.recruiter_id,
-    company_name: profile.recruiter?.company_name,
-    company_website: profile.recruiter?.company_website,
-    industry: profile.recruiter?.industry,
-    company_logo: profile.recruiter?.company_logo,
-    created_at: profile.recruiter?.created_at,
-  };
-
-  console.log("Combined SSO + Recruiter Data:", combinedData);
-  sessionStorage.setItem("sso-login", JSON.stringify(combinedData));
-  onSignIn(combinedData);
-} catch (apiError) {
-  sessionStorage.removeItem("sso-login");
-  console.error(apiError);
-  alert("There was an error processing your profile.");
-}
-          
+            const profile = await createUserProfile(result.user);
+            const combinedData = {
+              user_id: profile.user.user_id,
+              email: profile.user.email,
+              full_name: profile.user.full_name,
+              profile_picture: profile.user.profile_picture,
+              recruiter_id: profile.recruiter?.recruiter_id,
+              company_name: profile.recruiter?.company_name,
+              company_website: profile.recruiter?.company_website,
+              industry: profile.recruiter?.industry,
+              company_logo: profile.recruiter?.company_logo,
+              created_at: profile.recruiter?.created_at,
+            };
+            sessionStorage.setItem("sso-login", JSON.stringify(combinedData));
+            onSignIn(combinedData);
+          } catch (apiError) {
+            sessionStorage.removeItem("sso-login");
+            console.error(apiError);
+            alert("There was an error processing your profile.");
+          }
         })
         .catch((error) => {
-          sessionStorage.removeItem("sso-login") //in case an error occurs
+          sessionStorage.removeItem("sso-login");
           console.error("Error signing in with Google:", error);
           alert("Google sign-in failed: " + error.message);
-        }); 
+        });
     } else if (slug === "github") {
+      console.log("Attempting GitHub sign-in...");
       signInWithPopup(auth, githubProvider)
-        .then((result) => {
-          console.log("User signed in with GitHub:", result.user);
-          //sessionStorage.setItem("sso-login", result.user);
-          createSSOData(result.user)
-          onSignIn(result.user);
+        .then(async (result) => {
+          console.log("GitHub sign-in success:", result.user);
+          try {
+            const profile = await createUserProfile(result.user);
+            const combinedData = {
+              user_id: profile.user.user_id,
+              email: profile.user.email,
+              full_name: profile.user.full_name,
+              profile_picture: profile.user.profile_picture,
+              recruiter_id: profile.recruiter?.recruiter_id,
+              company_name: profile.recruiter?.company_name,
+              company_website: profile.recruiter?.company_website,
+              industry: profile.recruiter?.industry,
+              company_logo: profile.recruiter?.company_logo,
+              created_at: profile.recruiter?.created_at,
+            };
+            sessionStorage.setItem("sso-login", JSON.stringify(combinedData));
+            onSignIn(combinedData);
+          } catch (apiError) {
+            sessionStorage.removeItem("sso-login");
+            console.error(apiError);
+            alert("There was an error processing your profile.");
+          }
         })
-        .catch((error) => {
-          console.error("Error signing in with GitHub:", error);
-          alert("GitHub sign-in failed: " + error.message);
+        .catch(async (error) => {
+          console.error("GitHub sign-in error:", error);
+          if (error.code === "auth/account-exists-with-different-credential") {
+            const email = error.customData.email;
+            const pendingCred = error.credential;
+
+            const methods = await fetchSignInMethodsForEmail(auth, email);
+
+            if (methods.includes("google.com")) {
+              alert("This email is already linked to a Google account. Please sign in with Google to link your GitHub account.");
+
+              signInWithPopup(auth, googleProvider)
+                .then((googleResult) => {
+                  googleResult.user
+                    .linkWithCredential(pendingCred)
+                    .then(async (linkResult) => {
+                      console.log("GitHub linked to Google:", linkResult.user);
+                      try {
+                        const profile = await createUserProfile(linkResult.user);
+                        const combinedData = {
+                          user_id: profile.user.user_id,
+                          email: profile.user.email,
+                          full_name: profile.user.full_name,
+                          profile_picture: profile.user.profile_picture,
+                          recruiter_id: profile.recruiter?.recruiter_id,
+                          company_name: profile.recruiter?.company_name,
+                          company_website: profile.recruiter?.company_website,
+                          industry: profile.recruiter?.industry,
+                          company_logo: profile.recruiter?.company_logo,
+                          created_at: profile.recruiter?.created_at,
+                        };
+                        sessionStorage.setItem("sso-login", JSON.stringify(combinedData));
+                        onSignIn(combinedData);
+                      } catch (apiError) {
+                        sessionStorage.removeItem("sso-login");
+                        console.error(apiError);
+                        alert("There was an error processing your profile.");
+                      }
+                    })
+                    .catch((linkError) => {
+                      console.error("Error linking GitHub:", linkError);
+                      alert("Linking failed: " + linkError.message);
+                    });
+                })
+                .catch((googleError) => {
+                  console.error("Google sign-in during linking failed:", googleError);
+                  alert("Google sign-in failed: " + googleError.message);
+                });
+            } else {
+              alert("This email is already associated with another sign-in method. Please use that method to log in.");
+            }
+          } else {
+            alert("GitHub sign-in failed: " + error.message);
+          }
         });
     } else if (slug === "twitter") {
       signInWithPopup(auth, twitterProvider)
         .then((result) => {
           console.log("User signed in with Twitter:", result.user);
-          //sessionStorage.setItem("sso-login", result.user);
-          createSSOData(result.user)
+          createSSOData(result.user);
           onSignIn(result.user);
         })
         .catch((error) => {
@@ -126,7 +184,6 @@ export default function SSOLogin({ onSignIn }) {
           alert("Twitter sign-in failed: " + error.message);
         });
     } else if (slug === "linkedin") {
-      //sessionStorage.setItem("sso-login", result.user);
       alert("LinkedIn sign-in is not supported by Firebase Authentication by default. You'll need a custom OAuth flow or a third-party solution.");
     } else if (slug === "instagram") {
       alert("Instagram sign-in is not implemented yet.");
