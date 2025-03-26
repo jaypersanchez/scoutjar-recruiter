@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import TalentDetailModal from "../Candidates/ReviewCandidates/TalentDetailModal";
 
 function TalentResults({ results }) {
   const [currentPage, setCurrentPage] = useState(0);
@@ -6,37 +7,42 @@ function TalentResults({ results }) {
   const [workModeFilter, setWorkModeFilter] = useState("");
   const [filteredResults, setFilteredResults] = useState(results);
 
-  const [jobs, setJobs] = useState([]);               // 🆕 List of jobs from backend
-  const [selectedJobId, setSelectedJobId] = useState(""); // 🆕 Selected job ID
-  const [matchThreshold, setMatchThreshold] = useState(80); // 🆕 Default 80%
-  const [matchResults, setMatchResults] = useState(null); // 🆕 Result after match
+  const [jobs, setJobs] = useState([]);
+  const [selectedJobId, setSelectedJobId] = useState("");
+  const [matchThreshold, setMatchThreshold] = useState(80);
+  const [matchResults, setMatchResults] = useState(null);
+
+  const [selectedTalent, setSelectedTalent] = useState(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
 
   const rowsPerPage = 15;
 
-  // 🆕 Load jobs list for dropdown
   useEffect(() => {
     fetch("http://localhost:5000/jobs")
-      .then(res => res.json())
+      .then((res) => res.json())
       .then(setJobs)
-      .catch(err => console.error("Failed to load jobs:", err));
+      .catch((err) => console.error("Failed to load jobs:", err));
   }, []);
 
-  // 🔁 Apply drill-down filters client-side
   useEffect(() => {
     let filtered = results;
 
     if (availabilityFilter) {
-      filtered = filtered.filter((profile) =>
-        profile.availability &&
-        profile.availability.toLowerCase() === availabilityFilter.toLowerCase()
+      filtered = filtered.filter(
+        (profile) =>
+          profile.availability &&
+          profile.availability.toLowerCase() ===
+            availabilityFilter.toLowerCase()
       );
     }
 
     if (workModeFilter) {
-      filtered = filtered.filter((profile) =>
-        profile.work_preferences &&
-        profile.work_preferences.work_mode &&
-        profile.work_preferences.work_mode.toLowerCase() === workModeFilter.toLowerCase()
+      filtered = filtered.filter(
+        (profile) =>
+          profile.work_preferences &&
+          profile.work_preferences.work_mode &&
+          profile.work_preferences.work_mode.toLowerCase() ===
+            workModeFilter.toLowerCase()
       );
     }
 
@@ -46,16 +52,19 @@ function TalentResults({ results }) {
 
   const totalPages = Math.ceil(filteredResults.length / rowsPerPage);
   const startIndex = currentPage * rowsPerPage;
-  const currentResults = (matchResults || filteredResults).slice(startIndex, startIndex + rowsPerPage);
+  const currentResults = (matchResults || filteredResults).slice(
+    startIndex,
+    startIndex + rowsPerPage
+  );
 
   const handlePrevious = () => {
     setCurrentPage((prev) => Math.max(prev - 1, 0));
   };
-  
+
   const handleNext = () => {
     setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1));
   };
-  
+
   const handleMatch = async () => {
     if (!selectedJobId) {
       alert("Please select a job first.");
@@ -63,14 +72,17 @@ function TalentResults({ results }) {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/talent-profiles/match", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          job_id: selectedJobId,
-          match_percentage: matchThreshold,
-        }),
-      });
+      const response = await fetch(
+        "http://localhost:5000/talent-profiles/match",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            job_id: selectedJobId,
+            match_percentage: matchThreshold,
+          }),
+        }
+      );
 
       const data = await response.json();
       setMatchResults(data);
@@ -81,15 +93,27 @@ function TalentResults({ results }) {
     }
   };
 
+  const handleRowClick = (profile) => {
+    setSelectedTalent(profile);
+    setShowDetailModal(true);
+  };
+
+  const handleCloseDetailModal = () => {
+    setSelectedTalent(null);
+    setShowDetailModal(false);
+  };
+
   return (
     <div className="talent-results">
       <h3>Search Results</h3>
 
-      {/* 🔽 Drill-down Filter Controls */}
       <div className="drilldown-filters" style={{ marginBottom: "10px" }}>
         <label>
           Availability:
-          <select value={availabilityFilter} onChange={(e) => setAvailabilityFilter(e.target.value)}>
+          <select
+            value={availabilityFilter}
+            onChange={(e) => setAvailabilityFilter(e.target.value)}
+          >
             <option value="">All</option>
             <option value="Immediate">Immediate</option>
             <option value="Two Weeks Notice">Two Weeks Notice</option>
@@ -101,7 +125,10 @@ function TalentResults({ results }) {
 
         <label style={{ marginLeft: "20px" }}>
           Work Mode:
-          <select value={workModeFilter} onChange={(e) => setWorkModeFilter(e.target.value)}>
+          <select
+            value={workModeFilter}
+            onChange={(e) => setWorkModeFilter(e.target.value)}
+          >
             <option value="">All</option>
             <option value="Remote">Remote</option>
             <option value="Hybrid">Hybrid</option>
@@ -110,7 +137,6 @@ function TalentResults({ results }) {
         </label>
       </div>
 
-      {/* 🎯 Advanced Matching */}
       <div className="advanced-match" style={{ marginBottom: "15px" }}>
         <label>
           Match Against Job:
@@ -145,7 +171,6 @@ function TalentResults({ results }) {
         </button>
       </div>
 
-      {/* 📄 Results Table */}
       <table className="results-table">
         <thead>
           <tr>
@@ -161,7 +186,11 @@ function TalentResults({ results }) {
         </thead>
         <tbody>
           {currentResults.map((profile) => (
-            <tr key={profile.talent_id}>
+            <tr
+              key={profile.talent_id}
+              onClick={() => handleRowClick(profile)}
+              style={{ cursor: "pointer" }}
+            >
               <td>{profile.talent_id}</td>
               <td>{profile.full_name}</td>
               <td>{profile.email}</td>
@@ -175,18 +204,27 @@ function TalentResults({ results }) {
         </tbody>
       </table>
 
-      {/* 🔄 Pagination */}
-      <div className="pagination" style={{ marginTop: "10px", textAlign: "center" }}>
+      <div
+        className="pagination"
+        style={{ marginTop: "10px", textAlign: "center" }}
+      >
         <button onClick={handlePrevious} disabled={currentPage === 0}>
           Previous
         </button>
         <span style={{ margin: "0 10px" }}>
           Page {currentPage + 1} of {totalPages}
         </span>
-        <button onClick={handleNext} disabled={currentPage === totalPages - 1}>
+        <button
+          onClick={handleNext}
+          disabled={currentPage === totalPages - 1}
+        >
           Next
         </button>
       </div>
+
+      {showDetailModal && selectedTalent && (
+        <TalentDetailModal applicant={selectedTalent} onClose={handleCloseDetailModal} />
+      )}
     </div>
   );
 }

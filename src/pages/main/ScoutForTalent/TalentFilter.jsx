@@ -53,24 +53,26 @@ function TalentFilter() {
       <form>
         {/* Row 1: Basic Filters */}
         <div className="filter-row">
-          <div className="filter-field">
-            <label>Minimum Salary:</label>
-            <input
-              type="number"
-              value={minSalary}
-              onChange={(e) => setMinSalary(e.target.value)}
-              placeholder="e.g. 50000"
-            />
-          </div>
-          <div className="filter-field">
-            <label>Maximum Salary:</label>
-            <input
-              type="number"
-              value={maxSalary}
-              onChange={(e) => setMaxSalary(e.target.value)}
-              placeholder="e.g. 100000"
-            />
-          </div>
+        <div className="filter-field" style={{ width: "100%" }}>
+  <label>Salary Range: ${minSalary || 0} – ${maxSalary || 200000}</label>
+  <input
+    type="range"
+    min="0"
+    max="200000"
+    step="1000"
+    value={minSalary || 0}
+    onChange={(e) => setMinSalary(e.target.value)}
+  />
+  <input
+    type="range"
+    min="0"
+    max="200000"
+    step="1000"
+    value={maxSalary || 200000}
+    onChange={(e) => setMaxSalary(e.target.value)}
+  />
+</div>
+
           <div className="filter-field">
             <label>Required Skill:</label>
             <input
