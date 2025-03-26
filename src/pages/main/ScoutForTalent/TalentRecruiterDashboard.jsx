@@ -14,8 +14,8 @@ function TalentRecruiterDashboard() {
 
   return (
     <div className="talent-recruiter-dashboard">
-      <TalentFilter onResults={handleResults} />
-      <TalentResults results={results} />
+      { /*<TalentFilter onResults={handleResults} /> */ }
+      { /*<TalentResults results={results} />*/}
     </div>
   );
 }

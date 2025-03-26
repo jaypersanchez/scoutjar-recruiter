@@ -16,7 +16,7 @@ export default function ScoutForTalentPage() {
       {/* Render the filter component and pass the callback */}
       <TalentFilter onResults={handleResults} />
       {/* Render the results component below the filter */}
-      <TalentResults results={results} />
+      {/*<TalentResults results={results} />*/}
     </div>
   );
 }
