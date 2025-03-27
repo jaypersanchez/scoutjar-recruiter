@@ -5,7 +5,7 @@ import {
   FaTwitter,
   FaInstagram,
   FaGithub,
-  FaApple,
+  
 } from "react-icons/fa";
 import { signInWithPopup, fetchSignInMethodsForEmail } from "firebase/auth";
 import {

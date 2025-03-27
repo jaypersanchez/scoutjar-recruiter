@@ -1,3 +1,5 @@
+// At the top of the file
+/* eslint-disable no-unused-vars */
 // TalentRecruiterDashboard.js
 import React, { useState } from "react";
 import TalentFilter from "./TalentFilter";

@@ -1,3 +1,5 @@
+// At the top of the file
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import "@/common/styles/App.css";
 

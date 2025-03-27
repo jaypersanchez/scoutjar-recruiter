@@ -61,7 +61,7 @@ export default function ProfileForm() {
     };
 
     try {
-      const res = await fetch("http://localhost:5000/talentProfiles/update", {
+      const res = await fetch("http://localhost:5000/talent-profiles/update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
