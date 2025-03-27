@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Button } from "@/common/components/ui";
 import {
   FaGoogle,
@@ -47,6 +48,19 @@ const createUserProfile = async (user) => {
 };
 
 export default function SSOLogin({ onSignIn }) {
+
+  useEffect(() => {
+    const clearOnReload = () => {
+      if (process.env.NODE_ENV === "development") {
+        sessionStorage.removeItem("sso-login");
+      }
+    };
+  
+    window.addEventListener("beforeunload", clearOnReload);
+    return () => window.removeEventListener("beforeunload", clearOnReload);
+  }, []);
+  
+
   const createSSOData = (user) => {
     const ssoData = {
       email: user.email,

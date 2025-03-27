@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom"; // ← useNavigate here
 import { TextField } from "@/common/components/input-fields";
 import { LuEye, LuEyeClosed } from "react-icons/lu";
@@ -14,6 +14,17 @@ export default function LoginForm({ onSignIn }) {
 
   const navigate = useNavigate(); // ← navigate initialized
 
+  useEffect(() => {
+    const clearOnReload = () => {
+      if (process.env.NODE_ENV === "development") {
+        sessionStorage.removeItem("sso-login");
+      }
+    };
+  
+    window.addEventListener("beforeunload", clearOnReload);
+    return () => window.removeEventListener("beforeunload", clearOnReload);
+  }, []);
+  
   const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
