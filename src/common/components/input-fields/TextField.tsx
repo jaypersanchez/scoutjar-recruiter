@@ -4,17 +4,17 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { FlexCenter, FlexCol } from "@/common/components/flexbox";
 
 const inputVariants = cva(
-  "peer w-full font-medium text-primary py-2.5 border rounded-md border-gray-400 hover:border-gray-500",
+  "peer w-full text-base font-medium text-primary py-2.5 border rounded-md border-gray-400 hover:border-gray-500",
   {
     variants: {
       error: {
         true: "border-red-300 hover:border-red-500 !outline-red-500 focus:text-primary",
       },
       startAdornment: {
-        true: "pl-11",
+        true: "!pl-11",
       },
       endAdornment: {
-        true: "pr-11",
+        true: "!pr-11",
       },
       size: {
         sm: "py-1.5 h-10 px-2 text-sm",
@@ -29,7 +29,7 @@ const inputVariants = cva(
 );
 
 const labelVariants = cva(
-  "text-sm font-semibold px-1 mb-1 text-primary group-hover:text-gray-500 peer-focus:text-tertiary select-none order-first",
+  "text-sm font-semibold px-1 mb-1 text-gray-400 group-hover:text-gray-500 peer-focus:text-tertiary select-none order-first",
   {
     variants: {
       error: {
@@ -112,11 +112,11 @@ export default function TextField({
               error,
               startAdornment: Boolean(startAdornment),
               endAdornment: Boolean(endAdornment),
+              className: slotClassNames?.input,
             }),
             "placeholder:text-gray-400",
             "focus:outline-tertiary focus:text-primary",
-            "disabled:outline-0 disabled:pointer-events-none disabled:border-gray-400 disabled:hover:border-gray-400 disabled:text-gray-400 disabled:focus:text-gray-400",
-            slotClassNames?.input
+            "disabled:outline-0 disabled:pointer-events-none disabled:border-gray-400 disabled:hover:border-gray-400 disabled:text-gray-400 disabled:focus:text-gray-400"
           )}
         />
 
@@ -127,10 +127,10 @@ export default function TextField({
               labelVariants({
                 error,
                 required,
+                className: slotClassNames?.label,
               }),
               "peer-disabled:pointer-events-none peer-disabled:border-gray-300 peer-disabled:hover:border-gray-300 peer-disabled:text-gray-400 peer-disabled:group-hover:text-gray-400 peer-disabled:peer-focus:text-gray-400",
-              "peer-read-only:pointer-events-none peer-read-only:border-gray-500 peer-read-only:hover:border-gray-500 peer-read-only:text-gray-400 peer-read-only:group-hover:text-gray-500 peer-read-only:peer-focus:text-tertiary",
-              slotClassNames?.label
+              "peer-read-only:pointer-events-none peer-read-only:border-gray-500 peer-read-only:hover:border-gray-500 peer-read-only:text-gray-400 peer-read-only:group-hover:text-gray-500 peer-read-only:peer-focus:text-tertiary"
             )}
           >
             {label}

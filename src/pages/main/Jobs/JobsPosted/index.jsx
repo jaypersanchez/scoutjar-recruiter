@@ -1,8 +1,11 @@
+// At the top of the file
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import "@/common/styles/App.css";
 
 export default function JobsPosted() {
   const [jobs, setJobs] = useState([]);
+  const [applicantCounts, setApplicantCounts] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -14,7 +17,6 @@ export default function JobsPosted() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        // Send recruiter_id in the request body to filter jobs by the logged-in recruiter
         const response = await fetch("http://localhost:5000/jobs/get", {
           method: "POST",
           headers: {
@@ -26,12 +28,33 @@ export default function JobsPosted() {
         if (!response.ok) {
           throw new Error("Failed to fetch jobs");
         }
+
         const data = await response.json();
         setJobs(data);
+        fetchApplicantCounts(data.map(job => job.job_id)); // get applicant count after jobs are loaded
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
+      }
+    };
+
+    const fetchApplicantCounts = async (jobIds) => {
+      try {
+        const response = await fetch(`http://localhost:5000/job-applicants/count/${recruiterId}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch applicant counts");
+        }
+        const data = await response.json();
+
+        const counts = {};
+        data.forEach((row) => {
+          counts[row.job_id] = parseInt(row.applicant_count);
+        });
+
+        setApplicantCounts(counts);
+      } catch (err) {
+        console.error("Error fetching applicant counts:", err);
       }
     };
 
@@ -55,6 +78,8 @@ export default function JobsPosted() {
         <ul className="job-posts-list">
           {jobs.map((job) => (
             <li key={job.job_id} className="job-post-item">
+              <p><strong>Job ID:</strong> {job.job_id}</p>
+
               <h3>{job.job_title}</h3>
               <p>{job.job_description}</p>
               {job.required_skills && job.required_skills.length > 0 && (
@@ -89,9 +114,14 @@ export default function JobsPosted() {
               )}
               {job.date_posted && (
                 <p>
-                  <strong>Date Posted:</strong> {new Date(job.date_posted).toLocaleString()}
+                  <strong>Date Posted:</strong>{" "}
+                  {new Date(job.date_posted).toLocaleString()}
                 </p>
               )}
+              <p>
+                <strong>Applicants:</strong>{" "}
+                {applicantCounts[job.job_id] ?? 0}
+              </p>
             </li>
           ))}
         </ul>

@@ -1,251 +1,177 @@
 import { useState, useEffect } from "react";
 import { cn } from "@/common/lib/utils";
+
 import { WidgetBox } from "@/common/components/layouts";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-  Button,
-} from "@/common/components/ui";
 import { TextField } from "@/common/components/input-fields";
-import { FlexBox, FlexCol } from "@/common/components/flexbox";
 
 import { FaUserCircle } from "react-icons/fa";
-import { IoCamera } from "react-icons/io5";
 
 export default function ProfileForm() {
   const [ssoData, setSsoData] = useState({
-    photo: "/logo.png",
     full_name: "",
     email: "",
-  });
-  const [companyData, setCompanyData] = useState({
-    name: "",
-    website: "",
-    logo: null,
+    recruiter_id: null,
   });
 
-  const handleImageUpload = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    const file = e.target.files[0];
-
-    if (file) {
-      const fileName = file.name;
-      const fileType = file.type;
-      const fileSize = file.size / 1024 / 1024;
-      const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
-
-      if (!allowedTypes.includes(fileType)) {
-        //set error
-        console.error(
-          "File type not allowed. Allowed types: .jpeg, .jpg, .png, .gif"
-        );
-        return;
-      }
-
-      if (fileSize > 2) {
-        //set error
-        console.error("File size exceeds 2MB");
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCompanyData((prev) => ({
-          ...prev,
-          logo: reader.result,
-        }));
-      };
-      reader.readAsDataURL(file);
-
-      // send this file below to the backend
-      console.log({ fileType, fileSize, file, fileName });
-    }
-  };
+  const [company, setCompany] = useState("");
+  const [website, setWebsite] = useState("");
+  const [statusMessage, setStatusMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const data = sessionStorage.getItem("sso-login");
     if (data) {
       try {
         const parsed = JSON.parse(data);
-        setSsoData((prev) => ({
-          ...prev,
+        setSsoData({
           full_name: parsed.full_name || "",
           email: parsed.email || "",
-        }));
+          recruiter_id: parsed.recruiter_id || null,
+        });
+
+        if (parsed.recruiter_id) {
+          fetch(`http://localhost:5000/talent-profiles/by-recruiter/${parsed.recruiter_id}`)
+            .then((res) => {
+              if (!res.ok) throw new Error("Profile not found");
+              return res.json();
+            })
+            .then((data) => {
+              if (data.company_name) setCompany(data.company_name);
+              if (data.company_website) setWebsite(data.company_website);
+            })
+            .catch((err) => {
+              console.error("Error loading recruiter data:", err);
+            });
+        }
       } catch (error) {
         console.error("Error parsing sso-login data", error);
       }
     }
   }, []);
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setStatusMessage("");
+
+    const payload = {
+      recruiter_id: ssoData.recruiter_id,
+      company,
+      website,
+    };
+
+    try {
+      const res = await fetch("http://localhost:5000/talent-profiles/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to update profile");
+      }
+
+      const data = await res.json();
+      console.log("✅ Profile updated:", data);
+      setStatusMessage("✅ Profile updated successfully!");
+    } catch (err) {
+      console.error("❌ Update failed:", err);
+      setStatusMessage("❌ Failed to update profile.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="relative mt-20">
-      <Avatar
-        className={cn(
-          "absolute -top-20 inset-x-0 mx-auto border-2 border-primary w-40 h-40 p-0.5 overflow-hidden rounded-full"
-        )}
-      >
-        <AvatarImage src={ssoData.photo} className="rounded-full" />
-        <AvatarFallback className="bg-secondary">
-          <FaUserCircle className="text-primary h-full w-full" />
-        </AvatarFallback>
-      </Avatar>
-
-      <WidgetBox className="w-full max-w-4xl mx-auto flex-col gap-10">
-        <FlexCol className="max-w-md w-full mx-auto mt-16 mb-20">
-          {/* User Email */}
-          <div className="px-4 sm:px-0 text-center select-text">
-            <p className="mt-1 max-w-2xl text-sm/6 text-gray-500 break-all">
-              {ssoData.email}
-            </p>
+    <form className="grid grid-cols-2 gap-6" onSubmit={handleSubmit}>
+      <WidgetBox className="flex-col gap-6">
+        <div className="space-y-6">
+          <div className="flex flex-col justify-center flex-1 space-y-2.5">
+            <div
+              className={cn(
+                "p-2 mx-auto border-2 border-dashed border-gray-600/20 rounded-full w-36 h-36"
+              )}
+            >
+              <img
+                src="/logo.png"
+                alt="logo"
+                className="object-cover w-full h-full rounded-full"
+              />
+            </div>
           </div>
-
-          {/* Profile */}
-          <div className="px-4 sm:px-0 mt-20">
-            <h3 className="text-base/7 font-semibold text-gray-900">Profile</h3>
-            <p className="max-w-2xl text-sm/4 text-gray-500">
-              Account information.
-            </p>
+          <div className="grid grid-cols-1 gap-x-6 gap-y-3">
+            <TextField
+              label="Company name"
+              type="text"
+              name="company"
+              id="company"
+              autoComplete="company"
+              placeholder="Sample Company"
+              value={company}
+              onChange={(e) => setCompany(e.target.value)}
+              required
+            />
+            <TextField
+              label="Website"
+              type="url"
+              name="website"
+              id="website"
+              autoComplete="website"
+              placeholder="https://www.sample-company.com"
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+              required
+            />
           </div>
-          <div className="mt-6 border-t border-gray-300">
-            <dl className="divide-y divide-gray-300">
-              {/* Name */}
-              <div className="px-4 py-6 sm:px-0">
-                <TextField
-                  label="Full Name"
-                  type="text"
-                  value={ssoData.full_name}
-                  name="full_name"
-                  id="full_name"
-                  autoComplete="full_name"
-                  placeholder="Enter your full name"
-                  required
-                  onChange={(e) =>
-                    setSsoData((prev) => ({
-                      ...prev,
-                      full_name: e.target.value,
-                    }))
-                  }
-                />
-              </div>
-            </dl>
-          </div>
-
-          {/* Company */}
-          <div className="px-4 sm:px-0 mt-14">
-            <h3 className="text-base/7 font-semibold text-gray-900">Company</h3>
-            <p className="max-w-2xl text-sm/4 text-gray-500">
-              Details about the company.
-            </p>
-          </div>
-          <div className="mt-6 border-t border-gray-300">
-            <dl className="divide-y divide-gray-300">
-              {/* Logo */}
-              <div className="px-4 py-6 sm:px-0">
-                <div className="text-sm/6 font-semibold px-1 text-primary mb-4">
-                  Logo
-                </div>
-
-                <label
-                  htmlFor="image"
-                  className={cn(
-                    "flex flex-col items-center justify-center text-xs font-semibold leading-6 text-center rounded-md cursor-pointer border-2 border-dashed group border-gray-600/20 hover:border-gray-600/40 hover:bg-gray-500/10 py-6"
-                  )}
-                >
-                  {companyData.logo ? (
-                    <Avatar className="w-14 h-14 mb-2">
-                      <AvatarImage src={companyData.logo} />
-                      <AvatarFallback>N/A</AvatarFallback>
-                    </Avatar>
-                  ) : (
-                    <div>
-                      <IoCamera
-                        className="w-8 h-8 mx-auto text-gray-400"
-                        aria-hidden="true"
-                      />
-                      <span className="leading-8">Upload Logo</span>
-                    </div>
-                  )}
-
-                  <input
-                    id="image"
-                    name="image"
-                    type="file"
-                    accept=".jpeg,.jpg,.png"
-                    className="sr-only"
-                    onChange={handleImageUpload}
-                  />
-                  <div className="text-center">
-                    <p className="text-xs/5 font-medium text-gray-600">
-                      Allowed *.jpeg, *.jpg, *.png
-                    </p>
-                    <p className="text-xs/5 font-medium text-gray-600">
-                      max size of 2Mb only
-                    </p>
-                  </div>
-                </label>
-              </div>
-
-              {/* Company Name */}
-              <div className="px-4 py-6 sm:px-0">
-                <TextField
-                  label="Name"
-                  type="text"
-                  name="company_name"
-                  id="company_name"
-                  autoComplete="company_name"
-                  placeholder="Enter your company name"
-                  value={companyData.name}
-                  onChange={(e) =>
-                    setCompanyData((prev) => ({
-                      ...prev,
-                      name: e.target.value,
-                    }))
-                  }
-                  required
-                />
-              </div>
-
-              {/* Company Website */}
-              <div className="px-4 py-6 sm:px-0">
-                <TextField
-                  label="Website"
-                  type="url"
-                  name="company_website"
-                  id="company_website"
-                  autoComplete="company_website"
-                  placeholder="www.company.com"
-                  value={companyData.website}
-                  onChange={(e) =>
-                    setCompanyData((prev) => ({
-                      ...prev,
-                      website: e.target.value,
-                    }))
-                  }
-                  startAdornment={
-                    <div className="text-gray-500 font-semibold text-sm">
-                      https://
-                    </div>
-                  }
-                  slotClassNames={{
-                    input: "pl-20",
-                    adornment: {
-                      start: "left-4",
-                    },
-                  }}
-                  required
-                />
-              </div>
-            </dl>
-          </div>
-        </FlexCol>
-        <FlexBox className="justify-end flex-1">
-          <Button type="submit">Update Profile</Button>
-        </FlexBox>
+        </div>
       </WidgetBox>
-    </div>
+      <WidgetBox className="flex-col gap-6">
+        <div className="space-y-6">
+          <div className="flex flex-col justify-center flex-1 space-y-2.5">
+            <div
+              className={cn(
+                "p-2 mx-auto border-2 border-dashed border-gray-600/20 rounded-full w-36 h-36"
+              )}
+            >
+              <FaUserCircle className="object-cover w-full h-full rounded-full text-primary" />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 gap-x-6 gap-y-3">
+            <TextField
+              label="Full name"
+              type="text"
+              name="fullname"
+              id="fullname"
+              autoComplete="fullname"
+              placeholder="John Doe"
+              value={ssoData.full_name}
+              readOnly
+              required
+            />
+            <TextField
+              label="Email address"
+              type="email"
+              name="email"
+              id="email"
+              autoComplete="email"
+              placeholder="john.doe@example.com"
+              value={ssoData.email}
+              readOnly
+              required
+            />
+          </div>
+          <div className="text-sm text-gray-600 mt-2">{statusMessage}</div>
+          <div className="mt-4">
+            <button
+              type="submit"
+              className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700 disabled:opacity-50"
+              disabled={loading}
+            >
+              {loading ? "Saving..." : "Save Profile"}
+            </button>
+          </div>
+        </div>
+      </WidgetBox>
+    </form>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "@/common/styles/App.css";
 import ApplicantFilter from "./ApplicantFilter";
+import TalentDetailModal from "./TalentDetailModal"; // Import the modal component
 
 export default function JobApplicants() {
   const [allApplicants, setAllApplicants] = useState([]);
@@ -9,14 +10,27 @@ export default function JobApplicants() {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
+  const [selectedApplicant, setSelectedApplicant] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
+    // Retrieve user info from sessionStorage
+    const storedUser = sessionStorage.getItem("sso-login");
+    const user = storedUser ? JSON.parse(storedUser) : null;
+    const recruiterId = user ? user.recruiter_id : null;
+
     async function fetchApplicants() {
+      if (!recruiterId) {
+        setError("Recruiter not logged in.");
+        setLoading(false);
+        return;
+      }
       try {
+        // Send recruiter_id in the request body to filter applicants
         const response = await fetch("http://localhost:5000/job-applicants", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({}), // No filter; fetch all records
+          body: JSON.stringify({ recruiter_id: recruiterId }),
         });
         if (!response.ok) {
           throw new Error("Error fetching applicants");
@@ -33,12 +47,11 @@ export default function JobApplicants() {
     fetchApplicants();
   }, []);
 
-  // Client-side filtering based on email, talent_id, job_id and job_title
+  // Client-side filtering based on email, talent_id, and job_id
   const handleFilter = ({ email, talent_id, job_id, job_title }) => {
-    setCurrentPage(1); // Reset to first page on filter change
+    setCurrentPage(1);
     let filtered = allApplicants;
 
-    // Filter by email if provided
     if (email) {
       filtered = filtered.filter(
         (applicant) =>
@@ -46,22 +59,16 @@ export default function JobApplicants() {
           applicant.email.toLowerCase().includes(email.toLowerCase())
       );
     }
-
-    // Filter by talent_id if provided
     if (talent_id) {
       filtered = filtered.filter((applicant) =>
         String(applicant.talent_id).includes(talent_id)
       );
     }
-
-    // Filter by job_id if provided
     if (job_id) {
       filtered = filtered.filter((applicant) =>
         String(applicant.job_id).includes(job_id)
       );
     }
-
-    // Filter by job_title if provided
     if (job_title) {
       filtered = filtered.filter(
         (applicant) =>
@@ -69,17 +76,13 @@ export default function JobApplicants() {
           applicant.job_title.toLowerCase().includes(job_title.toLowerCase())
       );
     }
-
     setFilteredApplicants(filtered);
   };
 
-  // Calculate pagination indices based on filtered applicants.
+  // Pagination calculations
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentApplicants = filteredApplicants.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
+  const currentApplicants = filteredApplicants.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredApplicants.length / itemsPerPage);
 
   const handlePrevPage = () => {
@@ -90,6 +93,19 @@ export default function JobApplicants() {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
 
+  // Right-click handler to open the modal with applicant details
+  /*const handleContextMenu = (e, applicant) => {
+    e.preventDefault();
+    console.log("Right click on applicant:", applicant);
+    setSelectedApplicant(applicant);
+    setShowModal(true);
+  };*/
+
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedApplicant(null);
+  };
+
   if (loading) {
     return (
       <div className="spinner-container">
@@ -97,7 +113,6 @@ export default function JobApplicants() {
       </div>
     );
   }
-
   if (error) {
     return <div>Error: {error}</div>;
   }
@@ -105,8 +120,6 @@ export default function JobApplicants() {
   return (
     <div className="job-posts-container">
       <h2>Job Applicants</h2>
-
-      {/* Applicant Filter above the list */}
       <ApplicantFilter onFilter={handleFilter} />
 
       <table className="results-table">
@@ -115,6 +128,7 @@ export default function JobApplicants() {
             <th>Application ID</th>
             <th>Talent ID</th>
             <th>User ID</th>
+            <th>Email</th>
             <th>Job ID</th>
             <th>Job Title</th>
             <th>Recruiter ID</th>
@@ -124,10 +138,25 @@ export default function JobApplicants() {
         </thead>
         <tbody>
           {currentApplicants.map((applicant) => (
-            <tr key={applicant.application_id}>
+            <tr
+            key={applicant.application_id}
+            onContextMenu={(e) => {
+              e.preventDefault();
+              console.log("Right click on applicant:", applicant);
+              setSelectedApplicant(applicant);
+              setShowModal(true);
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              console.log("Left click on applicant:", applicant);
+              setSelectedApplicant(applicant);
+              setShowModal(true);
+            }}
+            >
               <td>{applicant.application_id}</td>
               <td>{applicant.talent_id}</td>
               <td>{applicant.user_id}</td>
+              <td>{applicant.email}</td>
               <td>{applicant.job_id}</td>
               <td>{applicant.job_title}</td>
               <td>{applicant.recruiter_id}</td>
@@ -138,18 +167,33 @@ export default function JobApplicants() {
         </tbody>
       </table>
 
-      {/* Pagination Controls */}
-      <div style={{ marginTop: "20px", textAlign: "center" }}>
-        <button onClick={handlePrevPage} disabled={currentPage === 1}>
+      <div className="mt-4 text-center">
+        <button
+          onClick={handlePrevPage}
+          disabled={currentPage === 1}
+          className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 mr-2"
+        >
           Previous
         </button>
-        <span style={{ margin: "0 10px" }}>
+        <span className="mx-2">
           Page {currentPage} of {totalPages}
         </span>
-        <button onClick={handleNextPage} disabled={currentPage === totalPages}>
+        <button
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 ml-2"
+        >
           Next
         </button>
       </div>
+
+      {showModal && selectedApplicant && (
+        <TalentDetailModal
+          applicant={selectedApplicant}
+          onClose={closeModal}
+          showShortlist={true}
+        />
+      )}
     </div>
   );
 }

@@ -1,3 +1,5 @@
+// At the top of the file
+/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import TalentFilter from "./TalentFilter";
 import TalentResults from "./TalentResults";
@@ -16,7 +18,7 @@ export default function ScoutForTalentPage() {
       {/* Render the filter component and pass the callback */}
       <TalentFilter onResults={handleResults} />
       {/* Render the results component below the filter */}
-      <TalentResults results={results} />
+      {/*<TalentResults results={results} />*/}
     </div>
   );
 }

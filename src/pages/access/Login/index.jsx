@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/common/hooks";
 import { Divider } from "@/common/components/ui";
 import { FlexCol } from "@/common/components/flexbox";
@@ -6,9 +7,11 @@ import { LoginForm, SSOLogin } from "./components";
 export default function LoginPage() {
   const { login } = useAuth();
 
-  const handleSignIn = (user) => {
-    console.log({ "sso-login": user });
-    login(user);
+  const navigate = useNavigate();
+
+  const handleSignIn = () => {
+    login({ id: "XYZABC123456", name: "John Doe" });
+    navigate("/");
   };
 
   return (
@@ -23,9 +26,15 @@ export default function LoginPage() {
       </div>
 
       <div className="w-full max-w-md mt-6 space-y-8">
-        <LoginForm onSignIn={handleSignIn} />
+        <LoginForm onSignIn={handleSignIn}/>
         <Divider label="Or continue with" />
-        <SSOLogin onSignIn={handleSignIn} />
+        <SSOLogin
+          onSignIn={(slug) => {
+            console.log({ "sso-login": slug });
+            //sessionStorage.setItem("sso-login", slug)
+            handleSignIn();
+          }}
+        />
       </div>
     </FlexCol>
   );

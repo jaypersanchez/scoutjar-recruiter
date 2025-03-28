@@ -21,9 +21,7 @@ import ReviewCandidatesPage from "@/pages/main/Candidates/ReviewCandidates";
 import ShortlistCandidatesPage from "@/pages/main/Candidates/ShortlistCandidates";
 
 // User Routes
-import ProfilePage from "@/pages/main/Users/Profile/routes";
-import ProfileEdit from "../main/Users/Profile/routes/ProfileEdit";
-import ProfileView from "../main/Users/Profile/routes/ProfileView";
+import ProfilePage from "@/pages/main/Users/Profile";
 
 import {
   RiDashboardFill,
@@ -165,29 +163,21 @@ const PAGE_ROUTES: Array<PageRouteProps> = [
         label: "Shortlist",
         icon: FaListCheck,
         Component: ShortlistCandidatesPage,
-        hidden: true,
+        hidden: false,
       },
     ],
   },
 
-  // Profile Routes
+  // User Routes
   {
-    id: "profile",
-    path: "profile",
-    Component: ProfilePage,
+    id: "user",
+    path: "user",
     children: [
       {
-        index: true,
+        path: "profile",
         label: "Profile",
         icon: FaUserCircle,
-        Component: ProfileView,
-        hidden: false,
-      },
-      {
-        path: "edit",
-        label: "Edit",
-        icon: MdNoteAdd,
-        Component: ProfileEdit,
+        Component: ProfilePage,
         hidden: false,
       },
     ],

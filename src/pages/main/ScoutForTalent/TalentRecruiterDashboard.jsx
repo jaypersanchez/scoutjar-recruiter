@@ -1,3 +1,5 @@
+// At the top of the file
+/* eslint-disable no-unused-vars */
 // TalentRecruiterDashboard.js
 import React, { useState } from "react";
 import TalentFilter from "./TalentFilter";
@@ -14,8 +16,8 @@ function TalentRecruiterDashboard() {
 
   return (
     <div className="talent-recruiter-dashboard">
-      <TalentFilter onResults={handleResults} />
-      <TalentResults results={results} />
+      { /*<TalentFilter onResults={handleResults} /> */ }
+      { /*<TalentResults results={results} />*/}
     </div>
   );
 }
