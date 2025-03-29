@@ -8,9 +8,6 @@ function TalentFilter() {
   const [skills, setSkills] = useState("");
   const [jobTitle, setJobTitle] = useState("");
   const [jobDescription, setJobDescription] = useState("");
-  const [location, setLocation] = useState("");
-  const [availability, setAvailability] = useState("");
-  const [workMode, setWorkMode] = useState("");
   const [matchThreshold, setMatchThreshold] = useState(0);
   const [results, setResults] = useState([]);
 
@@ -21,9 +18,6 @@ function TalentFilter() {
       required_skill: skills || null,
       job_title: jobTitle || null,
       job_description: jobDescription || null,
-      location: location || null,
-      availability: availability || null,
-      work_mode: workMode || null,
       match_percentage: matchThreshold || 0,
     };
 
@@ -51,9 +45,6 @@ function TalentFilter() {
     setSkills("");
     setJobTitle("");
     setJobDescription("");
-    setLocation("");
-    setAvailability("");
-    setWorkMode("");
     setMatchThreshold(0);
     setResults([]);
     console.log("🔹 Filters cleared.");
@@ -118,37 +109,8 @@ function TalentFilter() {
           </div>
         </div>
 
-        {/* Row 3: New Filters */}
+        {/* Row 3: Match Threshold */}
         <div className="filter-row">
-          <div className="filter-field">
-            <label>Location:</label>
-            <input
-              type="text"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              placeholder="e.g. Germany"
-            />
-          </div>
-          <div className="filter-field">
-            <label>Availability:</label>
-            <select value={availability} onChange={(e) => setAvailability(e.target.value)}>
-              <option value="">All</option>
-              <option value="Immediate">Immediate</option>
-              <option value="Two Weeks Notice">Two Weeks Notice</option>
-              <option value="1 Month">1 Month</option>
-              <option value="3 Months">3 Months</option>
-              <option value="Not Available">Not Available</option>
-            </select>
-          </div>
-          <div className="filter-field">
-            <label>Work Mode:</label>
-            <select value={workMode} onChange={(e) => setWorkMode(e.target.value)}>
-              <option value="">All</option>
-              <option value="Remote">Remote</option>
-              <option value="Hybrid">Hybrid</option>
-              <option value="Onsite">Onsite</option>
-            </select>
-          </div>
           <div className="filter-field">
             <label>Match Threshold: {matchThreshold}%</label>
             <input
@@ -171,7 +133,13 @@ function TalentFilter() {
         </button>
       </div>
 
-      <TalentResults results={results} />
+      <TalentResults
+        results={results}
+        selectedLocations={[]} // Always empty since location is not used here
+        availabilityFilter={""}
+        workModeFilter={""}
+        matchThreshold={matchThreshold}
+      />
     </div>
   );
 }
