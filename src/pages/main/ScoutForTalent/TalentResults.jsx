@@ -1,4 +1,3 @@
-// ✅ TalentResults.jsx (searchable multi-select location with full sort)
 import React, { useState, useEffect } from "react";
 import TalentDetailModal from "../Candidates/ReviewCandidates/TalentDetailModal";
 
@@ -38,21 +37,35 @@ function TalentResults({ results }) {
   }, []);
 
   useEffect(() => {
+    const normalize = (str) =>
+      (str || "")
+        .toLowerCase()
+        .replace("null,", "")
+        .replace(", null", "")
+        .replace(/\s+/g, " ")
+        .trim();
+
     let filtered = results.filter((profile) => {
+      const normalizedLocation = normalize(profile.location);
+
       const matchesAvailability = availabilityFilter
         ? profile.availability?.toLowerCase() === availabilityFilter.toLowerCase()
         : false;
+
       const matchesWorkMode = workModeFilter
         ? profile.work_preferences?.work_mode?.toLowerCase() === workModeFilter.toLowerCase()
         : false;
+
       const matchesLocation = selectedLocations.length > 0
-        ? selectedLocations.some((loc) => profile.location?.toLowerCase().includes(loc.toLowerCase()))
+        ? selectedLocations.some((loc) =>
+            normalizedLocation.includes(normalize(loc))
+          )
         : false;
 
       return (
-        !availabilityFilter && !workModeFilter && selectedLocations.length === 0
-          ? true
-          : matchesAvailability || matchesWorkMode || matchesLocation
+        (!availabilityFilter || matchesAvailability) &&
+        (!workModeFilter || matchesWorkMode) &&
+        (selectedLocations.length === 0 || matchesLocation)
       );
     });
 
