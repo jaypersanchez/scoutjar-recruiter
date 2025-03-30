@@ -114,13 +114,9 @@ export default function JobsPosted() {
       setModalExplanation(match.explanation);
       setShowModal(true);
     } else {
-      setModalLoading(true);
-      setShowModal(true);
-      setModalExplanation(""); // avoid default text like "Loading..."
       await explainMatch(job, match);
     }
   };
-  
 
   if (loading) return <p>Loading job posts...</p>;
   if (error) return <p>Error: {error}</p>;
