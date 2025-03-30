@@ -12,24 +12,28 @@ function TalentFilter() {
   const [results, setResults] = useState([]);
 
   const handleExecuteQuery = async () => {
+    const normalizedJobTitle = jobTitle
+      ? jobTitle.toLowerCase().replace(/[\s]+/g, ",")
+      : null;
+  
     const filterData = {
       min_salary: minSalary ? parseFloat(minSalary) : 0,
       max_salary: maxSalary ? parseFloat(maxSalary) : null,
       required_skill: skills || null,
-      job_title: jobTitle || null,
+      job_title: normalizedJobTitle,
       job_description: jobDescription || null,
       match_percentage: matchThreshold || 0,
     };
-
+  
     console.log("Sending API Request with:", filterData);
-
+  
     try {
       const response = await fetch("http://localhost:5000/talent-profiles", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(filterData),
       });
-
+  
       const data = await response.json();
       console.log("API Response Received:", data);
       setResults(data || []);
@@ -38,6 +42,7 @@ function TalentFilter() {
       alert("Error executing query.");
     }
   };
+  
 
   const handleClearFilters = () => {
     setMinSalary("");
