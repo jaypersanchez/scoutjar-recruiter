@@ -46,7 +46,10 @@ function TalentResults({ results }) {
         : true;
 
       const matchesLocation = selectedLocations.length > 0
-        ? selectedLocations.some((loc) => normalizedLocation.includes(normalize(loc)))
+        ? selectedLocations.some((loc) => {
+            const locParts = normalize(loc).split(/[,\s]+/); // e.g., ["miami", "florida", "united", "states"]
+            return locParts.some((part) => normalizedLocation.includes(part));
+          })
         : true;
 
       return matchesAvailability && matchesWorkMode && matchesLocation;
