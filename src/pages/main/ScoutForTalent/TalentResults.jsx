@@ -47,7 +47,7 @@ function TalentResults({ results }) {
 
       const matchesLocation = selectedLocations.length > 0
         ? selectedLocations.some((loc) => {
-            const locParts = normalize(loc).split(/[,\s]+/); // e.g., ["miami", "florida", "united", "states"]
+            const locParts = normalize(loc).split(/[,\s]+/);
             return locParts.some((part) => normalizedLocation.includes(part));
           })
         : true;
@@ -96,6 +96,14 @@ function TalentResults({ results }) {
       loc.label.toLowerCase().includes(lowerInput)
     );
     setFilteredLocationOptions(filtered);
+  };
+
+  const handleClearFilters = () => {
+    setAvailabilityFilter("");
+    setWorkModeFilter("");
+    setSelectedLocations([]);
+    setLocationSearchInput("");
+    setFilteredLocationOptions(locationOptions);
   };
 
   return (
@@ -160,6 +168,10 @@ function TalentResults({ results }) {
               </label>
             ))}
           </div>
+        </div>
+
+        <div style={{ marginLeft: "20px", marginTop: "25px" }}>
+          <button onClick={handleClearFilters}>Clear Filters</button>
         </div>
       </div>
 
