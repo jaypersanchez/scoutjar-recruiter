@@ -8,13 +8,11 @@ export default function ApplicantFilter({ onFilter }) {
   const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
-    // Get the logged in recruiter from sessionStorage.
     const storedUser = sessionStorage.getItem("sso-login");
     const user = storedUser ? JSON.parse(storedUser) : null;
     const recruiterId = user ? user.recruiter_id : null;
 
     if (recruiterId) {
-      // Fetch jobs posted by this recruiter.
       fetch(`http://localhost:5000/jobs?recruiter_id=${recruiterId}`)
         .then((response) => response.json())
         .then((data) => setJobs(data))
@@ -29,7 +27,7 @@ export default function ApplicantFilter({ onFilter }) {
     onFilter({
       email: email.trim(),
       talent_id: talentId.trim(),
-      job_id: selectedJob, // Pass along the selected job id
+      job_id: selectedJob ? parseInt(selectedJob) : null,
     });
   };
 
@@ -61,17 +59,18 @@ export default function ApplicantFilter({ onFilter }) {
             />
           </div>
           <div className="filter-field">
-            <label htmlFor="jobSelect">Select Job:</label>
+            <label htmlFor="jobSelect">Select Job Post:</label>
             <select
               id="jobSelect"
               value={selectedJob}
               onChange={(e) => setSelectedJob(e.target.value)}
               className="form-input"
             >
-              <option value="">All Jobs</option>
+              <option value="">All Job Posts</option>
               {jobs.map((job) => (
                 <option key={job.job_id} value={job.job_id}>
                   {job.job_title}
+                  {job.location ? ` - ${job.location}` : ""} (ID: {job.job_id})
                 </option>
               ))}
             </select>
