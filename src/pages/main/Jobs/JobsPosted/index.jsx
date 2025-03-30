@@ -2,6 +2,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import "@/common/styles/App.css";
+import MatchExplanationModal from "./MatchExplanationModal";
 
 export default function JobsPosted() {
   const [jobs, setJobs] = useState([]);
@@ -10,6 +11,9 @@ export default function JobsPosted() {
   const [error, setError] = useState(null);
   const [andrewLoading, setAndrewLoading] = useState(null);
   const [andrewMatches, setAndrewMatches] = useState({});
+  const [showModal, setShowModal] = useState(false);
+  const [modalExplanation, setModalExplanation] = useState("");
+
 
   const storedUser = sessionStorage.getItem("sso-login");
   const user = storedUser ? JSON.parse(storedUser) : null;
@@ -68,7 +72,6 @@ export default function JobsPosted() {
   /** This is calling to Flask server */
   const askAndrew = async (job) => {
     setAndrewLoading(job.job_id);
-    console.log(JSON.stringify(job))
     try {
       const response = await fetch("http://127.0.0.1:5001/jobs", {
         method: "POST",
@@ -86,6 +89,23 @@ export default function JobsPosted() {
       alert("Andrew ran into a problem finding matches. Please try again later.");
     } finally {
       setAndrewLoading(null);
+    }
+  };
+
+  const explainMatch = async (job, match) => {
+    try {
+      const response = await fetch("http://127.0.0.1:5001/explain-match", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ job, talent: match })
+      });
+      const data = await response.json();
+      setAndrewMatches((prev) => ({
+        ...prev,
+        [job.job_id]: prev[job.job_id].map(m => m.talent_id === match.talent_id ? { ...m, explanation: data.explanation } : m)
+      }));
+    } catch (err) {
+      alert("Could not explain this match right now. Try again later.");
     }
   };
 
@@ -130,6 +150,7 @@ export default function JobsPosted() {
                         <th>Location</th>
                         <th>Availability</th>
                         <th>Skills</th>
+                        <th>Info</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -140,6 +161,24 @@ export default function JobsPosted() {
                           <td>{match.location}</td>
                           <td>{match.availability}</td>
                           <td>{(match.skills || []).join(", ")}</td>
+                          <td>
+                          <button
+    title="Explain this match"
+    onClick={() => {
+      if (match.explanation) {
+        setModalExplanation(match.explanation);
+        setShowModal(true);
+      } else {
+        explainMatch(job, match);
+        setModalExplanation("Loading explanation...");
+        setShowModal(true);
+      }
+    }}
+    style={{ border: "none", background: "none", cursor: "pointer" }}
+  >
+    ℹ️
+  </button>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -150,6 +189,13 @@ export default function JobsPosted() {
           ))}
         </ul>
       )}
+      {showModal && (
+        <MatchExplanationModal
+          explanation={modalExplanation}
+          onClose={() => setShowModal(false)}
+        />
+      )}
+
     </div>
   );
 }
