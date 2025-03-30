@@ -1,8 +1,7 @@
-// At the top of the file
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
-import "@/common/styles/App.css";
 import MatchExplanationModal from "./MatchExplanationModal";
+import "@/common/styles/App.css";
 
 export default function JobsPosted() {
   const [jobs, setJobs] = useState([]);
@@ -11,9 +10,9 @@ export default function JobsPosted() {
   const [error, setError] = useState(null);
   const [andrewLoading, setAndrewLoading] = useState(null);
   const [andrewMatches, setAndrewMatches] = useState({});
-  const [showModal, setShowModal] = useState(false);
   const [modalExplanation, setModalExplanation] = useState("");
-
+  const [showModal, setShowModal] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
 
   const storedUser = sessionStorage.getItem("sso-login");
   const user = storedUser ? JSON.parse(storedUser) : null;
@@ -24,19 +23,15 @@ export default function JobsPosted() {
       try {
         const response = await fetch("http://localhost:5000/jobs/get", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ recruiter_id: recruiterId }),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ recruiter_id: recruiterId })
         });
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch jobs");
-        }
+        if (!response.ok) throw new Error("Failed to fetch jobs");
 
         const data = await response.json();
         setJobs(data);
-        fetchApplicantCounts(data.map(job => job.job_id));
+        fetchApplicantCounts(data.map((job) => job.job_id));
       } catch (err) {
         setError(err.message);
       } finally {
@@ -47,9 +42,8 @@ export default function JobsPosted() {
     const fetchApplicantCounts = async (jobIds) => {
       try {
         const response = await fetch(`http://localhost:5000/job-applicants/count/${recruiterId}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch applicant counts");
-        }
+        if (!response.ok) throw new Error("Failed to fetch applicant counts");
+
         const data = await response.json();
         const counts = {};
         data.forEach((row) => {
@@ -69,7 +63,6 @@ export default function JobsPosted() {
     }
   }, [recruiterId]);
 
-  /** This is calling to Flask server */
   const askAndrew = async (job) => {
     setAndrewLoading(job.job_id);
     try {
@@ -82,7 +75,6 @@ export default function JobsPosted() {
           skills: job.required_skills?.join(", ") || ""
         })
       });
-
       const data = await response.json();
       setAndrewMatches((prev) => ({ ...prev, [job.job_id]: data.matches }));
     } catch (err) {
@@ -93,6 +85,7 @@ export default function JobsPosted() {
   };
 
   const explainMatch = async (job, match) => {
+    setModalLoading(true);
     try {
       const response = await fetch("http://127.0.0.1:5001/explain-match", {
         method: "POST",
@@ -100,14 +93,34 @@ export default function JobsPosted() {
         body: JSON.stringify({ job, talent: match })
       });
       const data = await response.json();
+      const updatedExplanation = data.explanation;
       setAndrewMatches((prev) => ({
         ...prev,
-        [job.job_id]: prev[job.job_id].map(m => m.talent_id === match.talent_id ? { ...m, explanation: data.explanation } : m)
+        [job.job_id]: prev[job.job_id].map((m) =>
+          m.talent_id === match.talent_id ? { ...m, explanation: updatedExplanation } : m
+        )
       }));
+      setModalExplanation(updatedExplanation);
+      setShowModal(true);
     } catch (err) {
       alert("Could not explain this match right now. Try again later.");
+    } finally {
+      setModalLoading(false);
     }
   };
+
+  const handleInfoClick = async (job, match) => {
+    if (match.explanation) {
+      setModalExplanation(match.explanation);
+      setShowModal(true);
+    } else {
+      setModalLoading(true);
+      setShowModal(true);
+      setModalExplanation(""); // avoid default text like "Loading..."
+      await explainMatch(job, match);
+    }
+  };
+  
 
   if (loading) return <p>Loading job posts...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -162,22 +175,13 @@ export default function JobsPosted() {
                           <td>{match.availability}</td>
                           <td>{(match.skills || []).join(", ")}</td>
                           <td>
-                          <button
-    title="Explain this match"
-    onClick={() => {
-      if (match.explanation) {
-        setModalExplanation(match.explanation);
-        setShowModal(true);
-      } else {
-        explainMatch(job, match);
-        setModalExplanation("Loading explanation...");
-        setShowModal(true);
-      }
-    }}
-    style={{ border: "none", background: "none", cursor: "pointer" }}
-  >
-    ℹ️
-  </button>
+                            <button
+                              title="Explain this match"
+                              onClick={() => handleInfoClick(job, match)}
+                              style={{ border: "none", background: "none", cursor: "pointer" }}
+                            >
+                              ℹ️
+                            </button>
                           </td>
                         </tr>
                       ))}
@@ -189,13 +193,14 @@ export default function JobsPosted() {
           ))}
         </ul>
       )}
+
       {showModal && (
         <MatchExplanationModal
           explanation={modalExplanation}
+          loading={modalLoading}
           onClose={() => setShowModal(false)}
         />
       )}
-
     </div>
   );
 }
