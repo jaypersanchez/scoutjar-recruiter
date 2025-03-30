@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "@/common/styles/App.css";
 import ApplicantFilter from "./ApplicantFilter";
-import TalentDetailModal from "./TalentDetailModal"; // Import the modal component
+import TalentDetailModal from "./TalentDetailModal";
 
 export default function JobApplicants() {
   const [allApplicants, setAllApplicants] = useState([]);
@@ -14,7 +14,6 @@ export default function JobApplicants() {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    // Retrieve user info from sessionStorage
     const storedUser = sessionStorage.getItem("sso-login");
     const user = storedUser ? JSON.parse(storedUser) : null;
     const recruiterId = user ? user.recruiter_id : null;
@@ -26,15 +25,16 @@ export default function JobApplicants() {
         return;
       }
       try {
-        // Send recruiter_id in the request body to filter applicants
         const response = await fetch("http://localhost:5000/job-applicants", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ recruiter_id: recruiterId }),
         });
+
         if (!response.ok) {
           throw new Error("Error fetching applicants");
         }
+
         const data = await response.json();
         setAllApplicants(data);
         setFilteredApplicants(data);
@@ -44,11 +44,12 @@ export default function JobApplicants() {
         setLoading(false);
       }
     }
+
     fetchApplicants();
   }, []);
 
-  // Client-side filtering based on email, talent_id, and job_id
-  const handleFilter = ({ email, talent_id, job_id, job_title }) => {
+  // ✅ Correct filtering with strict match for job_id
+  const handleFilter = ({ email, talent_id, job_id }) => {
     setCurrentPage(1);
     let filtered = allApplicants;
 
@@ -59,23 +60,19 @@ export default function JobApplicants() {
           applicant.email.toLowerCase().includes(email.toLowerCase())
       );
     }
+
     if (talent_id) {
       filtered = filtered.filter((applicant) =>
         String(applicant.talent_id).includes(talent_id)
       );
     }
-    if (job_id) {
-      filtered = filtered.filter((applicant) =>
-        String(applicant.job_id).includes(job_id)
-      );
-    }
-    if (job_title) {
+
+    if (job_id !== null && job_id !== undefined) {
       filtered = filtered.filter(
-        (applicant) =>
-          applicant.job_title &&
-          applicant.job_title.toLowerCase().includes(job_title.toLowerCase())
+        (applicant) => parseInt(applicant.job_id) === parseInt(job_id)
       );
     }
+
     setFilteredApplicants(filtered);
   };
 
@@ -93,14 +90,6 @@ export default function JobApplicants() {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
 
-  // Right-click handler to open the modal with applicant details
-  /*const handleContextMenu = (e, applicant) => {
-    e.preventDefault();
-    console.log("Right click on applicant:", applicant);
-    setSelectedApplicant(applicant);
-    setShowModal(true);
-  };*/
-
   const closeModal = () => {
     setShowModal(false);
     setSelectedApplicant(null);
@@ -113,6 +102,7 @@ export default function JobApplicants() {
       </div>
     );
   }
+
   if (error) {
     return <div>Error: {error}</div>;
   }
@@ -139,19 +129,17 @@ export default function JobApplicants() {
         <tbody>
           {currentApplicants.map((applicant) => (
             <tr
-            key={applicant.application_id}
-            onContextMenu={(e) => {
-              e.preventDefault();
-              console.log("Right click on applicant:", applicant);
-              setSelectedApplicant(applicant);
-              setShowModal(true);
-            }}
-            onClick={(e) => {
-              e.preventDefault();
-              console.log("Left click on applicant:", applicant);
-              setSelectedApplicant(applicant);
-              setShowModal(true);
-            }}
+              key={applicant.application_id}
+              onContextMenu={(e) => {
+                e.preventDefault();
+                setSelectedApplicant(applicant);
+                setShowModal(true);
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                setSelectedApplicant(applicant);
+                setShowModal(true);
+              }}
             >
               <td>{applicant.application_id}</td>
               <td>{applicant.talent_id}</td>

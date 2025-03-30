@@ -33,6 +33,7 @@ export default function UserMenu() {
     if (data) {
       try {
         setSsoData(JSON.parse(data));
+        console.log(`ssoData ${data}`)
       } catch (error) {
         console.error("Error parsing sso-login data", error);
       }
@@ -50,7 +51,9 @@ export default function UserMenu() {
       <DropdownMenuTrigger asChild>
         <div className="ml-auto rounded-full cursor-pointer group outline hover:outline-2 outline-offset-1 outline-primary data-[state=open]:outline-2">
           <Avatar>
-            <AvatarImage src={ssoData?.profile_picture || ""} />
+            <AvatarImage src={
+              `http://localhost:5000/api/proxy-image?url=${encodeURIComponent(ssoData?.profile_picture || "")}`
+              } />
             <AvatarFallback>
               <FaUserCircle className="text-primary h-full w-full" />
             </AvatarFallback>

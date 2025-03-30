@@ -1,4 +1,3 @@
-// ✅ TalentResults.jsx (searchable multi-select location with full sort)
 import React, { useState, useEffect } from "react";
 import TalentDetailModal from "../Candidates/ReviewCandidates/TalentDetailModal";
 
@@ -10,24 +9,13 @@ function TalentResults({ results }) {
   const [filteredLocationOptions, setFilteredLocationOptions] = useState([]);
   const [locationSearchInput, setLocationSearchInput] = useState("");
   const [selectedLocations, setSelectedLocations] = useState([]);
-
   const [filteredResults, setFilteredResults] = useState(results);
-  const [jobs, setJobs] = useState([]);
-  const [selectedJobId, setSelectedJobId] = useState("");
-  const [matchThreshold, setMatchThreshold] = useState(80);
-  const [matchResults, setMatchResults] = useState(null);
-
   const [selectedTalent, setSelectedTalent] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
 
   const rowsPerPage = 15;
 
   useEffect(() => {
-    fetch("http://localhost:5000/jobs")
-      .then((res) => res.json())
-      .then(setJobs)
-      .catch((err) => console.error("Failed to load jobs:", err));
-
     fetch("http://localhost:5000/locations/all")
       .then((res) => res.json())
       .then((data) => {
@@ -38,22 +26,33 @@ function TalentResults({ results }) {
   }, []);
 
   useEffect(() => {
-    let filtered = results.filter((profile) => {
+    const normalize = (str) =>
+      (str || "")
+        .toLowerCase()
+        .replace("null,", "")
+        .replace(", null", "")
+        .replace(/\s+/g, " ")
+        .trim();
+
+    const filtered = results.filter((profile) => {
+      const normalizedLocation = normalize(profile.location);
+
       const matchesAvailability = availabilityFilter
         ? profile.availability?.toLowerCase() === availabilityFilter.toLowerCase()
-        : false;
+        : true;
+
       const matchesWorkMode = workModeFilter
         ? profile.work_preferences?.work_mode?.toLowerCase() === workModeFilter.toLowerCase()
-        : false;
-      const matchesLocation = selectedLocations.length > 0
-        ? selectedLocations.some((loc) => profile.location?.toLowerCase().includes(loc.toLowerCase()))
-        : false;
+        : true;
 
-      return (
-        !availabilityFilter && !workModeFilter && selectedLocations.length === 0
-          ? true
-          : matchesAvailability || matchesWorkMode || matchesLocation
-      );
+      const matchesLocation = selectedLocations.length > 0
+        ? selectedLocations.some((loc) => {
+            const locParts = normalize(loc).split(/[,\s]+/);
+            return locParts.some((part) => normalizedLocation.includes(part));
+          })
+        : true;
+
+      return matchesAvailability && matchesWorkMode && matchesLocation;
     });
 
     setFilteredResults(filtered);
@@ -62,10 +61,7 @@ function TalentResults({ results }) {
 
   const totalPages = Math.ceil(filteredResults.length / rowsPerPage);
   const startIndex = currentPage * rowsPerPage;
-  const currentResults = (matchResults || filteredResults).slice(
-    startIndex,
-    startIndex + rowsPerPage
-  );
+  const currentResults = filteredResults.slice(startIndex, startIndex + rowsPerPage);
 
   const handlePrevious = () => {
     setCurrentPage((prev) => Math.max(prev - 1, 0));
@@ -73,34 +69,6 @@ function TalentResults({ results }) {
 
   const handleNext = () => {
     setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1));
-  };
-
-  const handleMatch = async () => {
-    if (!selectedJobId) {
-      alert("Please select a job first.");
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        "http://localhost:5000/talent-profiles/match",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            job_id: selectedJobId,
-            match_percentage: matchThreshold,
-          }),
-        }
-      );
-
-      const data = await response.json();
-      setMatchResults(data);
-      setCurrentPage(0);
-    } catch (error) {
-      console.error("Error in advanced matching:", error);
-      alert("Failed to apply advanced match.");
-    }
   };
 
   const handleRowClick = (profile) => {
@@ -128,6 +96,14 @@ function TalentResults({ results }) {
       loc.label.toLowerCase().includes(lowerInput)
     );
     setFilteredLocationOptions(filtered);
+  };
+
+  const handleClearFilters = () => {
+    setAvailabilityFilter("");
+    setWorkModeFilter("");
+    setSelectedLocations([]);
+    setLocationSearchInput("");
+    setFilteredLocationOptions(locationOptions);
   };
 
   return (
@@ -172,7 +148,14 @@ function TalentResults({ results }) {
             placeholder="Search cities..."
             style={{ width: "100%", marginBottom: "4px" }}
           />
-          <div style={{ maxHeight: "120px", overflowY: "auto", border: "1px solid #ccc", padding: "4px" }}>
+          <div
+            style={{
+              maxHeight: "120px",
+              overflowY: "auto",
+              border: "1px solid #ccc",
+              padding: "4px",
+            }}
+          >
             {filteredLocationOptions.map((opt, i) => (
               <label key={i} style={{ display: "block" }}>
                 <input
@@ -186,40 +169,10 @@ function TalentResults({ results }) {
             ))}
           </div>
         </div>
-      </div>
 
-      <div className="advanced-match" style={{ marginBottom: "15px" }}>
-        <label>
-          Match Against Job:
-          <select
-            value={selectedJobId}
-            onChange={(e) => setSelectedJobId(e.target.value)}
-            style={{ marginLeft: "5px" }}
-          >
-            <option value="">Select a Job</option>
-            {jobs.map((job) => (
-              <option key={job.job_id} value={job.job_id}>
-                {job.job_title}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label style={{ marginLeft: "20px" }}>
-          Match Threshold: {matchThreshold}%
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={matchThreshold}
-            onChange={(e) => setMatchThreshold(Number(e.target.value))}
-            style={{ verticalAlign: "middle", marginLeft: "10px" }}
-          />
-        </label>
-
-        <button style={{ marginLeft: "20px" }} onClick={handleMatch}>
-          Apply Advanced Match
-        </button>
+        <div style={{ marginLeft: "20px", marginTop: "25px" }}>
+          <button onClick={handleClearFilters}>Clear Filters</button>
+        </div>
       </div>
 
       <table className="results-table">
@@ -268,7 +221,10 @@ function TalentResults({ results }) {
       </div>
 
       {showDetailModal && selectedTalent && (
-        <TalentDetailModal applicant={selectedTalent} onClose={handleCloseDetailModal} />
+        <TalentDetailModal
+          applicant={selectedTalent}
+          onClose={handleCloseDetailModal}
+        />
       )}
     </div>
   );

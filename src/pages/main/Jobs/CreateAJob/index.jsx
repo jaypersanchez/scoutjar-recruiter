@@ -169,7 +169,8 @@ export default function CreateAJob() {
             value={formData.job_description}
             onChange={handleChange}
             required
-            readOnly /* Optional: remove readOnly if you want users to edit it */
+            rows={8}
+            placeholder="Add more details about the responsibilities, requirements, and expectations for this role..."
           ></textarea>
         </div>
 
