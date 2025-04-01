@@ -13,12 +13,22 @@ export default function ApplicantFilter({ onFilter }) {
     const recruiterId = user ? user.recruiter_id : null;
 
     if (recruiterId) {
-      fetch(`http://localhost:5000/jobs?recruiter_id=${recruiterId}`)
+      /*fetch(`http://localhost:5000/jobs?recruiter_id=${recruiterId}`)
         .then((response) => response.json())
         .then((data) => setJobs(data))
         .catch((error) =>
           console.error("Error fetching recruiter jobs:", error)
-        );
+        );*/
+        fetch('http://localhost:5000/jobs/get', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ recruiter_id: recruiterId }),
+        })
+          .then((response) => response.json())
+          .then((data) => setJobs(data))
+          .catch((error) => {
+            console.error("Error fetching recruiter jobs:", error);
+          });
     }
   }, []);
 

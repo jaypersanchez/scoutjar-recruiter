@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { RouterProvider } from "react-router-dom";
 import Routers from "./routes";
+import AndrewAssistant from "@/components/AndrewAssistant";
+
 
 export default function App() {
 
@@ -18,6 +20,7 @@ export default function App() {
   return (
     <>
       <RouterProvider router={Routers} />
+      <AndrewAssistant />
     </>
   );
 }
