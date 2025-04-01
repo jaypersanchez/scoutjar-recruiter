@@ -142,7 +142,11 @@ export default function JobsPosted() {
               {job.work_mode && <p><strong>Work Mode:</strong> {job.work_mode}</p>}
               {job.location && <p><strong>Location:</strong> {job.location}</p>}
               {job.date_posted && <p><strong>Date Posted:</strong> {new Date(job.date_posted).toLocaleString()}</p>}
-              <p><strong>Applicants:</strong> {applicantCounts[job.job_id] ?? 0}</p>
+              <div className="applicant-count">
+  <span className="label">Number of Applicants:</span>
+  <span className="count">{applicantCounts[job.job_id] ?? 0}</span>
+</div>
+
 
               <button onClick={() => askAndrew(job)} disabled={andrewLoading === job.job_id}>
                 {andrewLoading === job.job_id ? "Andrew is searching..." : "✨ Ask Andrew, our AI Agent, to find you a match"}

@@ -590,4 +590,30 @@
   font-size: 1.1rem;
 }
 
+.applicant-count {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.applicant-count .label {
+  font-weight: bold;
+  margin-right: 6px;
+  font-size: 1rem;
+}
+
+.applicant-count .count {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #007aff; /* or a bold accent color like green, red, etc. */
+  background: #e6f0ff;
+  padding: 4px 10px;
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+}
+
+.applicant-count .count:hover {
+  transform: scale(1.1);
+}
+
 

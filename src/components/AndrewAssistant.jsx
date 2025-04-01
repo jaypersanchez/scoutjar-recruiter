@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export default function AndrewAssistant() {
   const [isOpen, setIsOpen] = useState(false);
@@ -8,6 +8,12 @@ export default function AndrewAssistant() {
 
   const toggleAssistant = () => setIsOpen(!isOpen);
 
+   // Clear on mount to prevent stale state on reload
+   useEffect(() => {
+    setQuery("");
+    setResults([]);
+  }, []);
+  
   const handleSearch = async () => {
     setLoading(true);
     try {
@@ -19,8 +25,8 @@ export default function AndrewAssistant() {
       const data = await response.json();
       setResults(data.matches || []);
     } catch (err) {
-        console.error("Error searching talents:", err);
-        alert("Error searching talents.");
+      console.error("Error searching talents:", err);
+      alert("Error searching talents.");
     } finally {
       setLoading(false);
     }
@@ -29,11 +35,12 @@ export default function AndrewAssistant() {
   return (
     <div style={{ position: "fixed", bottom: 20, right: 20, zIndex: 1000 }}>
       {isOpen ? (
-        <div className="bg-white shadow-lg rounded-lg w-[400px] h-[500px] p-4 border border-gray-200 overflow-y-auto">
+        <div className="bg-white shadow-lg rounded-lg w-[400px] h-[500px] p-4 border border-gray-200 flex flex-col">
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-lg font-semibold">Ask Andrew 🤖</h2>
-            <button onClick={toggleAssistant} className="text-gray-500">✖</button>
+            <button onClick={toggleAssistant} className="text-gray-500 hover:text-gray-800">✖</button>
           </div>
+
           <textarea
             className="w-full border rounded p-2 text-sm"
             rows={3}
@@ -41,6 +48,7 @@ export default function AndrewAssistant() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
+
           <button
             className="mt-2 w-full bg-blue-600 text-white py-1 px-3 rounded hover:bg-blue-700"
             onClick={handleSearch}
@@ -49,11 +57,19 @@ export default function AndrewAssistant() {
             {loading ? "Searching..." : "Search Talent"}
           </button>
 
-          <div className="mt-4 space-y-3">
+          {loading && (
+            <div className="flex justify-center items-center mt-4">
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
+          )}
+
+          <div className="mt-4 space-y-3 overflow-y-auto">
             {results.map((talent) => (
               <div key={talent.talent_id} className="border rounded p-2 text-sm">
                 <div className="font-medium">{talent.name}</div>
-                <div className="text-xs text-gray-500">{talent.location} • {talent.availability}</div>
+                <div className="text-xs text-gray-500">
+                  {talent.location} • {talent.availability}
+                </div>
                 <div className="text-xs mt-1 text-gray-700">
                   <strong>Skills:</strong> {(talent.skills || []).join(", ")}
                 </div>
