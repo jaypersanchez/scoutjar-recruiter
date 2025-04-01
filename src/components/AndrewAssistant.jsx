@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from "react";
+import AndrewMessageModal from "./AndrewMessageModal"
 
 export default function AndrewAssistant() {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selectedTalent, setSelectedTalent] = useState(null);
 
   const toggleAssistant = () => setIsOpen(!isOpen);
 
-   // Clear on mount to prevent stale state on reload
-   useEffect(() => {
+  useEffect(() => {
     setQuery("");
     setResults([]);
   }, []);
-  
+
   const handleSearch = async () => {
     setLoading(true);
     try {
@@ -65,7 +66,16 @@ export default function AndrewAssistant() {
 
           <div className="mt-4 space-y-3 overflow-y-auto">
             {results.map((talent) => (
-              <div key={talent.talent_id} className="border rounded p-2 text-sm">
+              <div
+                key={talent.talent_id}
+                className="border rounded p-2 text-sm hover:bg-gray-100 cursor-pointer"
+                onClick={() => setSelectedTalent({
+                  talent_id: talent.talent_id,
+                  user_id: talent.user_id,
+                  full_name: talent.name || "Talent",
+                  ...talent
+                })}
+              >
                 <div className="font-medium">{talent.name}</div>
                 <div className="text-xs text-gray-500">
                   {talent.location} • {talent.availability}
@@ -79,6 +89,13 @@ export default function AndrewAssistant() {
               </div>
             ))}
           </div>
+
+          {selectedTalent && (
+            <AndrewMessageModal
+              talent={selectedTalent}
+              onClose={() => setSelectedTalent(null)}
+            />
+          )}
         </div>
       ) : (
         <button
