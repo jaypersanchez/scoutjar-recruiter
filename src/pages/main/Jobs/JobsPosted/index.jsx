@@ -118,6 +118,20 @@ export default function JobsPosted() {
     }
   };
 
+  const getBadgeInfo = (score) => {
+    const numericScore = Number(score);
+    if (numericScore >= 90) return { badge: "A+", color: "#2e8b57", icon: "🚀" };
+    if (numericScore >= 80) return { badge: "A", color: "#3cb371", icon: "🔥" };
+    if (numericScore >= 70) return { badge: "A−", color: "#66cdaa", icon: "🏎️" };
+    if (numericScore >= 60) return { badge: "B+", color: "#ffd700", icon: "💼" };
+    if (numericScore >= 50) return { badge: "B", color: "#f0e68c", icon: "🔧" };
+    if (numericScore >= 40) return { badge: "B−", color: "#ffa07a", icon: "🧠" };
+    if (numericScore >= 30) return { badge: "C", color: "#ffb6c1", icon: "🌱" };
+    return { badge: "D", color: "#a9a9a9", icon: "🐢", iconSize: "0.8em" };
+  };
+  
+  
+
   if (loading) return <p>Loading job posts...</p>;
   if (error) return <p>Error: {error}</p>;
 
@@ -143,10 +157,9 @@ export default function JobsPosted() {
               {job.location && <p><strong>Location:</strong> {job.location}</p>}
               {job.date_posted && <p><strong>Date Posted:</strong> {new Date(job.date_posted).toLocaleString()}</p>}
               <div className="applicant-count">
-  <span className="label">Number of Applicants:</span>
-  <span className="count">{applicantCounts[job.job_id] ?? 0}</span>
-</div>
-
+                <span className="label">Number of Applicants:</span>
+                <span className="count">{applicantCounts[job.job_id] ?? 0}</span>
+              </div>
 
               <button onClick={() => askAndrew(job)} disabled={andrewLoading === job.job_id}>
                 {andrewLoading === job.job_id ? "Andrew is searching..." : "✨ Ask Andrew, our AI Agent, to find you a match"}
@@ -167,24 +180,31 @@ export default function JobsPosted() {
                       </tr>
                     </thead>
                     <tbody>
-                      {andrewMatches[job.job_id].map((match) => (
-                        <tr key={match.talent_id}>
-                          <td>{match.name}</td>
-                          <td>{match.match_score}%</td>
-                          <td>{match.location}</td>
-                          <td>{match.availability}</td>
-                          <td>{(match.skills || []).join(", ")}</td>
-                          <td>
-                            <button
-                              title="Explain this match"
-                              onClick={() => handleInfoClick(job, match)}
-                              style={{ border: "none", background: "none", cursor: "pointer" }}
-                            >
-                              ℹ️
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
+                      {[...andrewMatches[job.job_id]]
+                        .sort((a, b) => b.match_score - a.match_score)
+                        .map((match) => {
+                          const { badge, color, icon } = getBadgeInfo(match.match_score);
+                          return (
+                            <tr key={match.talent_id}>
+                              <td>{match.name}</td>
+                              <td style={{ color, fontWeight: "bold" }}>
+                                {icon} {match.match_score}% <small style={{ fontSize: "0.8em" }}>({badge})</small>
+                              </td>
+                              <td>{match.location}</td>
+                              <td>{match.availability}</td>
+                              <td>{(match.skills || []).join(", ")}</td>
+                              <td>
+                                <button
+                                  title="Explain this match"
+                                  onClick={() => handleInfoClick(job, match)}
+                                  style={{ border: "none", background: "none", cursor: "pointer" }}
+                                >
+                                  ℹ️
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
                     </tbody>
                   </table>
                 </div>
