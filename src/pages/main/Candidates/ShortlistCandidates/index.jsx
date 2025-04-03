@@ -10,6 +10,8 @@ export default function ShortlistedCandidates() {
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
+  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
+
   // Get recruiter_id from sessionStorage
   const storedUser = sessionStorage.getItem("sso-login");
   const user = storedUser ? JSON.parse(storedUser) : null;
@@ -23,7 +25,7 @@ export default function ShortlistedCandidates() {
     }
     async function fetchGroupedCandidates() {
       try {
-        const response = await fetch("http://localhost:5000/shortlisted-candidates/grouped", {
+        const response = await fetch(`${baseUrl}/shortlisted-candidates/grouped`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ recruiter_id: recruiterId }),
@@ -56,7 +58,7 @@ export default function ShortlistedCandidates() {
 
   const handleCandidateClick = async (candidate) => {
     try {
-      const response = await fetch(`http://localhost:5000/talent-profiles/${candidate.talent_id}`);
+      const response = await fetch(`${baseUrl}/talent-profiles/${candidate.talent_id}`);
       if (!response.ok) {
         throw new Error("Failed to fetch full profile");
       }

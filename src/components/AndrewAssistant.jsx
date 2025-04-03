@@ -9,7 +9,8 @@ export default function AndrewAssistant() {
   const [selectedTalent, setSelectedTalent] = useState(null);
 
   const toggleAssistant = () => setIsOpen(!isOpen);
-
+  //const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
+  const AIbaseURL = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}`;
   useEffect(() => {
     setQuery("");
     setResults([]);
@@ -18,7 +19,7 @@ export default function AndrewAssistant() {
   const handleSearch = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5001/search-talents", {
+      const response = await fetch(`${AIbaseURL}/search-talents`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query }),

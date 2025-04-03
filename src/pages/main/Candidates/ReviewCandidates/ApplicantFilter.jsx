@@ -6,20 +6,15 @@ export default function ApplicantFilter({ onFilter }) {
   const [talentId, setTalentId] = useState("");
   const [selectedJob, setSelectedJob] = useState("");
   const [jobs, setJobs] = useState([]);
-
+  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
   useEffect(() => {
     const storedUser = sessionStorage.getItem("sso-login");
     const user = storedUser ? JSON.parse(storedUser) : null;
     const recruiterId = user ? user.recruiter_id : null;
 
     if (recruiterId) {
-      /*fetch(`http://localhost:5000/jobs?recruiter_id=${recruiterId}`)
-        .then((response) => response.json())
-        .then((data) => setJobs(data))
-        .catch((error) =>
-          console.error("Error fetching recruiter jobs:", error)
-        );*/
-        fetch('http://localhost:5000/jobs/get', {
+      
+        fetch(`${baseUrl}/jobs/get`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ recruiter_id: recruiterId }),

@@ -27,7 +27,9 @@ export default function UserMenu() {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const [ssoData, setSsoData] = useState(null);
-
+  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
+  //const AIbaseURL = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}`;
+  
   useEffect(() => {
     const data = sessionStorage.getItem("sso-login");
     if (data) {
@@ -52,7 +54,7 @@ export default function UserMenu() {
         <div className="ml-auto rounded-full cursor-pointer group outline hover:outline-2 outline-offset-1 outline-primary data-[state=open]:outline-2">
           <Avatar>
             <AvatarImage src={
-              `http://localhost:5000/api/proxy-image?url=${encodeURIComponent(ssoData?.profile_picture || "")}`
+              `${baseUrl}/api/proxy-image?url=${encodeURIComponent(ssoData?.profile_picture || "")}`
               } />
             <AvatarFallback>
               <FaUserCircle className="text-primary h-full w-full" />

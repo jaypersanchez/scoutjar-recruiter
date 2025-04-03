@@ -24,11 +24,11 @@ function TalentFilter() {
       job_description: jobDescription || null,
       match_percentage: matchThreshold || 0,
     };
-  
+    const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
     console.log("Sending API Request with:", filterData);
   
     try {
-      const response = await fetch("http://localhost:5000/talent-profiles", {
+      const response = await fetch(`${baseUrl}/talent-profiles`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(filterData),

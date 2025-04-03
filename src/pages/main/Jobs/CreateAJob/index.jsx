@@ -30,10 +30,11 @@ export default function CreateAJob() {
 
   const [countries, setCountries] = useState([]);
   const [cities, setCities] = useState([]);
+  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
 
   // Fetch job title options from your backend on mount
   useEffect(() => {
-    fetch("http://localhost:5000/job-titles")
+    fetch(`${baseUrl}/job-titles`)
       .then((res) => res.json())
       .then((data) => setJobTitleOptions(data))
       .catch((err) => console.error("Error fetching job titles:", err));
@@ -41,7 +42,7 @@ export default function CreateAJob() {
 
   // Fetch the list of countries when the component mounts
   useEffect(() => {
-    fetch("http://localhost:5000/locations/countries")
+    fetch(`${baseUrl}/locations/countries`)
       .then((res) => res.json())
       .then((data) => setCountries(data))
       .catch((err) => console.error("Error fetching countries:", err));
@@ -51,7 +52,7 @@ export default function CreateAJob() {
   const handleCountryChange = async (e) => {
     const selectedCountry = e.target.value;
     setFormData((prev) => ({ ...prev, country: selectedCountry, city: "" }));
-    fetch(`http://localhost:5000/locations/cities?country=${selectedCountry}`)
+    fetch(`${baseUrl}/locations/cities?country=${selectedCountry}`)
       .then((res) => res.json())
       .then((data) => setCities(data))
       .catch((err) => console.error("Error fetching cities:", err));
@@ -110,7 +111,7 @@ export default function CreateAJob() {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/jobs", {
+      const response = await fetch(`${baseUrl}/jobs`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(jobData),

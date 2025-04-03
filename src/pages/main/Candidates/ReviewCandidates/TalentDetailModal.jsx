@@ -6,6 +6,8 @@ export default function TalentDetailModal({ applicant, onClose, showShortlist = 
   const [shortlistStatus, setShortlistStatus] = useState(null);
   const [isShortlisting, setIsShortlisting] = useState(false);
 
+  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
+
   const handleShortlist = async () => {
     setIsShortlisting(true);
     try {
@@ -24,7 +26,7 @@ export default function TalentDetailModal({ applicant, onClose, showShortlist = 
         job_id: applicant.job_id,
       };
 
-      const response = await fetch("http://localhost:5000/shortlisted-candidates/add", {
+      const response = await fetch(`${baseUrl}/shortlisted-candidates/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

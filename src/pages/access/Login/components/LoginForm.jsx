@@ -13,7 +13,7 @@ export default function LoginForm({ onSignIn }) {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate(); // ← navigate initialized
-
+  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
   useEffect(() => {
     const clearOnReload = () => {
       if (process.env.NODE_ENV === "development") {
@@ -37,7 +37,7 @@ export default function LoginForm({ onSignIn }) {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:5000/login", {
+      const res = await fetch(`${baseUrl}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -10,30 +10,13 @@ export default function AndrewMessageModal({ talent, onClose }) {
   const storedUser = sessionStorage.getItem("sso-login");
   const user = storedUser ? JSON.parse(storedUser) : null;
   const recruiterId = user ? user.recruiter_id : null;
-
-  /*const fetchHistory = async () => {
-    setLoadingHistory(true);
-    try {
-      const response = await fetch(
-        `http://localhost:5000/messages/history?sender_id=${recruiterId}&recipient_id=${talent.talent_id}`
-      );
-      const data = await response.json();
-      if (response.ok) {
-        setHistory(data);
-      } else {
-        setHistory([]);
-      }
-    } catch (error) {
-      console.error("Error fetching message history:", error);
-    } finally {
-      setLoadingHistory(false);
-    }
-  };*/
+  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
+  
   const fetchHistory = async () => {
     setLoadingHistory(true);
     try {
       const response = await fetch(
-        `http://localhost:5000/messages/history/andrew?sender_id=${recruiterId}&recipient_user_id=${talent.user_id}`
+        `${baseUrl}/messages/history/andrew?sender_id=${recruiterId}&recipient_user_id=${talent.user_id}`
       );
       const data = await response.json();
       if (response.ok) {
@@ -61,7 +44,7 @@ export default function AndrewMessageModal({ talent, onClose }) {
             return;
           }
           
-        const response = await fetch("http://localhost:5000/messages/send", {
+        const response = await fetch(`${baseUrl}/messages/send`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

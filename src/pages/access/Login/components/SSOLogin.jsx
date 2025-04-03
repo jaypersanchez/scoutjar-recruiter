@@ -34,7 +34,8 @@ const createUserProfile = async (user) => {
     user_type: "Scout",
   };
 
-  const response = await fetch("http://localhost:5000/user_profiles", {
+  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
+  const response = await fetch(`${baseUrl}/user_profiles`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),

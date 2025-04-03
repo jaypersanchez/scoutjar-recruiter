@@ -18,6 +18,8 @@ export default function ProfileForm() {
   const [statusMessage, setStatusMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
+
   useEffect(() => {
     const data = sessionStorage.getItem("sso-login");
     if (data) {
@@ -30,7 +32,7 @@ export default function ProfileForm() {
         });
 
         if (parsed.recruiter_id) {
-          fetch(`http://localhost:5000/talent-profiles/by-recruiter/${parsed.recruiter_id}`)
+          fetch(`${baseUrl}/talent-profiles/by-recruiter/${parsed.recruiter_id}`)
             .then((res) => {
               if (!res.ok) throw new Error("Profile not found");
               return res.json();
@@ -61,7 +63,7 @@ export default function ProfileForm() {
     };
 
     try {
-      const res = await fetch("http://localhost:5000/talent-profiles/update", {
+      const res = await fetch(`${baseUrl}/talent-profiles/update`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

@@ -11,6 +11,8 @@ export default function MessageTalentModal({ applicant, onClose }) {
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [historyError, setHistoryError] = useState("");
 
+  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
+
   // Retrieve the recruiter (scout) user info from sessionStorage
   const storedUser = sessionStorage.getItem("sso-login");
   const user = storedUser ? JSON.parse(storedUser) : null;
@@ -22,7 +24,7 @@ export default function MessageTalentModal({ applicant, onClose }) {
     setHistoryError("");
     try {
       const response = await fetch(
-        `http://localhost:5000/messages/history?sender_id=${recruiterId}&recipient_id=${applicant.talent_id}`
+        `${baseUrl}/messages/history?sender_id=${recruiterId}&recipient_id=${applicant.talent_id}`
       );
       const data = await response.json();
       if (response.ok) {
@@ -46,7 +48,7 @@ export default function MessageTalentModal({ applicant, onClose }) {
     setSending(true);
     setErrorMessage("");
     try {
-      const response = await fetch("http://localhost:5000/messages/send", {
+      const response = await fetch(`${baseUrl}/messages/send`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
