@@ -12,6 +12,7 @@ export default function JobApplicants() {
   const itemsPerPage = 15;
   const [selectedApplicant, setSelectedApplicant] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
 
   useEffect(() => {
     const storedUser = sessionStorage.getItem("sso-login");
@@ -25,7 +26,7 @@ export default function JobApplicants() {
         return;
       }
       try {
-        const response = await fetch("http://localhost:5000/job-applicants", {
+        const response = await fetch(`${baseUrl}/job-applicants`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ recruiter_id: recruiterId }),

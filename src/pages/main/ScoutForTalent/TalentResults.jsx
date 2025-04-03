@@ -12,11 +12,11 @@ function TalentResults({ results }) {
   const [filteredResults, setFilteredResults] = useState(results);
   const [selectedTalent, setSelectedTalent] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
-
+  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
   const rowsPerPage = 15;
 
   useEffect(() => {
-    fetch("http://localhost:5000/locations/all")
+    fetch(`${baseUrl}/locations/all`)
       .then((res) => res.json())
       .then((data) => {
         setLocationOptions(data);

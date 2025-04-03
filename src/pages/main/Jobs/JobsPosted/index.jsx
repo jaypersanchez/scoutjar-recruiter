@@ -17,11 +17,13 @@ export default function JobsPosted() {
   const storedUser = sessionStorage.getItem("sso-login");
   const user = storedUser ? JSON.parse(storedUser) : null;
   const recruiterId = user ? user.recruiter_id : null;
+  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
+  const AIbaseUrl = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}`;
 
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await fetch("http://localhost:5000/jobs/get", {
+        const response = await fetch(`${baseUrl}/jobs/get`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ recruiter_id: recruiterId })
@@ -41,7 +43,7 @@ export default function JobsPosted() {
 
     const fetchApplicantCounts = async (jobIds) => {
       try {
-        const response = await fetch(`http://localhost:5000/job-applicants/count/${recruiterId}`);
+        const response = await fetch(`${baseUrl}/job-applicants/count/${recruiterId}`);
         if (!response.ok) throw new Error("Failed to fetch applicant counts");
 
         const data = await response.json();
@@ -65,8 +67,9 @@ export default function JobsPosted() {
 
   const askAndrew = async (job) => {
     setAndrewLoading(job.job_id);
+    console.log(`${AIbaseUrl}`)
     try {
-      const response = await fetch("http://127.0.0.1:5001/jobs", {
+      const response = await fetch(`${AIbaseUrl}/jobs`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -87,7 +90,7 @@ export default function JobsPosted() {
   const explainMatch = async (job, match) => {
     setModalLoading(true);
     try {
-      const response = await fetch("http://127.0.0.1:5001/explain-match", {
+      const response = await fetch(`${AIbaseUrl}/explain-match`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ job, talent: match })
