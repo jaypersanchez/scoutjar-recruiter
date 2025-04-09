@@ -7,6 +7,8 @@ export default function AndrewAssistant() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedTalent, setSelectedTalent] = useState(null);
+  const [noResults, setNoResults] = useState(false)
+  const [suggestion, setSuggestion] = useState("");
 
   const toggleAssistant = () => setIsOpen(!isOpen);
   //const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
@@ -16,7 +18,7 @@ export default function AndrewAssistant() {
     setResults([]);
   }, []);
 
-  const handleSearch = async () => {
+  /*const handleSearch = async () => {
     setLoading(true);
     try {
       const response = await fetch(`${AIbaseURL}/search-talents`, {
@@ -32,21 +34,49 @@ export default function AndrewAssistant() {
     } finally {
       setLoading(false);
     }
+  };*/
+
+  const handleSearch = async () => {
+    setLoading(true);
+    setNoResults(false);
+    setSuggestion("");
+  
+    try {
+      const response = await fetch(`${AIbaseURL}/search-talents`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query }),
+      });
+      const data = await response.json();
+  
+      setResults(data.matches || []);
+  
+      if ((data.matches || []).length === 0 && data.suggestion) {
+        setNoResults(true);
+        setSuggestion(data.suggestion);
+      }
+    } catch (err) {
+      console.error("Error searching talents:", err);
+      alert("Error searching talents.");
+    } finally {
+      setLoading(false);
+    }
   };
+  
 
   return (
     <div style={{ position: "fixed", bottom: 20, right: 20, zIndex: 1000 }}>
       {isOpen ? (
         <div className="bg-white shadow-lg rounded-lg w-[400px] h-[500px] p-4 border border-gray-200 flex flex-col">
           <div className="flex justify-between items-center mb-2">
-            <h2 className="text-lg font-semibold">Ask Andrew 🤖</h2>
+            <h2 className="text-lg font-semibold">Ask Lookk 🤖</h2>
             <button onClick={toggleAssistant} className="text-gray-500 hover:text-gray-800">✖</button>
           </div>
 
           <textarea
             className="w-full border rounded p-2 text-sm"
             rows={3}
-            placeholder="Ask Andrew to find talents..."
+            placeholder="Ask Lookk to find talents..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -56,7 +86,7 @@ export default function AndrewAssistant() {
             onClick={handleSearch}
             disabled={loading}
           >
-            {loading ? "Searching..." : "Search Talent"}
+            {loading ? "LOOKing..." : "Lookk for Talents"}
           </button>
 
           {loading && (
@@ -64,6 +94,14 @@ export default function AndrewAssistant() {
               <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
             </div>
           )}
+
+          {noResults && (
+            <div className="mt-4 p-3 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded">
+              <p className="font-semibold mb-2">No matches found.</p>
+              <p className="text-sm">{suggestion}</p>
+            </div>
+          )}
+
 
           <div className="mt-4 space-y-3 overflow-y-auto">
             {results.map((talent) => (
@@ -103,7 +141,7 @@ export default function AndrewAssistant() {
           onClick={toggleAssistant}
           className="bg-blue-700 text-white px-4 py-2 rounded-full shadow-md hover:bg-blue-800"
         >
-          💬 Ask Andrew
+          💬 Ask Lookk
         </button>
       )}
     </div>

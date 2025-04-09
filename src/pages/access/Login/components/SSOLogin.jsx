@@ -209,7 +209,9 @@ export default function SSOLogin({ onSignIn }) {
 
   return (
     <div className="grid grid-cols-2 gap-2">
-      {SSOProviders.map((data, index) => (
+    {SSOProviders
+      .filter((data) => data.slug !== "twitter" && data.slug !== "instagram")
+      .map((data, index) => (
         <Button
           key={index}
           variant="outline"
@@ -222,6 +224,6 @@ export default function SSOLogin({ onSignIn }) {
           </p>
         </Button>
       ))}
-    </div>
+  </div>
   );
 }
