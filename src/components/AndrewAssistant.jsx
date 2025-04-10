@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import AndrewMessageModal from "./AndrewMessageModal"
+import AndrewMessageModal from "./AndrewMessageModal";
 
 export default function AndrewAssistant() {
   const [isOpen, setIsOpen] = useState(false);
@@ -7,40 +7,23 @@ export default function AndrewAssistant() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedTalent, setSelectedTalent] = useState(null);
-  const [noResults, setNoResults] = useState(false)
+  const [noResults, setNoResults] = useState(false);
   const [suggestion, setSuggestion] = useState("");
 
   const toggleAssistant = () => setIsOpen(!isOpen);
-  //const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
+
   const AIbaseURL = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}`;
+
   useEffect(() => {
     setQuery("");
     setResults([]);
   }, []);
 
-  /*const handleSearch = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(`${AIbaseURL}/search-talents`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query }),
-      });
-      const data = await response.json();
-      setResults(data.matches || []);
-    } catch (err) {
-      console.error("Error searching talents:", err);
-      alert("Error searching talents.");
-    } finally {
-      setLoading(false);
-    }
-  };*/
-
   const handleSearch = async () => {
     setLoading(true);
     setNoResults(false);
     setSuggestion("");
-  
+
     try {
       const response = await fetch(`${AIbaseURL}/search-talents`, {
         method: "POST",
@@ -48,9 +31,9 @@ export default function AndrewAssistant() {
         body: JSON.stringify({ query }),
       });
       const data = await response.json();
-  
+
       setResults(data.matches || []);
-  
+
       if ((data.matches || []).length === 0 && data.suggestion) {
         setNoResults(true);
         setSuggestion(data.suggestion);
@@ -62,7 +45,6 @@ export default function AndrewAssistant() {
       setLoading(false);
     }
   };
-  
 
   return (
     <div style={{ position: "fixed", bottom: 20, right: 20, zIndex: 1000 }}>
@@ -95,44 +77,59 @@ export default function AndrewAssistant() {
             </div>
           )}
 
-          
+          {/* ✅ Correct noResults Display Here */}
+          {noResults && suggestion && (
+            <div className="mt-4 p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded-lg space-y-2">
+              <p className="font-bold text-lg mb-2">No matches found.</p>
 
-           {/* ✅ Correct noResults Display Here */}
-           {noResults && suggestion && (
-  <div className="mt-4 p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded-lg space-y-2">
-    <p className="font-bold text-lg mb-2">No matches found.</p>
-
-    {/* Properly check if suggestion is a JSON string and parse it */}
-    {typeof suggestion === "string" ? (() => {
-      try {
-        const parsed = JSON.parse(suggestion);
-        return (
-          <>
-            {parsed.advice && (
-              <p className="text-sm">{parsed.advice}</p>
-            )}
-            {parsed.refined_prompt && (
-              <p className="text-sm font-semibold">{parsed.refined_prompt}</p>
-            )}
-          </>
-        );
-      } catch (error) {
-        return <p className="text-sm text-red-600">Suggestion format error.</p>;
-      }
-    })() : (
-      <>
-        {suggestion.advice && (
-          <p className="text-sm">{suggestion.advice}</p>
-        )}
-        {suggestion.refined_prompt && (
-          <p className="text-sm font-semibold">{suggestion.refined_prompt}</p>
-        )}
-      </>
-    )}
-  </div>
-)}
-
-
+              {typeof suggestion === "string" ? (() => {
+                try {
+                  const parsed = JSON.parse(suggestion);
+                  return (
+                    <>
+                      {parsed.advice && (
+                        <p className="text-sm">{parsed.advice}</p>
+                      )}
+                      {parsed.refined_prompt && (
+                        <>
+                          <p className="text-sm mt-2 italic text-gray-600">
+                            (Click the suggestion below to use it.)
+                          </p>
+                          <p
+                            className="text-sm font-semibold text-blue-700 underline cursor-pointer mt-1 hover:text-blue-900"
+                            onClick={() => setQuery(parsed.refined_prompt)}
+                          >
+                            {parsed.refined_prompt}
+                          </p>
+                        </>
+                      )}
+                    </>
+                  );
+                } catch (error) {
+                  return <p className="text-sm text-red-600">Suggestion format error.</p>;
+                }
+              })() : (
+                <>
+                  {suggestion.advice && (
+                    <p className="text-sm">{suggestion.advice}</p>
+                  )}
+                  {suggestion.refined_prompt && (
+                    <>
+                      <p className="text-sm mt-2 italic text-gray-600">
+                        (Click the suggestion below to use it.)
+                      </p>
+                      <p
+                        className="text-sm font-semibold text-blue-700 underline cursor-pointer mt-1 hover:text-blue-900"
+                        onClick={() => setQuery(suggestion.refined_prompt)}
+                      >
+                        {suggestion.refined_prompt}
+                      </p>
+                    </>
+                  )}
+                </>
+              )}
+            </div>
+          )}
 
           <div className="mt-4 space-y-3 overflow-y-auto">
             {results.map((talent) => (
@@ -143,7 +140,7 @@ export default function AndrewAssistant() {
                   talent_id: talent.talent_id,
                   user_id: talent.user_id,
                   full_name: talent.name || "Talent",
-                  ...talent
+                  ...talent,
                 })}
               >
                 <div className="font-medium">{talent.name}</div>
