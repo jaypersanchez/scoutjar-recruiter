@@ -3,8 +3,8 @@ import TalentResults from "./TalentResults";
 import "@/common/styles/App.css";
 
 function TalentFilter() {
-  const [minSalary, setMinSalary] = useState("");
-  const [maxSalary, setMaxSalary] = useState("");
+  //const [minSalary, setMinSalary] = useState("");
+  //const [maxSalary, setMaxSalary] = useState("");
   const [skills, setSkills] = useState("");
   const [jobTitle, setJobTitle] = useState("");
   const [jobDescription, setJobDescription] = useState("");
@@ -17,8 +17,8 @@ function TalentFilter() {
       : null;
   
     const filterData = {
-      min_salary: minSalary ? parseFloat(minSalary) : 0,
-      max_salary: maxSalary ? parseFloat(maxSalary) : null,
+      //min_salary: minSalary ? parseFloat(minSalary) : 0,
+      //max_salary: maxSalary ? parseFloat(maxSalary) : null,
       required_skill: skills || null,
       job_title: normalizedJobTitle,
       job_description: jobDescription || null,
@@ -62,8 +62,8 @@ function TalentFilter() {
         {/* Row 1: Salary & Skills */}
         <div className="filter-row">
           <div className="filter-field" style={{ width: "100%" }}>
-          <label>Salary Range: ${minSalary || 0} – ${maxSalary || 200000}</label>
-          <div style={{ display: "flex", gap: "1rem" }}>
+          {/*<label>Salary Range: ${minSalary || 0} – ${maxSalary || 200000}</label>*/}
+          {/*<div style={{ display: "flex", gap: "1rem" }}>
               <div className="filter-field">
                 <label>Min Salary:</label>
                 <input
@@ -82,7 +82,7 @@ function TalentFilter() {
                   placeholder="e.g. 120000"
                 />
               </div>
-            </div>
+            </div>*/}
           </div>
 
           <div className="filter-field">

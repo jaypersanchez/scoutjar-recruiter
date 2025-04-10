@@ -5,6 +5,8 @@ function TalentResults({ results }) {
   const [currentPage, setCurrentPage] = useState(0);
   const [availabilityFilter, setAvailabilityFilter] = useState("");
   const [workModeFilter, setWorkModeFilter] = useState("");
+  const [minSalaryFilter, setMinSalaryFilter] = useState("");
+  const [maxSalaryFilter, setMaxSalaryFilter] = useState("");
   const [locationOptions, setLocationOptions] = useState([]);
   const [filteredLocationOptions, setFilteredLocationOptions] = useState([]);
   const [locationSearchInput, setLocationSearchInput] = useState("");
@@ -12,6 +14,7 @@ function TalentResults({ results }) {
   const [filteredResults, setFilteredResults] = useState(results);
   const [selectedTalent, setSelectedTalent] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
+
   const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
   const rowsPerPage = 15;
 
@@ -52,12 +55,16 @@ function TalentResults({ results }) {
           })
         : true;
 
-      return matchesAvailability && matchesWorkMode && matchesLocation;
+      const salary = profile.desired_salary || 0;
+      const matchesMinSalary = minSalaryFilter ? salary >= parseFloat(minSalaryFilter) : true;
+      const matchesMaxSalary = maxSalaryFilter ? salary <= parseFloat(maxSalaryFilter) : true;
+
+      return matchesAvailability && matchesWorkMode && matchesLocation && matchesMinSalary && matchesMaxSalary;
     });
 
     setFilteredResults(filtered);
     setCurrentPage(0);
-  }, [results, availabilityFilter, workModeFilter, selectedLocations]);
+  }, [results, availabilityFilter, workModeFilter, selectedLocations, minSalaryFilter, maxSalaryFilter]);
 
   const totalPages = Math.ceil(filteredResults.length / rowsPerPage);
   const startIndex = currentPage * rowsPerPage;
@@ -104,6 +111,8 @@ function TalentResults({ results }) {
     setSelectedLocations([]);
     setLocationSearchInput("");
     setFilteredLocationOptions(locationOptions);
+    setMinSalaryFilter("");
+    setMaxSalaryFilter("");
   };
 
   return (
@@ -111,6 +120,7 @@ function TalentResults({ results }) {
       <h3>Search Results</h3>
 
       <div className="drilldown-filters" style={{ marginBottom: "10px" }}>
+        {/* Availability */}
         <label>
           Availability:
           <select
@@ -126,6 +136,7 @@ function TalentResults({ results }) {
           </select>
         </label>
 
+        {/* Work Mode */}
         <label style={{ marginLeft: "20px" }}>
           Work Mode:
           <select
@@ -139,7 +150,28 @@ function TalentResults({ results }) {
           </select>
         </label>
 
-        <div style={{ marginLeft: "20px", maxWidth: "300px" }}>
+        {/* Salary Range */}
+        <div style={{ marginLeft: "20px", display: "inline-block" }}>
+          <label>Min Salary:</label>
+          <input
+            type="number"
+            value={minSalaryFilter}
+            onChange={(e) => setMinSalaryFilter(e.target.value)}
+            placeholder="e.g. 50000"
+            style={{ width: "100px", marginLeft: "5px", marginRight: "10px" }}
+          />
+          <label>Max Salary:</label>
+          <input
+            type="number"
+            value={maxSalaryFilter}
+            onChange={(e) => setMaxSalaryFilter(e.target.value)}
+            placeholder="e.g. 120000"
+            style={{ width: "100px", marginLeft: "5px" }}
+          />
+        </div>
+
+        {/* Location Search */}
+        <div style={{ marginLeft: "20px", maxWidth: "300px", display: "inline-block", verticalAlign: "top" }}>
           <label>Location Search:</label>
           <input
             type="text"
@@ -170,11 +202,13 @@ function TalentResults({ results }) {
           </div>
         </div>
 
-        <div style={{ marginLeft: "20px", marginTop: "25px" }}>
+        {/* Clear Filters Button */}
+        <div style={{ marginLeft: "20px", marginTop: "25px", display: "inline-block" }}>
           <button onClick={handleClearFilters}>Clear Filters</button>
         </div>
       </div>
 
+      {/* Talent Table */}
       <table className="results-table">
         <thead>
           <tr>
@@ -208,6 +242,7 @@ function TalentResults({ results }) {
         </tbody>
       </table>
 
+      {/* Pagination */}
       <div className="pagination" style={{ marginTop: "10px", textAlign: "center" }}>
         <button onClick={handlePrevious} disabled={currentPage === 0}>
           Previous
@@ -215,11 +250,12 @@ function TalentResults({ results }) {
         <span style={{ margin: "0 10px" }}>
           Page {currentPage + 1} of {totalPages}
         </span>
-        <button onClick={handleNext} disabled={currentPage === totalPages - 1}>
+        <button onClick={handleNext} disabled={currentPage >= totalPages - 1}>
           Next
         </button>
       </div>
 
+      {/* Talent Detail Modal */}
       {showDetailModal && selectedTalent && (
         <TalentDetailModal
           applicant={selectedTalent}
