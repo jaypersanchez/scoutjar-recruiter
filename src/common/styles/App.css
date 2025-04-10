@@ -200,11 +200,14 @@ body {
 .job-posts-container {
   background: white;
   padding: 20px;
-  margin: 20px auto;
+  margin: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(107, 71, 220, 0.2);
-  max-width: 900px;
+  width: calc(100% - 40px); /* Take full width, minus padding */
+  max-width: 100%; /* Remove artificial 900px limit */
+  box-sizing: border-box;
 }
+
 
 .talent-filter-container h2,
 .talent-results h3,
