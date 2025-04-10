@@ -213,11 +213,12 @@ export default function SSOLogin({ onSignIn }) {
       .filter((data) => data.slug !== "twitter" && data.slug !== "instagram")
       .map((data, index) => (
         <Button
-          key={index}
-          variant="outline"
-          className="border-gray-300 h-11 hover:bg-gray-300/70"
-          onClick={() => handleSSOLogin(data.slug)}
-        >
+  key={index}
+  variant="outline"
+  className="border-[var(--primary)] h-11 hover:bg-[var(--accent)] text-[var(--accent)] hover:text-white"
+  onClick={() => handleSSOLogin(data.slug)}
+>
+
           <data.icon className="w-8 h-8" />
           <p className="text-sm font-bold tracking-wider uppercase">
             {data.slug}

@@ -1,9 +1,22 @@
-/* Adjusted Navbar */
+/* Global Variables */
+:root {
+  --primary-color: #6B47DC; /* Purple from Lookk */
+  --accent-color: #233E92; /* Deep Blue from Lookk */
+  --hover-color: #5c3ec2; /* Slightly darker purple for hover */
+  --font-family: 'Poppins', sans-serif;
+}
+
+/* Global Font */
+body {
+  font-family: var(--font-family);
+}
+
+/* Navbar */
 .navbar {
   display: flex;
-  justify-content: flex-start; /* Align items to the left instead of space-between */
+  justify-content: flex-start;
   align-items: center;
-  background-color: #004182;
+  background-color: var(--primary-color);
   padding: 10px 20px;
   color: white;
   position: fixed;
@@ -14,76 +27,12 @@
   z-index: 1000;
 }
 
-/* Ensure the logo is on the far left and add some margin to separate it from the nav-links */
 .logo {
   margin-right: 30px;
 }
 
-/* Adjusted Navigation Links */
-.nav-links {
-  list-style: none;
-  display: flex;
-  gap: 20px;
-  /* No extra auto margin on the right */
-}
-
-/* Responsive adjustments for smaller screens */
-@media (max-width: 768px) {
-  .navbar {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 10px;
-    height: auto;
-  }
-
-  .nav-links {
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 10px;
-  }
-}
-
-/* Navbar (Header) - Always at the top */
-/* Navbar (Header) - Always at the top */
-.navbar {
-  display: flex;
-  justify-content: flex-start; /* Align items to the left instead of space-between */
-  align-items: center;
-  background-color: #004182;
-  padding: 10px 20px;
-  color: white;
-  position: fixed;
-  width: 100%;
-  top: 0;
-  left: 0;
-  height: 60px;
-  z-index: 1000;
-}
-
-/* Navigation Links */
-.nav-links {
-  list-style: none;
-  display: flex;
-  gap: 15px; /* reduce gap between items */
-  margin-right: 10px; /* reduce right margin */
-  margin-left: 10px; /* add left margin to shift the list to the left */
-}
-
-/* For smaller screens, adjust spacing */
-@media (max-width: 768px) {
-  .nav-links {
-    gap: 10px;
-    margin-right: 5px;
-    margin-left: 5px;
-    font-size: 0.9em;
-  }
-}
-
-.logo {
-  margin-right: 30px;
-}
 .navbar .logo img {
-  height: 34px; /* Matches LinkedIn logo size */
+  height: 36px;
   width: auto;
 }
 
@@ -92,7 +41,6 @@
   list-style: none;
   display: flex;
   gap: 20px;
-  /* No extra auto margin on the right */
 }
 
 .nav-links li a {
@@ -103,10 +51,10 @@
 }
 
 .nav-links li a:hover {
-  color: #30a14e;
+  color: var(--hover-color);
 }
 
-/* Authentication Page */
+/* Auth Pages */
 .auth-container {
   display: flex;
   align-items: center;
@@ -120,42 +68,15 @@
   background: white;
   padding: 30px;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(107, 71, 220, 0.2);
 }
 
 .auth-content h1 {
   font-size: 2rem;
-  color: #004182;
+  color: var(--primary-color);
 }
 
-.role-selection {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin: 20px 0;
-}
-
-.role-button {
-  padding: 10px 20px;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  font-size: 1rem;
-  background: #ddd;
-  transition: 0.3s;
-}
-
-.role-button.selected {
-  background: #30a14e;
-  color: white;
-}
-
-.role-button:hover {
-  background: #22863a;
-  color: white;
-}
-
-/* Social Login Buttons */
+/* Social Login */
 .auth-buttons {
   display: flex;
   flex-direction: column;
@@ -169,60 +90,48 @@
   border: none;
   cursor: pointer;
   border-radius: 5px;
-  transition: 0.3s;
   width: 100%;
+  transition: background 0.3s;
+  color: white;
 }
 
 .social-login.google {
   background: #db4437;
-  color: white;
 }
 
 .social-login.linkedin {
   background: #0077b5;
-  color: white;
 }
 
-.social-login.twitter {
-  background: #1da1f2;
-  color: white;
-}
-
+.social-login.twitter,
 .social-login.instagram {
-  background: #e4405f;
-  color: white;
+  display: none; /* Hide Twitter & Instagram */
 }
 
 .social-login:hover {
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
-.scoutjar-logo {
-  height: 34px; /* Keep it proportional */
-  width: auto;
-}
-
-/* Sidebar and Content Wrapper */
+/* Dashboard */
 .dashboard-wrapper {
   display: flex;
-  margin-top: 60px; /* Pushes content down below the fixed header */
-  height: calc(100vh - 60px); /* Adjusts for header height */
+  margin-top: 60px;
+  height: calc(100vh - 60px);
 }
 
-/* Sidebar (Left) */
+/* Sidebar */
 .recruiter-sidebar {
   width: 250px;
-  background-color: #f8f9fa;
+  background-color: #f9f9fb;
   padding: 20px;
   border-right: 1px solid #ddd;
   height: 100%;
   position: fixed;
-  top: 60px; /* Align below the fixed navbar */
+  top: 60px;
   left: 0;
   overflow-y: auto;
 }
 
-/* Sidebar Links */
 .recruiter-sidebar ul {
   list-style: none;
   padding: 0;
@@ -234,241 +143,39 @@
 
 .recruiter-sidebar ul li a {
   text-decoration: none;
-  color: #004182;
+  color: var(--accent-color);
   font-weight: bold;
   transition: color 0.3s;
 }
 
 .recruiter-sidebar ul li a:hover {
-  color: #30a14e;
+  color: var(--primary-color);
 }
 
-/* Recruiter Main Content */
 .recruiter-content {
   flex: 1;
   padding: 20px;
-  margin-left: 270px; /* Pushes main content to the right so it's beside the sidebar */
+  margin-left: 270px;
 }
 
-/* Sign Out Button Styling */
-.signout-button {
-  background: none;
-  border: none;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  transition: color 0.3s;
-}
-
-.signout-button:hover {
-  color: #30a14e;
-}
-
-/* Talent Filter Component Styles */
-.talent-filter-container {
-  background: white;
-  padding: 20px;
-  margin: 20px auto;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-width: 900px;
-}
-
-.talent-filter-container h2 {
-  margin-top: 0;
-  color: #004182;
-  text-align: center;
-}
-
-.filter-row {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  margin-bottom: 10px;
-}
-
-.filter-field {
-  flex: 1 1 30%;
-  min-width: 200px;
-  margin-right: 10px;
-}
-
-.filter-field label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-.filter-field input,
-.filter-field select {
+/* Buttons */
+.form-button {
   width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.filter-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-top: 20px;
-}
-
-/* Talent Results Styles */
-.talent-results {
-  background: #fff;
-  padding: 20px;
-  margin: 20px auto;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-width: 900px;
-}
-
-.talent-results h3 {
-  color: #004182;
-  text-align: center;
-}
-
-.talent-result-item {
-  border-bottom: 1px solid #ccc;
-  padding: 10px 0;
-}
-
-.talent-result-item:last-child {
-  border-bottom: none;
-}
-
-/* Talent Results Table Styles */
-.talent-results-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-.talent-results-table th,
-.talent-results-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
-}
-
-.talent-results-table th {
-  background-color: #004182;
-  color: white;
-  font-weight: bold;
-}
-
-.talent-results-table tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
-.talent-results-table tr:hover {
-  background-color: #ddd;
-}
-
-/* Table styling for Talent Results */
-/* Table styling for Talent Results */
-.results-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  table-layout: fixed;
-}
-
-.results-table th,
-.results-table td {
   padding: 10px;
-  border: 1px solid #ccc;
-  text-align: left;
-  word-wrap: break-word;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
 }
 
-.results-table th {
-  background-color: #004182;
-  color: #fff;
+.form-button:hover {
+  background-color: var(--hover-color);
 }
 
-.results-table tr:nth-child(even) {
-  background-color: #f3f2ef;
-}
-
-/* Spinner container centers the spinner */
-.spinner-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-}
-
-/* Spinner styles */
-.spinner {
-  border: 8px solid #f3f3f3; /* Light grey background */
-  border-top: 8px solid #004182; /* Blue color for the spinner */
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  animation: spin 1s linear infinite;
-}
-
-/* Keyframes for the spin animation */
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* Job Posts Container */
-.job-posts-container {
-  background: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  margin: 20px auto;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-width: 900px;
-}
-
-/* Job Posts List */
-.job-posts-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-/* Individual Job Post Item */
-.job-post-item {
-  border-bottom: 1px solid #ddd;
-  padding: 15px 0;
-}
-
-.job-post-item:last-child {
-  border-bottom: none;
-}
-
-/* Job Post Title */
-.job-post-item h3 {
-  color: #004182;
-  margin-bottom: 5px;
-}
-
-/* Job Post Paragraphs */
-.job-post-item p {
-  margin: 5px 0;
-  line-height: 1.5;
-}
-
-.form-title {
-  text-align: center;
-  color: #004182;
-  margin-bottom: 20px;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
+/* Form Elements */
 .form-label {
   display: block;
   margin-bottom: 5px;
@@ -487,133 +194,93 @@
   gap: 10px;
 }
 
-.salary-input {
-  flex: 1;
-}
-
-.form-button {
-  width: 100%;
-  padding: 10px;
-  background-color: #004182;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s;
-}
-
-.form-button:hover {
-  background-color: #30a14e;
-}
-
-.talent-content {
-  flex: 1;
+/* Talent Filter and Results */
+.talent-filter-container,
+.talent-results,
+.job-posts-container {
+  background: white;
   padding: 20px;
-  margin-left: 270px; /* Adjust this value to align with your sidebar width */
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: white;
-  padding: 2rem;
+  margin: 20px auto;
   border-radius: 10px;
-  width: 90%;
-  max-width: 600px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  box-shadow: 0 4px 8px rgba(107, 71, 220, 0.2);
+  max-width: 900px;
 }
 
-.animated-fade-in {
-  animation: fadeInScale 0.3s ease-out;
-}
-
-@keyframes fadeInScale {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: white;
-  padding: 2rem;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 600px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-.animated-fade-in {
-  animation: fadeInScale 0.3s ease-out;
-}
-
-@keyframes fadeInScale {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.loading-spinner {
+.talent-filter-container h2,
+.talent-results h3,
+.job-post-item h3 {
   text-align: center;
-  font-style: italic;
-  padding: 1rem;
-  font-size: 1.1rem;
+  color: var(--primary-color);
 }
 
-.applicant-count {
+.talent-results-table,
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.talent-results-table th,
+.talent-results-table td,
+.results-table th,
+.results-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.talent-results-table th,
+.results-table th {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
+  justify-content: center;
   align-items: center;
-  margin: 10px 0;
+  z-index: 1000;
 }
 
-.applicant-count .label {
-  font-weight: bold;
-  margin-right: 6px;
-  font-size: 1rem;
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 0 15px rgba(107, 71, 220, 0.2);
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-.applicant-count .count {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: #007aff; /* or a bold accent color like green, red, etc. */
-  background: #e6f0ff;
-  padding: 4px 10px;
-  border-radius: 8px;
-  transition: transform 0.2s ease;
+.animated-fade-in {
+  animation: fadeInScale 0.3s ease-out;
 }
 
-.applicant-count .count:hover {
-  transform: scale(1.1);
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
+/* Loading Spinner */
+.spinner {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid var(--primary-color);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
 
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

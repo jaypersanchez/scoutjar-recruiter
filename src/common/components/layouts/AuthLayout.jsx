@@ -7,9 +7,9 @@ export default function AuthLayout() {
     <FlexBox className="bg-secondary">
       <FlexCol className="min-h-screen px-1 select-none min-w-[375px] max-w-7xl lg:max-w-2xl flex-1 mx-auto">
         <FlexBox className="gap-2 justify-center px-4 pt-4 md:px-6 lg:justify-start">
-          <img src="/logo.png" className="w-8 rounded-md" />
+          <img src="/lookk.png" className="w-8 rounded-md" />
           <p className="text-xl font-bold leading-9 uppercase tracking-tight text-center text-primary lg:text-start">
-            ScoutJar
+            LooKK
           </p>
         </FlexBox>
         <section className="flex flex-col justify-center flex-grow w-full max-w-md lg:max-w-md xl:max-w-lg px-4 py-6 mx-auto">
