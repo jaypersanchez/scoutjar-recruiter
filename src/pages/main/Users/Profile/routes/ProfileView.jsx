@@ -35,7 +35,7 @@ export default function ProfileView() {
   const navigate = useNavigate();
 
   const [ssoData, setSsoData] = useState({
-    photo: "/logo.png",
+    photo: "/lookk.png",
     name: "FirstName LastName",
     email: "firstname.lastname@gmail.com",
   });

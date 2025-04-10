@@ -215,15 +215,15 @@ export default function SSOLogin({ onSignIn }) {
         <Button
   key={index}
   variant="outline"
-  className="border-[var(--primary)] h-11 hover:bg-[var(--accent)] text-[var(--accent)] hover:text-white"
+  className="border-[var(--primary)] h-11 hover:bg-[var(--accent)] text-[var(--accent)] hover:text-white flex items-center justify-center gap-2"
   onClick={() => handleSSOLogin(data.slug)}
 >
+  <data.icon className="w-6 h-6 text-black" />
+  <p className="text-sm font-bold tracking-wider uppercase text-black">
+    {data.slug}
+  </p>
+</Button>
 
-          <data.icon className="w-8 h-8" />
-          <p className="text-sm font-bold tracking-wider uppercase">
-            {data.slug}
-          </p>
-        </Button>
       ))}
   </div>
   );

@@ -95,12 +95,43 @@ export default function AndrewAssistant() {
             </div>
           )}
 
-          {noResults && (
-            <div className="mt-4 p-3 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded">
-              <p className="font-semibold mb-2">No matches found.</p>
-              <p className="text-sm">{suggestion}</p>
-            </div>
-          )}
+          
+
+           {/* ✅ Correct noResults Display Here */}
+           {noResults && suggestion && (
+  <div className="mt-4 p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded-lg space-y-2">
+    <p className="font-bold text-lg mb-2">No matches found.</p>
+
+    {/* Properly check if suggestion is a JSON string and parse it */}
+    {typeof suggestion === "string" ? (() => {
+      try {
+        const parsed = JSON.parse(suggestion);
+        return (
+          <>
+            {parsed.advice && (
+              <p className="text-sm">{parsed.advice}</p>
+            )}
+            {parsed.refined_prompt && (
+              <p className="text-sm font-semibold">{parsed.refined_prompt}</p>
+            )}
+          </>
+        );
+      } catch (error) {
+        return <p className="text-sm text-red-600">Suggestion format error.</p>;
+      }
+    })() : (
+      <>
+        {suggestion.advice && (
+          <p className="text-sm">{suggestion.advice}</p>
+        )}
+        {suggestion.refined_prompt && (
+          <p className="text-sm font-semibold">{suggestion.refined_prompt}</p>
+        )}
+      </>
+    )}
+  </div>
+)}
+
 
 
           <div className="mt-4 space-y-3 overflow-y-auto">
