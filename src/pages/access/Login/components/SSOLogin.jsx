@@ -209,19 +209,22 @@ export default function SSOLogin({ onSignIn }) {
 
   return (
     <div className="grid grid-cols-2 gap-2">
-      {SSOProviders.map((data, index) => (
+    {SSOProviders
+      .filter((data) => data.slug !== "twitter" && data.slug !== "instagram")
+      .map((data, index) => (
         <Button
-          key={index}
-          variant="outline"
-          className="border-gray-300 h-11 hover:bg-gray-300/70"
-          onClick={() => handleSSOLogin(data.slug)}
-        >
-          <data.icon className="w-8 h-8" />
-          <p className="text-sm font-bold tracking-wider uppercase">
-            {data.slug}
-          </p>
-        </Button>
+  key={index}
+  variant="outline"
+  className="border-[var(--primary)] h-11 hover:bg-[var(--accent)] text-[var(--accent)] hover:text-white flex items-center justify-center gap-2"
+  onClick={() => handleSSOLogin(data.slug)}
+>
+  <data.icon className="w-6 h-6 text-black" />
+  <p className="text-sm font-bold tracking-wider uppercase text-black">
+    {data.slug}
+  </p>
+</Button>
+
       ))}
-    </div>
+  </div>
   );
 }

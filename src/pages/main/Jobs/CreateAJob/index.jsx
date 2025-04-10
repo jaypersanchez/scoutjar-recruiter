@@ -2,37 +2,35 @@ import React, { useState, useEffect } from "react";
 import "@/common/styles/App.css";
 
 export default function CreateAJob() {
-  // Retrieve user info from sessionStorage (if needed)
   const storedUser = sessionStorage.getItem("sso-login");
   const user = storedUser ? JSON.parse(storedUser) : null;
   const recruiterId = user ? user.recruiter_id : null;
 
-  // Optional callback when the job is successfully posted
-  const onSubmit = () => {
-    console.log("Job posted successfully");
-  };
-
   const [formData, setFormData] = useState({
     job_title: "",
     job_description: "",
-    required_skills: "", // comma-separated list
-    experience_level: "",  // Now selected from dropdown
+    required_skills: "",
+    experience_level: "",
     employment_type: "Full-time",
     salary_min: "",
     salary_max: "",
     work_mode: "Remote",
-    country: "",
-    city: "",
+    locations: [], // ✅ now locations (city, country)
   });
 
-  // New state to hold job title options from the reference table
   const [jobTitleOptions, setJobTitleOptions] = useState([]);
+  const [locationOptions, setLocationOptions] = useState([]);
+  const [locationSearchInput, setLocationSearchInput] = useState("");
+  const [filteredLocationOptions, setFilteredLocationOptions] = useState([]);
 
-  const [countries, setCountries] = useState([]);
-  const [cities, setCities] = useState([]);
-  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
+  const [suggestedSkills, setSuggestedSkills] = useState("");
+  const [loadingSuggestSkills, setLoadingSuggestSkills] = useState(false);
 
-  // Fetch job title options from your backend on mount
+  const baseUrl = `
+  ${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
+
+  const AIbaseUrl = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}`
+  
   useEffect(() => {
     fetch(`${baseUrl}/job-titles`)
       .then((res) => res.json())
@@ -40,25 +38,16 @@ export default function CreateAJob() {
       .catch((err) => console.error("Error fetching job titles:", err));
   }, []);
 
-  // Fetch the list of countries when the component mounts
   useEffect(() => {
-    fetch(`${baseUrl}/locations/countries`)
+    fetch(`${baseUrl}/locations/all`)
       .then((res) => res.json())
-      .then((data) => setCountries(data))
-      .catch((err) => console.error("Error fetching countries:", err));
+      .then((data) => {
+        setLocationOptions(data);
+        setFilteredLocationOptions(data);
+      })
+      .catch((err) => console.error("Error fetching locations:", err));
   }, []);
 
-  // When a country is selected, update formData and fetch its cities
-  const handleCountryChange = async (e) => {
-    const selectedCountry = e.target.value;
-    setFormData((prev) => ({ ...prev, country: selectedCountry, city: "" }));
-    fetch(`${baseUrl}/locations/cities?country=${selectedCountry}`)
-      .then((res) => res.json())
-      .then((data) => setCities(data))
-      .catch((err) => console.error("Error fetching cities:", err));
-  };
-
-  // Standard change handler for other inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -67,8 +56,6 @@ export default function CreateAJob() {
     }));
   };
 
-  // Handler for when a job title is selected from the dropdown.
-  // It finds the selected job title object and updates both job_title and job_description.
   const handleJobTitleSelect = (e) => {
     const selectedId = e.target.value;
     const selectedOption = jobTitleOptions.find(
@@ -81,17 +68,65 @@ export default function CreateAJob() {
     }));
   };
 
-  // When the form is submitted, build the job object and post it to the API
+  const handleLocationToggle = (location) => {
+    setFormData((prev) => ({
+      ...prev,
+      locations: prev.locations.includes(location)
+        ? prev.locations.filter((loc) => loc !== location)
+        : [...prev.locations, location],
+    }));
+  };
+
+  const handleLocationSearch = (input) => {
+    setLocationSearchInput(input);
+    const lowerInput = input.toLowerCase();
+    const filtered = locationOptions.filter((loc) =>
+      loc.label.toLowerCase().includes(lowerInput)
+    );
+    setFilteredLocationOptions(filtered);
+  };
+
+  const handleSuggestSkills = async () => {
+    if (!formData.job_title && !formData.job_description) {
+      alert("Please enter Job Title and/or Description first.");
+      return;
+    }
+
+    setLoadingSuggestSkills(true);
+
+    try {
+      const response = await fetch(`${AIbaseUrl}/suggest-skills`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          job_title: formData.job_title,
+          job_description: formData.job_description
+        })
+      });
+
+      const data = await response.json();
+      if (response.ok && data.suggested_skills) {
+        setSuggestedSkills(data.suggested_skills);
+      } else {
+        console.error("Error suggesting skills:", data);
+        alert("Failed to suggest skills.");
+      }
+    } catch (error) {
+      console.error("Error suggesting skills:", error);
+      alert("Failed to suggest skills.");
+    } finally {
+      setLoadingSuggestSkills(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Combine city and country into a location string (if both are provided)
     const location =
-      formData.city && formData.country
-        ? `${formData.city}, ${formData.country}`
+      formData.locations.length > 0
+        ? formData.locations.join("; ")
         : "";
 
-    // Prepare jobData object to match the API request body
     const jobData = {
       recruiter_id: recruiterId,
       job_title: formData.job_title,
@@ -107,7 +142,6 @@ export default function CreateAJob() {
       ],
       work_mode: formData.work_mode,
       location: location,
-      // date_posted will default to CURRENT_TIMESTAMP on the database side
     };
 
     try {
@@ -119,7 +153,6 @@ export default function CreateAJob() {
       const data = await response.json();
       if (response.ok) {
         console.log("Job posted successfully:", data);
-        if (onSubmit) onSubmit(data);
       } else {
         console.error("Error posting job:", data);
       }
@@ -131,14 +164,14 @@ export default function CreateAJob() {
   return (
     <div className="max-w-4xl mx-auto p-4">
       <h2 className="text-2xl font-bold mb-12 uppercase text-center text-primary">
-        Create a new job
+        Create a New Job
       </h2>
+
       <form onSubmit={handleSubmit}>
-        {/* Job Title Dropdown */}
+        
+        {/* Job Title */}
         <div className="form-group">
-          <label className="form-label" htmlFor="job_title">
-            Job Title
-          </label>
+          <label className="form-label">Job Title</label>
           <select
             id="job_title"
             name="job_title"
@@ -158,44 +191,63 @@ export default function CreateAJob() {
           </select>
         </div>
 
-        {/* Job Description - Displayed automatically when a job title is selected */}
+        {/* Job Description */}
         <div className="form-group">
-          <label className="form-label" htmlFor="job_description">
-            Job Description
-          </label>
+          <label className="form-label">Job Description</label>
           <textarea
-            id="job_description"
             name="job_description"
             className="form-input"
             value={formData.job_description}
             onChange={handleChange}
             required
-            rows={8}
-            placeholder="Add more details about the responsibilities, requirements, and expectations for this role..."
+            rows={6}
+            placeholder="Add job responsibilities, requirements, etc."
           ></textarea>
         </div>
 
-        {/* The rest of your fields remain unchanged */}
+        {/* Required Skills */}
         <div className="form-group">
-          <label className="form-label" htmlFor="required_skills">
-            Required Skills (comma-separated)
-          </label>
+          <label className="form-label">Required Skills (comma-separated)</label>
           <input
             type="text"
-            id="required_skills"
             name="required_skills"
             className="form-input"
             value={formData.required_skills}
             onChange={handleChange}
+            placeholder="e.g., React, Node.js, SQL"
           />
+
+          {/* Suggest Skills Button */}
+          <button
+            type="button"
+            className="form-button mt-2"
+            onClick={handleSuggestSkills}
+            disabled={loadingSuggestSkills}
+          >
+            {loadingSuggestSkills ? "Loading..." : "Suggest Skills with AI"}
+          </button>
+
+          {/* Show Suggested Skills */}
+          {suggestedSkills && (
+            <div className="mt-2 text-gray-600">
+              <div><strong>Suggested:</strong> {suggestedSkills}</div>
+              <button
+                type="button"
+                className="form-button mt-1"
+                onClick={() =>
+                  setFormData((prev) => ({ ...prev, required_skills: suggestedSkills }))
+                }
+              >
+                Accept Suggested Skills
+              </button>
+            </div>
+          )}
         </div>
 
+        {/* Experience Level */}
         <div className="form-group">
-          <label className="form-label" htmlFor="experience_level">
-            Experience Level
-          </label>
+          <label className="form-label">Experience Level</label>
           <select
-            id="experience_level"
             name="experience_level"
             className="form-input"
             value={formData.experience_level}
@@ -209,12 +261,10 @@ export default function CreateAJob() {
           </select>
         </div>
 
+        {/* Employment Type */}
         <div className="form-group">
-          <label className="form-label" htmlFor="employment_type">
-            Employment Type
-          </label>
+          <label className="form-label">Employment Type</label>
           <select
-            id="employment_type"
             name="employment_type"
             className="form-input"
             value={formData.employment_type}
@@ -228,6 +278,7 @@ export default function CreateAJob() {
           </select>
         </div>
 
+        {/* Salary Range */}
         <div className="form-group">
           <label className="form-label">Salary Range</label>
           <div className="salary-range-inputs">
@@ -252,12 +303,10 @@ export default function CreateAJob() {
           </div>
         </div>
 
+        {/* Work Mode */}
         <div className="form-group">
-          <label className="form-label" htmlFor="work_mode">
-            Work Mode
-          </label>
+          <label className="form-label">Work Mode</label>
           <select
-            id="work_mode"
             name="work_mode"
             className="form-input"
             value={formData.work_mode}
@@ -269,52 +318,41 @@ export default function CreateAJob() {
           </select>
         </div>
 
+        {/* Locations Multi-Select */}
         <div className="form-group">
-          <label className="form-label" htmlFor="country">
-            Country
-          </label>
-          <select
-            id="country"
-            name="country"
-            className="form-input"
-            value={formData.country}
-            onChange={handleCountryChange}
-            required
-          >
-            <option value="">Select a country</option>
-            {countries.map((country, index) => (
-              <option key={index} value={country}>
-                {country}
-              </option>
+          <label className="form-label">Select Locations</label>
+          <input
+            type="text"
+            placeholder="Search locations..."
+            value={locationSearchInput}
+            onChange={(e) => handleLocationSearch(e.target.value)}
+            className="form-input mb-2"
+          />
+          <div style={{ maxHeight: "150px", overflowY: "auto", border: "1px solid #ccc", padding: "10px" }}>
+            {filteredLocationOptions.map((loc, index) => (
+              <label key={index} style={{ display: "block", marginBottom: "5px" }}>
+                <input
+                  type="checkbox"
+                  value={loc.label}
+                  checked={formData.locations.includes(loc.label)}
+                  onChange={() => handleLocationToggle(loc.label)}
+                />
+                {loc.label}
+              </label>
             ))}
-          </select>
+          </div>
+          {formData.locations.length > 0 && (
+            <div style={{ marginTop: "10px", fontSize: "0.9em", color: "gray" }}>
+              Selected Locations: {formData.locations.join(", ")}
+            </div>
+          )}
         </div>
 
-        <div className="form-group">
-          <label className="form-label" htmlFor="city">
-            City
-          </label>
-          <select
-            id="city"
-            name="city"
-            className="form-input"
-            value={formData.city}
-            onChange={handleChange}
-            required
-            disabled={!formData.country}
-          >
-            <option value="">Select a city</option>
-            {cities.map((city, index) => (
-              <option key={index} value={city}>
-                {city}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <button type="submit" className="form-button">
+        {/* Submit */}
+        <button type="submit" className="form-button mt-6">
           Post Job
         </button>
+
       </form>
     </div>
   );

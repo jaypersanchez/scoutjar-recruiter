@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import AndrewMessageModal from "./AndrewMessageModal"
+import AndrewMessageModal from "./AndrewMessageModal";
 
 export default function AndrewAssistant() {
   const [isOpen, setIsOpen] = useState(false);
@@ -7,10 +7,13 @@ export default function AndrewAssistant() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedTalent, setSelectedTalent] = useState(null);
+  const [noResults, setNoResults] = useState(false);
+  const [suggestion, setSuggestion] = useState("");
 
   const toggleAssistant = () => setIsOpen(!isOpen);
-  //const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
+
   const AIbaseURL = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}`;
+
   useEffect(() => {
     setQuery("");
     setResults([]);
@@ -18,6 +21,9 @@ export default function AndrewAssistant() {
 
   const handleSearch = async () => {
     setLoading(true);
+    setNoResults(false);
+    setSuggestion("");
+
     try {
       const response = await fetch(`${AIbaseURL}/search-talents`, {
         method: "POST",
@@ -25,7 +31,13 @@ export default function AndrewAssistant() {
         body: JSON.stringify({ query }),
       });
       const data = await response.json();
+
       setResults(data.matches || []);
+
+      if ((data.matches || []).length === 0 && data.suggestion) {
+        setNoResults(true);
+        setSuggestion(data.suggestion);
+      }
     } catch (err) {
       console.error("Error searching talents:", err);
       alert("Error searching talents.");
@@ -39,14 +51,14 @@ export default function AndrewAssistant() {
       {isOpen ? (
         <div className="bg-white shadow-lg rounded-lg w-[400px] h-[500px] p-4 border border-gray-200 flex flex-col">
           <div className="flex justify-between items-center mb-2">
-            <h2 className="text-lg font-semibold">Ask Andrew 🤖</h2>
+            <h2 className="text-lg font-semibold">Ask Lookk 🤖</h2>
             <button onClick={toggleAssistant} className="text-gray-500 hover:text-gray-800">✖</button>
           </div>
 
           <textarea
             className="w-full border rounded p-2 text-sm"
             rows={3}
-            placeholder="Ask Andrew to find talents..."
+            placeholder="Ask Lookk to find talents..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -56,12 +68,66 @@ export default function AndrewAssistant() {
             onClick={handleSearch}
             disabled={loading}
           >
-            {loading ? "Searching..." : "Search Talent"}
+            {loading ? "LOOKing..." : "Lookk for Talents"}
           </button>
 
           {loading && (
             <div className="flex justify-center items-center mt-4">
               <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
+          )}
+
+          {/* ✅ Correct noResults Display Here */}
+          {noResults && suggestion && (
+            <div className="mt-4 p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded-lg space-y-2">
+              <p className="font-bold text-lg mb-2">No matches found.</p>
+
+              {typeof suggestion === "string" ? (() => {
+                try {
+                  const parsed = JSON.parse(suggestion);
+                  return (
+                    <>
+                      {parsed.advice && (
+                        <p className="text-sm">{parsed.advice}</p>
+                      )}
+                      {parsed.refined_prompt && (
+                        <>
+                          <p className="text-sm mt-2 italic text-gray-600">
+                            (Click the suggestion below to use it.)
+                          </p>
+                          <p
+                            className="text-sm font-semibold text-blue-700 underline cursor-pointer mt-1 hover:text-blue-900"
+                            onClick={() => setQuery(parsed.refined_prompt)}
+                          >
+                            {parsed.refined_prompt}
+                          </p>
+                        </>
+                      )}
+                    </>
+                  );
+                } catch (error) {
+                  return <p className="text-sm text-red-600">Suggestion format error.</p>;
+                }
+              })() : (
+                <>
+                  {suggestion.advice && (
+                    <p className="text-sm">{suggestion.advice}</p>
+                  )}
+                  {suggestion.refined_prompt && (
+                    <>
+                      <p className="text-sm mt-2 italic text-gray-600">
+                        (Click the suggestion below to use it.)
+                      </p>
+                      <p
+                        className="text-sm font-semibold text-blue-700 underline cursor-pointer mt-1 hover:text-blue-900"
+                        onClick={() => setQuery(suggestion.refined_prompt)}
+                      >
+                        {suggestion.refined_prompt}
+                      </p>
+                    </>
+                  )}
+                </>
+              )}
             </div>
           )}
 
@@ -74,7 +140,7 @@ export default function AndrewAssistant() {
                   talent_id: talent.talent_id,
                   user_id: talent.user_id,
                   full_name: talent.name || "Talent",
-                  ...talent
+                  ...talent,
                 })}
               >
                 <div className="font-medium">{talent.name}</div>
@@ -103,7 +169,7 @@ export default function AndrewAssistant() {
           onClick={toggleAssistant}
           className="bg-blue-700 text-white px-4 py-2 rounded-full shadow-md hover:bg-blue-800"
         >
-          💬 Ask Andrew
+          💬 Ask Lookk
         </button>
       )}
     </div>

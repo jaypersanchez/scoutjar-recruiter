@@ -135,11 +135,13 @@ export default function LoginForm({ onSignIn }) {
           </Link>
         </div>
         <Button
-          type="submit"
-          variant="secondary"
-          disabled={loading}
-          className="w-full h-12 ml-auto text-lg font-semibold tracking-wider uppercase bg-primary mobile:w-1/3 text-neutral-100 hover:bg-primary/90"
-        >
+  type="submit"
+  variant="secondary"
+  disabled={loading}
+  className="w-full h-12 ml-auto text-lg font-semibold tracking-wider uppercase bg-[var(--primary)] hover:bg-[var(--accent)] text-neutral-100 mobile:w-1/3"
+>
+
+
           {loading ? "Signing in..." : "Sign in"}
         </Button>
       </div>
