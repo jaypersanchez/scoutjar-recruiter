@@ -15,22 +15,20 @@ export default function CreateAJob() {
     salary_min: "",
     salary_max: "",
     work_mode: "Remote",
-    locations: [], // ✅ now locations (city, country)
+    locations: [],
   });
 
   const [jobTitleOptions, setJobTitleOptions] = useState([]);
   const [locationOptions, setLocationOptions] = useState([]);
   const [locationSearchInput, setLocationSearchInput] = useState("");
   const [filteredLocationOptions, setFilteredLocationOptions] = useState([]);
-
   const [suggestedSkills, setSuggestedSkills] = useState("");
   const [loadingSuggestSkills, setLoadingSuggestSkills] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
-  const baseUrl = `
-  ${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
+  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
+  const AIbaseUrl = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}`;
 
-  const AIbaseUrl = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}`
-  
   useEffect(() => {
     fetch(`${baseUrl}/job-titles`)
       .then((res) => res.json())
@@ -122,10 +120,9 @@ export default function CreateAJob() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const location =
-      formData.locations.length > 0
-        ? formData.locations.join("; ")
-        : "";
+    const location = formData.locations.length > 0
+      ? formData.locations.join("; ")
+      : "";
 
     const jobData = {
       recruiter_id: recruiterId,
@@ -153,6 +150,23 @@ export default function CreateAJob() {
       const data = await response.json();
       if (response.ok) {
         console.log("Job posted successfully:", data);
+        setShowToast(true);
+        setTimeout(() => {
+          setShowToast(false);
+        }, 3000);
+
+        // Reset form after posting
+        setFormData({
+          job_title: "",
+          job_description: "",
+          required_skills: "",
+          experience_level: "",
+          employment_type: "Full-time",
+          salary_min: "",
+          salary_max: "",
+          work_mode: "Remote",
+          locations: [],
+        });
       } else {
         console.error("Error posting job:", data);
       }
@@ -162,13 +176,20 @@ export default function CreateAJob() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-12 uppercase text-center text-primary">
+    <div className="max-w-7xl mx-auto p-8">
+      <h2 className="text-2xl font-bold mb-10 uppercase text-center text-primary">
         Create a New Job
       </h2>
 
-      <form onSubmit={handleSubmit}>
-        
+      {/* Toast Notification */}
+      {showToast && (
+        <div className="fixed top-6 right-6 bg-green-500 text-white font-semibold px-6 py-4 rounded-lg shadow-lg z-50 animate-bounce">
+          ✅ Job posted successfully! View it in Job Listings or My Jobs.
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="create-job-form">
+
         {/* Job Title */}
         <div className="form-group">
           <label className="form-label">Job Title</label>

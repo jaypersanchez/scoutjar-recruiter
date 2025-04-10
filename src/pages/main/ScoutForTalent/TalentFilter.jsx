@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import TalentResults from "./TalentResults";
+import Button from "@/components/common/Button";
 import "@/common/styles/App.css";
 
 function TalentFilter() {
-  //const [minSalary, setMinSalary] = useState("");
-  //const [maxSalary, setMaxSalary] = useState("");
   const [skills, setSkills] = useState("");
   const [jobTitle, setJobTitle] = useState("");
   const [jobDescription, setJobDescription] = useState("");
@@ -15,25 +14,24 @@ function TalentFilter() {
     const normalizedJobTitle = jobTitle
       ? jobTitle.toLowerCase().replace(/[\s]+/g, ",")
       : null;
-  
+
     const filterData = {
-      //min_salary: minSalary ? parseFloat(minSalary) : 0,
-      //max_salary: maxSalary ? parseFloat(maxSalary) : null,
       required_skill: skills || null,
       job_title: normalizedJobTitle,
       job_description: jobDescription || null,
       match_percentage: matchThreshold || 0,
     };
+
     const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
     console.log("Sending API Request with:", filterData);
-  
+
     try {
       const response = await fetch(`${baseUrl}/talent-profiles`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(filterData),
       });
-  
+
       const data = await response.json();
       console.log("API Response Received:", data);
       setResults(data || []);
@@ -42,11 +40,8 @@ function TalentFilter() {
       alert("Error executing query.");
     }
   };
-  
 
   const handleClearFilters = () => {
-    setMinSalary("");
-    setMaxSalary("");
     setSkills("");
     setJobTitle("");
     setJobDescription("");
@@ -57,34 +52,20 @@ function TalentFilter() {
 
   return (
     <div className="talent-filter-container">
-      <h2>Talent Filter</h2>
-      <form>
-        {/* Row 1: Salary & Skills */}
-        <div className="filter-row">
-          <div className="filter-field" style={{ width: "100%" }}>
-          {/*<label>Salary Range: ${minSalary || 0} – ${maxSalary || 200000}</label>*/}
-          {/*<div style={{ display: "flex", gap: "1rem" }}>
-              <div className="filter-field">
-                <label>Min Salary:</label>
-                <input
-                  type="number"
-                  value={minSalary}
-                  onChange={(e) => setMinSalary(e.target.value)}
-                  placeholder="e.g. 50000"
-                />
-              </div>
-              <div className="filter-field">
-                <label>Max Salary:</label>
-                <input
-                  type="number"
-                  value={maxSalary}
-                  onChange={(e) => setMaxSalary(e.target.value)}
-                  placeholder="e.g. 120000"
-                />
-              </div>
-            </div>*/}
-          </div>
+      <h2 className="text-center text-primary text-2xl font-bold mb-6">Talent Filter</h2>
+      <form className="filter-form">
 
+        {/* Stack 1: Job Title and Skills */}
+        <div className="filter-row">
+          <div className="filter-field">
+            <label>Job Title:</label>
+            <input
+              type="text"
+              value={jobTitle}
+              onChange={(e) => setJobTitle(e.target.value)}
+              placeholder="e.g. Backend Engineer"
+            />
+          </div>
           <div className="filter-field">
             <label>Required Skill:</label>
             <input
@@ -96,30 +77,22 @@ function TalentFilter() {
           </div>
         </div>
 
-        {/* Row 2: Job Title & Description */}
-        <div className="filter-row">
+        {/* Stack 2: Job Description */}
+        <div className="filter-column">
           <div className="filter-field">
-            <label>Job Title:</label>
-            <input
-              type="text"
-              value={jobTitle}
-              onChange={(e) => setJobTitle(e.target.value)}
-              placeholder="e.g. Backend Engineer"
-            />
-          </div>
-          <div className="filter-field" style={{ width: "100%" }}>
             <label>Job Description:</label>
             <textarea
               value={jobDescription}
               onChange={(e) => setJobDescription(e.target.value)}
               placeholder="e.g. Develop REST APIs with Express and PostgreSQL"
               rows="4"
+              style={{ width: "100%" }}
             />
           </div>
         </div>
 
-        {/* Row 3: Match Threshold */}
-        <div className="filter-row">
+        {/* Stack 3: Match Threshold */}
+        <div className="filter-column">
           <div className="filter-field">
             <label>Match Threshold: {matchThreshold}%</label>
             <input
@@ -131,20 +104,25 @@ function TalentFilter() {
             />
           </div>
         </div>
+
+        {/* Stack 4: Buttons Centered */}
+        {/* Stack 4: Buttons Centered */}
+        <div className="flex justify-center gap-4 mt-8">
+          <Button onClick={handleExecuteQuery}>
+            Query for Talents
+          </Button>
+          <Button variant="secondary" onClick={handleClearFilters}>
+            Clear Filters
+          </Button>
+        </div>
+
+
       </form>
 
-      <div className="filter-buttons">
-        <button type="button" onClick={handleExecuteQuery}>
-          Query for Talents
-        </button>
-        <button type="button" onClick={handleClearFilters} className="clear-button">
-          Clear Filters
-        </button>
-      </div>
-
+      {/* Results */}
       <TalentResults
         results={results}
-        selectedLocations={[]} // Always empty since location is not used here
+        selectedLocations={[]} // always empty for now
         availabilityFilter={""}
         workModeFilter={""}
         matchThreshold={matchThreshold}

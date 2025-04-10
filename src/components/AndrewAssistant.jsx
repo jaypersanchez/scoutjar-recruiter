@@ -106,8 +106,10 @@ export default function AndrewAssistant() {
                     </>
                   );
                 } catch (error) {
+                  console.error("Suggestion parsing error:", error);
                   return <p className="text-sm text-red-600">Suggestion format error.</p>;
                 }
+                
               })() : (
                 <>
                   {suggestion.advice && (
