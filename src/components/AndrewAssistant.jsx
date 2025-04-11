@@ -47,7 +47,7 @@ export default function AndrewAssistant() {
   };
 
   return (
-    <div style={{ position: "fixed", bottom: 20, right: 20, zIndex: 1000 }}>
+    <div style={{ position: "fixed", bottom: 20, right: 760, zIndex: 1000 }}>
       {isOpen ? (
         <div className="bg-white shadow-lg rounded-lg w-[400px] h-[500px] p-4 border border-gray-200 flex flex-col">
           <div className="flex justify-between items-center mb-2">

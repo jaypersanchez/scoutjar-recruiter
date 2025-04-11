@@ -108,3 +108,18 @@
   background-color: #fafafa;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
 }
+
+.chat-send-button {
+  background-color: #4f46e5; /* Indigo color */
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.chat-send-button:hover {
+  background-color: #4338ca; /* Darker indigo when hover */
+}
+

@@ -4,6 +4,7 @@ import { Button } from "@/common/components/ui";
 import { Navbar, Sidebar } from "@/common/components/navigations";
 import { Footer } from "@/common/components/layouts";
 import { IoIosArrowUp } from "react-icons/io";
+import  GlobalChatSidebar  from "@/components/GlobalChatSidebar"
 
 export default function PageLayout() {
   const [isVisible, setIsVisible] = useState(false);
@@ -35,6 +36,10 @@ export default function PageLayout() {
         <div className="flex-1 px-6 py-10 mt-16 overflow-hidden desktop:px-10 bg-secondary">
           <Outlet />
         </div>
+
+        {/* Floating Chat Sidebar (always visible after login) */}
+        <GlobalChatSidebar />
+
         <Footer className="justify-end" />
 
         {isVisible && (
