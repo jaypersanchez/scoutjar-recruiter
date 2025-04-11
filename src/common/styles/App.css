@@ -123,3 +123,19 @@
   background-color: #4338ca; /* Darker indigo when hover */
 }
 
+.minimize-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+}
+.minimize-button:hover {
+  color: #d1d5db; /* Light gray hover */
+}
+

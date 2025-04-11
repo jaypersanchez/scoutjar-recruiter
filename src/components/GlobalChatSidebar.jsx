@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import ChatWindow from "@/components/ChatWindow"; // We'll build this too
+import ChatWindow from "@/components/ChatWindow";
 
 export default function GlobalChatSidebar() {
   const storedUser = sessionStorage.getItem("sso-login");
@@ -10,6 +10,7 @@ export default function GlobalChatSidebar() {
   const [chatList, setChatList] = useState([]);
   const [activeChat, setActiveChat] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [minimized, setMinimized] = useState(false); // <-- ADD
 
   const fetchChatList = async () => {
     if (!recruiterId) return;
@@ -29,7 +30,7 @@ export default function GlobalChatSidebar() {
 
   useEffect(() => {
     fetchChatList();
-    const interval = setInterval(fetchChatList, 10000); // Refresh every 10 sec
+    const interval = setInterval(fetchChatList, 10000);
     return () => clearInterval(interval);
   }, [recruiterId]);
 
@@ -37,7 +38,6 @@ export default function GlobalChatSidebar() {
 
   return (
     <>
-      {/* Chat Window Floating to the left */}
       {activeChat && (
         <ChatWindow
           recruiterId={recruiterId}
@@ -46,28 +46,33 @@ export default function GlobalChatSidebar() {
         />
       )}
 
-      {/* Sidebar itself */}
-      <div className="fixed bottom-4 right-4 w-80 bg-white border border-gray-300 rounded-lg shadow-lg z-40 flex flex-col h-[500px]">
-        <div className="bg-primary text-white p-3 rounded-t-lg font-bold text-center">
-          Messages
+      {/* Sidebar */}
+      <div className={`fixed bottom-4 right-4 ${minimized ? "h-14" : "h-[500px]"} w-80 bg-white border border-gray-300 rounded-lg shadow-lg z-40 flex flex-col`}>
+        <div className="bg-gray-800 text-white p-3 rounded-t-lg font-bold flex justify-between items-center">
+          <span>Messages</span>
+          <button onClick={() => setMinimized(!minimized)} className="minimize-button">
+            {minimized ? "▢" : "–"}
+          </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-3 text-sm">
-          {loading ? (
-            <p>Loading chats...</p>
-          ) : (
-            chatList.map((chat) => (
-              <div
-                key={chat.talent_id}
-                onClick={() => setActiveChat(chat)}
-                className="p-2 hover:bg-gray-100 rounded cursor-pointer mb-2"
-              >
-                <div className="font-semibold">{chat.talent_name}</div>
-                <div className="text-xs text-gray-500 truncate">{chat.last_message}</div>
-              </div>
-            ))
-          )}
-        </div>
+        {!minimized && (
+          <div className="flex-1 overflow-y-auto p-3 text-sm">
+            {loading ? (
+              <p>Loading chats...</p>
+            ) : (
+              chatList.map((chat) => (
+                <div
+                  key={chat.talent_id}
+                  onClick={() => setActiveChat(chat)}
+                  className="p-2 hover:bg-gray-100 rounded cursor-pointer mb-2"
+                >
+                  <div className="font-semibold">{chat.talent_name}</div>
+                  <div className="text-xs text-gray-500 truncate">{chat.last_message}</div>
+                </div>
+              ))
+            )}
+          </div>
+        )}
       </div>
     </>
   );
