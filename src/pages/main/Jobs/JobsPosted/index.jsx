@@ -165,12 +165,12 @@ export default function JobsPosted() {
               </div>
 
               <button onClick={() => askAndrew(job)} disabled={andrewLoading === job.job_id}>
-                {andrewLoading === job.job_id ? "Andrew is searching..." : "✨ Ask Andrew, our AI Agent, to find you a match"}
+                {andrewLoading === job.job_id ? "LooKKing..." : "✨ Ask LooKK, our AI Agent, to find you a match"}
               </button>
 
               {andrewMatches[job.job_id] && (
                 <div className="andrew-results">
-                  <h4>Andrew found {andrewMatches[job.job_id].length} match(es):</h4>
+                  <h4>By LooKKing we found {andrewMatches[job.job_id].length} match(es):</h4>
                   <table className="match-table">
                     <thead>
                       <tr>
