@@ -1,7 +1,5 @@
 # LooKK
 
-
-
 ## Overview
 ScoutJar is a recruitment platform that connects **Talent Scouts** (recruiters) with **Talents** (job seekers). The application allows users to sign in using social authentication and navigate to their respective dashboards.
 
