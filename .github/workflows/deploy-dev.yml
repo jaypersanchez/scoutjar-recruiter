@@ -1,0 +1,35 @@
+name: Deploy Scoutjar-Recruiter to Dev Server
+
+on:
+  push:
+    branches:
+      - mvp0.1
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+
+    - name: Deploy to GCP server
+      uses: appleboy/ssh-action@v0.1.6
+      with:
+        host: ${{ secrets.GCP_SERVER_IP }}
+        username: ${{ secrets.GCP_DEPLOY_USER }}
+        key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
+        script: |
+          mkdir -p ~/projects/scoutjar
+          cd ~/projects/scoutjar
+          if [ ! -d "scoutjar-recruiter" ]; then
+            git clone https://github.com/jaypersanchez/scoutjar-recruiter.git
+          fi
+          cd scoutjar-recruiter
+          git pull origin mvp0.1
+          npm install
+          pm2 delete scoutjar-recruiter || true
+          pm2 start npm --name scoutjar-recruiter -- run start
+          pm2 save
