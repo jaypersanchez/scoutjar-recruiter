@@ -79,59 +79,48 @@ export default function AndrewAssistant() {
 
           {/* ✅ Correct noResults Display Here */}
           {noResults && suggestion && (
-            <div className="mt-4 p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded-lg space-y-2">
-              <p className="font-bold text-lg mb-2">No matches found.</p>
+  <div className="mt-4 p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded-lg space-y-2">
+    <p className="font-bold text-lg mb-2">No matches found.</p>
 
-              {typeof suggestion === "string" ? (() => {
-                try {
-                  const parsed = JSON.parse(suggestion);
-                  return (
-                    <>
-                      {parsed.advice && (
-                        <p className="text-sm">{parsed.advice}</p>
-                      )}
-                      {parsed.refined_prompt && (
-                        <>
-                          <p className="text-sm mt-2 italic text-gray-600">
-                            (Click the suggestion below to use it.)
-                          </p>
-                          <p
-                            className="text-sm font-semibold text-blue-700 underline cursor-pointer mt-1 hover:text-blue-900"
-                            onClick={() => setQuery(parsed.refined_prompt)}
-                          >
-                            {parsed.refined_prompt}
-                          </p>
-                        </>
-                      )}
-                    </>
-                  );
-                } catch (error) {
-                  console.error("Suggestion parsing error:", error);
-                  return <p className="text-sm text-red-600">Suggestion format error.</p>;
-                }
-                
-              })() : (
-                <>
-                  {suggestion.advice && (
-                    <p className="text-sm">{suggestion.advice}</p>
-                  )}
-                  {suggestion.refined_prompt && (
-                    <>
-                      <p className="text-sm mt-2 italic text-gray-600">
-                        (Click the suggestion below to use it.)
-                      </p>
-                      <p
-                        className="text-sm font-semibold text-blue-700 underline cursor-pointer mt-1 hover:text-blue-900"
-                        onClick={() => setQuery(suggestion.refined_prompt)}
-                      >
-                        {suggestion.refined_prompt}
-                      </p>
-                    </>
-                  )}
-                </>
-              )}
-            </div>
-          )}
+    {(() => {
+      try {
+        const parsed = typeof suggestion === "string" ? JSON.parse(suggestion) : suggestion;
+        return (
+          <>
+            {parsed.advice && (
+              <p className="text-sm">{parsed.advice}</p>
+            )}
+            {parsed.refined_prompt && (
+              <>
+                <p className="text-sm mt-2 italic text-gray-600">
+                  (Click the suggestion below to use it.)
+                </p>
+                <p
+                  className="text-sm font-semibold text-blue-700 underline cursor-pointer mt-1 hover:text-blue-900"
+                  onClick={() => setQuery(parsed.refined_prompt)}
+                >
+                  {parsed.refined_prompt}
+                </p>
+              </>
+            )}
+          </>
+        );
+      } catch (error) {
+        console.error("Suggestion parsing error:", error);
+        // ❗ fallback cleanly if suggestion is not JSON
+        return (
+          <p
+            className="text-sm font-semibold text-blue-700 mt-2 underline cursor-pointer hover:text-blue-900"
+            onClick={() => setQuery(suggestion)}
+          >
+            {suggestion}
+          </p>
+        );
+      }
+    })()}
+  </div>
+)}
+
 
           <div className="mt-4 space-y-3 overflow-y-auto">
             {results.map((talent) => (
