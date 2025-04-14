@@ -15,21 +15,13 @@ jobs:
       with:
         persist-credentials: false
 
-    - name: Deploy to GCP server
+    - name: SSH into server and run deploy script
       uses: appleboy/ssh-action@v0.1.6
       with:
         host: ${{ secrets.GCP_SERVER_IP }}
         username: ${{ secrets.GCP_DEPLOY_USER }}
         key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
         script: |
-          mkdir -p ~/projects/scoutjar
-          cd ~/projects/scoutjar
-          if [ ! -d "scoutjar-recruiter" ]; then
-            git clone https://github.com/jaypersanchez/scoutjar-recruiter.git
-          fi
-          cd scoutjar-recruiter
-          git pull origin mvp0.1
-          npm install
-          pm2 delete scoutjar-recruiter || true
-          pm2 start npm --name scoutjar-recruiter -- run start
-          pm2 save
+          cd ~/projects/scoutjar/scoutjar-recruiter
+          chmod +x run-dev.sh
+          ./run-dev.sh
