@@ -11,4 +11,11 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    allowedHosts: [
+      'localhost',   // still allow localhost
+      'lookk.ai',    // your production domain
+      'www.lookk.ai' // if you want www version too
+    ]
+  },
 });

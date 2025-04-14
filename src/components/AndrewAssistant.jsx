@@ -52,7 +52,7 @@ export default function AndrewAssistant() {
         <div className="bg-white shadow-lg rounded-lg w-[400px] h-[500px] p-4 border border-gray-200 flex flex-col">
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-lg font-semibold">Ask Lookk 🤖</h2>
-            <button onClick={toggleAssistant} className="text-gray-500 hover:text-gray-800">✖</button>
+            <button onClick={toggleAssistant} className="text-gray-500 hover:text-gray-800">&times;</button>
           </div>
 
           <textarea
@@ -77,50 +77,58 @@ export default function AndrewAssistant() {
             </div>
           )}
 
-          {/* ✅ Correct noResults Display Here */}
           {noResults && suggestion && (
-  <div className="mt-4 p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded-lg space-y-2">
-    <p className="font-bold text-lg mb-2">No matches found.</p>
+            <div className="mt-4 p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded-lg space-y-2">
+              <p className="font-bold text-lg mb-2">No matches found.</p>
+              {(() => {
+                try {
+                  let parsed = suggestion;
+                  if (typeof suggestion === "string" && suggestion.trim().startsWith("{")) {
+                    parsed = JSON.parse(suggestion);
+                  }
 
-    {(() => {
-      try {
-        const parsed = typeof suggestion === "string" ? JSON.parse(suggestion) : suggestion;
-        return (
-          <>
-            {parsed.advice && (
-              <p className="text-sm">{parsed.advice}</p>
-            )}
-            {parsed.refined_prompt && (
-              <>
-                <p className="text-sm mt-2 italic text-gray-600">
-                  (Click the suggestion below to use it.)
-                </p>
-                <p
-                  className="text-sm font-semibold text-blue-700 underline cursor-pointer mt-1 hover:text-blue-900"
-                  onClick={() => setQuery(parsed.refined_prompt)}
-                >
-                  {parsed.refined_prompt}
-                </p>
-              </>
-            )}
-          </>
-        );
-      } catch (error) {
-        console.error("Suggestion parsing error:", error);
-        // ❗ fallback cleanly if suggestion is not JSON
-        return (
-          <p
-            className="text-sm font-semibold text-blue-700 mt-2 underline cursor-pointer hover:text-blue-900"
-            onClick={() => setQuery(suggestion)}
-          >
-            {suggestion}
-          </p>
-        );
-      }
-    })()}
-  </div>
-)}
+                  if (parsed && typeof parsed === "object") {
+                    return (
+                      <>
+                        {parsed.advice && <p className="text-sm">{parsed.advice}</p>}
+                        {parsed.refined_prompt && (
+                          <>
+                            <p className="text-sm mt-2 italic text-gray-600">(Click the suggestion below to use it.)</p>
+                            <p
+                              className="text-sm font-semibold text-blue-700 underline cursor-pointer mt-1 hover:text-blue-900"
+                              onClick={() => setQuery(parsed.refined_prompt)}
+                            >
+                              {parsed.refined_prompt}
+                            </p>
+                          </>
+                        )}
+                      </>
+                    );
+                  }
 
+                  return (
+                    <p
+                      className="text-sm font-semibold text-blue-700 mt-2 underline cursor-pointer hover:text-blue-900"
+                      onClick={() => setQuery(suggestion)}
+                    >
+                      {suggestion}
+                    </p>
+                  );
+
+                } catch (error) {
+                  console.error("Suggestion parsing error:", error);
+                  return (
+                    <p
+                      className="text-sm font-semibold text-blue-700 mt-2 underline cursor-pointer hover:text-blue-900"
+                      onClick={() => setQuery(suggestion)}
+                    >
+                      {suggestion}
+                    </p>
+                  );
+                }
+              })()}
+            </div>
+          )}
 
           <div className="mt-4 space-y-3 overflow-y-auto">
             {results.map((talent) => (
