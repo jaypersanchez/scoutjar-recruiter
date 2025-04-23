@@ -47,6 +47,7 @@ function TalentFilter() {
       const data = await response.json();
       console.log("API Response Received:", data);
       setResults(data.matches || []);
+
       const transformed = (data.matches || []).map((item) => ({
         talent_id: item.talent_id,
         full_name: item.name || item.full_name || "N/A",
@@ -56,16 +57,17 @@ function TalentFilter() {
         skills: Array.isArray(item.skills) ? item.skills : [],
         work_preferences: typeof item.work_preferences === "object" ? item.work_preferences : {},
         availability: item.availability || "Unknown",
-        // Include anything else for modal/details if needed
+        match_score: parseFloat(item.match_score) || 0,
+        explanation: item.explanation || "No explanation provided.",
         bio: item.bio || "",
         experience: item.experience || "",
         education: item.education || "",
         years_experience: parseFloat(item.years_experience) || 0,
         resume: item.resume || "",
       }));
+      
+
       setResults(transformed);
-      
-      
       
     } catch (error) {
       console.error("Error executing query:", error);
