@@ -24,16 +24,27 @@ function TalentFilter() {
         console.error("Failed to fetch job titles:", err);
       }
     };
-  
     fetchJobTitles();
   }, []);
-  
+
+  const handleSuggestSkills = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}/suggest-skills`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ job_title: jobTitle, job_description: jobDescription }),
+      });
+      const data = await response.json();
+      if (data.suggested_skills) {
+        setSkills(data.suggested_skills);
+      }
+    } catch (err) {
+      console.error("Error fetching suggested skills:", err);
+    }
+  };
 
   const handleExecuteQuery = async () => {
-    const normalizedJobTitle = jobTitle
-      ? jobTitle.toLowerCase().replace(/[\s]+/g, ",")
-      : null;
-
+    const normalizedJobTitle = jobTitle ? jobTitle.toLowerCase().replace(/\s+/g, ",") : null;
     const filterData = {
       required_skill: skills || null,
       job_title: normalizedJobTitle,
@@ -44,12 +55,10 @@ function TalentFilter() {
     };
 
     const baseUrl = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}`;
-    console.log("Sending API Request with:", filterData);
-
     setLoading(true);
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 120000); // match Flask timeout
+      const timeout = setTimeout(() => controller.abort(), 120000);
 
       const response = await fetch(`${baseUrl}/ai-match-talents`, {
         method: "POST",
@@ -60,8 +69,6 @@ function TalentFilter() {
 
       clearTimeout(timeout);
       const data = await response.json();
-      console.log("API Response Received:", data);
-
       const transformed = (data.matches || []).map((item) => ({
         talent_id: item.talent_id,
         full_name: item.name || item.full_name || "N/A",
@@ -79,9 +86,7 @@ function TalentFilter() {
         years_experience: parseFloat(item.years_experience) || 0,
         resume: item.resume || "",
       }));
-
       setResults(transformed);
-
     } catch (error) {
       console.error("Error executing query:", error);
       alert("Error executing query. This may take time due to AI processing.");
@@ -98,7 +103,6 @@ function TalentFilter() {
     setIndustryExperience("");
     setYearsExperience(0);
     setResults([]);
-    console.log("🔹 Filters cleared.");
   };
 
   return (
@@ -108,103 +112,67 @@ function TalentFilter() {
         <div className="filter-row">
           <div className="filter-field">
             <label>Job Title:</label>
-            <input
-  list="job-titles"
-  type="text"
-  value={jobTitle}
-  onChange={(e) => setJobTitle(e.target.value)}
-  placeholder="e.g. Backend Engineer"
-/>
-<datalist id="job-titles">
-  {jobTitles.map((title) => (
-    <option key={title} value={title} />
-  ))}
-</datalist>
-
+            <input list="job-titles" type="text" value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} placeholder="e.g. Backend Engineer" />
+            <datalist id="job-titles">
+              {jobTitles.map((title) => (
+                <option key={title} value={title} />
+              ))}
+            </datalist>
           </div>
           <div className="filter-field">
             <label>Required Skill:</label>
-            <input
-              type="text"
-              value={skills}
-              onChange={(e) => setSkills(e.target.value)}
-              placeholder="e.g. JavaScript"
-            />
+            <input type="text" value={skills} onChange={(e) => setSkills(e.target.value)} placeholder="e.g. JavaScript, SQL, Docker" />
+            <button
+              type="button"
+              onClick={handleSuggestSkills}
+              disabled={!jobTitle.trim() || !jobDescription.trim()}
+              style={{
+                marginTop: "0.5rem",
+                padding: "0.4rem 1rem",
+                backgroundColor: "#007bff",
+                color: "white",
+                border: "none",
+                borderRadius: "6px",
+                cursor: !jobTitle.trim() || !jobDescription.trim() ? "not-allowed" : "pointer",
+              }}
+            >
+              Suggest Skills
+            </button>
           </div>
         </div>
-
         <div className="filter-column">
           <div className="filter-field">
             <label>Required Experience:</label>
-            <textarea
-              value={jobDescription}
-              onChange={(e) => setJobDescription(e.target.value)}
-              placeholder="e.g. Develop REST APIs with Express and PostgreSQL"
-              rows="4"
-              style={{ width: "100%" }}
-            />
+            <textarea value={jobDescription} onChange={(e) => setJobDescription(e.target.value)} placeholder="e.g. Develop REST APIs with Express and PostgreSQL" rows="4" style={{ width: "100%" }} />
           </div>
         </div>
-
         <div className="filter-row">
           <div className="filter-field">
             <label>Industry Experience:</label>
-            <input
-              type="text"
-              value={industryExperience}
-              onChange={(e) => setIndustryExperience(e.target.value)}
-              placeholder="e.g. IT, Finance"
-            />
+            <input type="text" value={industryExperience} onChange={(e) => setIndustryExperience(e.target.value)} placeholder="e.g. IT, Finance" />
           </div>
           <div className="filter-field">
             <label>Years of Experience:</label>
-            <input
-              type="number"
-              min="0"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              value={yearsExperience === 0 ? "" : yearsExperience}
-              onChange={(e) => {
-                const parsed = parseInt(e.target.value, 10);
-                setYearsExperience(isNaN(parsed) ? 0 : parsed);
-              }}
-              placeholder="e.g. 3"
-            />
+            <input type="number" min="0" value={yearsExperience === 0 ? "" : yearsExperience} onChange={(e) => setYearsExperience(parseInt(e.target.value) || 0)} placeholder="e.g. 3" />
           </div>
         </div>
-
         <div className="filter-column">
           <div className="filter-field">
             <label>Match Threshold: {matchThreshold}%</label>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={matchThreshold}
-              onChange={(e) => setMatchThreshold(Number(e.target.value))}
-            />
+            <input type="range" min="0" max="100" value={matchThreshold} onChange={(e) => setMatchThreshold(Number(e.target.value))} />
           </div>
         </div>
-
         <div className="flex justify-center gap-4 mt-8">
           <Button onClick={handleExecuteQuery}>Query for Talents</Button>
           <Button variant="secondary" onClick={handleClearFilters}>Clear Filters</Button>
         </div>
       </form>
-
       {loading && (
         <div className="text-center mt-6">
           <p className="text-primary font-medium">⏳ Matching talents... Please wait, this may take up to 2 minutes.</p>
         </div>
       )}
-
-      <TalentResults
-        results={results}
-        selectedLocations={[]}
-        availabilityFilter={""}
-        workModeFilter={""}
-        matchThreshold={matchThreshold}
-      />
+      <TalentResults results={results} selectedLocations={[]} availabilityFilter={""} workModeFilter={""} matchThreshold={matchThreshold} />
     </div>
   );
 }
