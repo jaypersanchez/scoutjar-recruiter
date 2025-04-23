@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import TalentResults from "./TalentResults";
 import Button from "@/components/common/Button";
 import "@/common/styles/App.css";
@@ -13,7 +13,6 @@ function TalentFilter() {
   const [yearsExperience, setYearsExperience] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  
   const handleExecuteQuery = async () => {
     const normalizedJobTitle = jobTitle
       ? jobTitle.toLowerCase().replace(/[\s]+/g, ",")
@@ -46,7 +45,6 @@ function TalentFilter() {
       clearTimeout(timeout);
       const data = await response.json();
       console.log("API Response Received:", data);
-      setResults(data.matches || []);
 
       const transformed = (data.matches || []).map((item) => ({
         talent_id: item.talent_id,
@@ -65,10 +63,9 @@ function TalentFilter() {
         years_experience: parseFloat(item.years_experience) || 0,
         resume: item.resume || "",
       }));
-      
 
       setResults(transformed);
-      
+
     } catch (error) {
       console.error("Error executing query:", error);
       alert("Error executing query. This may take time due to AI processing.");
