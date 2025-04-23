@@ -122,7 +122,7 @@ export default function ShortlistedCandidates() {
           onClick={() => setViewMode("ai")}
           className={`px-4 py-2 rounded ${viewMode === "ai" ? "bg-purple-600 text-white" : "bg-gray-200"}`}
         >
-          🤖 AI Shortlist
+          🤖 Talent Filter Shortlist
         </button>
       </div>
 

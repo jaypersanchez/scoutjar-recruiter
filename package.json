@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start":"vite --host",
-    "dev": "eslint . && vite",
+    "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"

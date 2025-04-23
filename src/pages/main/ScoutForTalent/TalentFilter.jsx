@@ -13,6 +13,7 @@ function TalentFilter() {
   const [yearsExperience, setYearsExperience] = useState(0);
   const [loading, setLoading] = useState(false);
   const [jobTitles, setJobTitles] = useState([]);
+  const [suggestingSkills, setSuggestingSkills] = useState(false);
 
   useEffect(() => {
     const fetchJobTitles = async () => {
@@ -28,6 +29,7 @@ function TalentFilter() {
   }, []);
 
   const handleSuggestSkills = async () => {
+    setSuggestingSkills(true);
     try {
       const response = await fetch(`${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}/suggest-skills`, {
         method: "POST",
@@ -40,8 +42,11 @@ function TalentFilter() {
       }
     } catch (err) {
       console.error("Error fetching suggested skills:", err);
+    } finally {
+      setSuggestingSkills(false);
     }
   };
+  
 
   const handleExecuteQuery = async () => {
     const normalizedJobTitle = jobTitle ? jobTitle.toLowerCase().replace(/\s+/g, ",") : null;
@@ -123,21 +128,32 @@ function TalentFilter() {
             <label>Required Skill:</label>
             <input type="text" value={skills} onChange={(e) => setSkills(e.target.value)} placeholder="e.g. JavaScript, SQL, Docker" />
             <button
-              type="button"
-              onClick={handleSuggestSkills}
-              disabled={!jobTitle.trim() || !jobDescription.trim()}
-              style={{
-                marginTop: "0.5rem",
-                padding: "0.4rem 1rem",
-                backgroundColor: "#007bff",
-                color: "white",
-                border: "none",
-                borderRadius: "6px",
-                cursor: !jobTitle.trim() || !jobDescription.trim() ? "not-allowed" : "pointer",
-              }}
-            >
-              Suggest Skills
-            </button>
+  type="button"
+  onClick={handleSuggestSkills}
+  disabled={!jobTitle.trim() || !jobDescription.trim() || suggestingSkills}
+  style={{
+    marginTop: "0.5rem",
+    padding: "0.4rem 1rem",
+    backgroundColor: "#007bff",
+    color: "white",
+    border: "none",
+    borderRadius: "6px",
+    cursor: !jobTitle.trim() || !jobDescription.trim() ? "not-allowed" : "pointer",
+    display: "flex",
+    alignItems: "center",
+    gap: "0.5rem",
+  }}
+>
+  {suggestingSkills ? (
+    <>
+      <span className="loader" style={{ width: "14px", height: "14px", border: "2px solid white", borderTop: "2px solid transparent", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
+      Suggesting...
+    </>
+  ) : (
+    "Suggest Skills"
+  )}
+</button>
+
           </div>
         </div>
         <div className="filter-column">

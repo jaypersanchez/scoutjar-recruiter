@@ -13,6 +13,7 @@ function TalentResults({ results }) {
     return { badge: "D", color: "#a9a9a9", icon: "🐢" };
   }
 
+  const [selectedTalent, setSelectedTalent] = useState(null);
   const [shortlistStatus, setShortlistStatus] = useState({});
   const [isShortlisting, setIsShortlisting] = useState({});
   const baseUrl = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}`;
@@ -82,51 +83,59 @@ function TalentResults({ results }) {
               <td>{profile.work_preferences?.work_mode}</td>
               <td>{profile.availability}</td>
               <td onClick={(e) => e.stopPropagation()}>
-  {(() => {
-    const { badge, color, icon } = getBadgeInfo(profile.match_score);
-    return (
-      <>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <span style={{ color, fontWeight: "bold" }}>
-            {icon} {profile.match_score}% <small>({badge})</small>
-          </span>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleAiShortlist(profile.talent_id);
-            }}
-            disabled={isShortlisting[profile.talent_id]}
-            style={{
-              fontSize: "11px",
-              backgroundColor: "#4c51bf",
-              color: "white",
-              padding: "2px 6px",
-              borderRadius: "4px",
-              border: "none",
-              cursor: "pointer"
-            }}
-          >
-            {isShortlisting[profile.talent_id] ? "..." : "📌"}
-          </button>
-        </div>
-        <small>{profile.explanation}</small>
-        {shortlistStatus[profile.talent_id] && (
-          <div style={{ fontSize: "11px", color: "#4c51bf", marginTop: "2px" }}>
-            {shortlistStatus[profile.talent_id]}
-          </div>
-        )}
-      </>
-    );
-  })()}
-</td>
-
-              
+                {(() => {
+                  const { badge, color, icon } = getBadgeInfo(profile.match_score);
+                  return (
+                    <>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <span style={{ color, fontWeight: "bold" }}>
+                          {icon} {profile.match_score}% <small>({badge})</small>
+                        </span>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAiShortlist(profile.talent_id);
+                          }}
+                          disabled={isShortlisting[profile.talent_id]}
+                          style={{
+                            fontSize: "11px",
+                            backgroundColor: "#4c51bf",
+                            color: "white",
+                            padding: "2px 6px",
+                            borderRadius: "4px",
+                            border: "none",
+                            cursor: "pointer"
+                          }}
+                        >
+                          {isShortlisting[profile.talent_id] ? "..." : "📌"}
+                        </button>
+                      </div>
+                      <small>{profile.explanation}</small>
+                      {shortlistStatus[profile.talent_id] && (
+                        <div style={{ fontSize: "11px", color: "#4c51bf", marginTop: "2px" }}>
+                          {shortlistStatus[profile.talent_id]}
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
+  
+      {/* ✅ Conditionally render the Talent Detail Modal */}
+      {selectedTalent && (
+        <TalentDetailModal
+          applicant={selectedTalent}
+          onClose={() => setSelectedTalent(null)}
+          showShortlist={false}
+        />
+      )}
     </div>
   );
+  
 }
 
 export default TalentResults;
