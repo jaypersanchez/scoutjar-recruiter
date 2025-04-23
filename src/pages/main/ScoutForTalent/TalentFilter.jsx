@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TalentResults from "./TalentResults";
 import Button from "@/components/common/Button";
 import "@/common/styles/App.css";
@@ -12,6 +12,22 @@ function TalentFilter() {
   const [industryExperience, setIndustryExperience] = useState("");
   const [yearsExperience, setYearsExperience] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [jobTitles, setJobTitles] = useState([]);
+
+  useEffect(() => {
+    const fetchJobTitles = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}/job-titles/all`);
+        const data = await response.json();
+        setJobTitles(data || []);
+      } catch (err) {
+        console.error("Failed to fetch job titles:", err);
+      }
+    };
+  
+    fetchJobTitles();
+  }, []);
+  
 
   const handleExecuteQuery = async () => {
     const normalizedJobTitle = jobTitle
@@ -93,11 +109,18 @@ function TalentFilter() {
           <div className="filter-field">
             <label>Job Title:</label>
             <input
-              type="text"
-              value={jobTitle}
-              onChange={(e) => setJobTitle(e.target.value)}
-              placeholder="e.g. Backend Engineer"
-            />
+  list="job-titles"
+  type="text"
+  value={jobTitle}
+  onChange={(e) => setJobTitle(e.target.value)}
+  placeholder="e.g. Backend Engineer"
+/>
+<datalist id="job-titles">
+  {jobTitles.map((title) => (
+    <option key={title} value={title} />
+  ))}
+</datalist>
+
           </div>
           <div className="filter-field">
             <label>Required Skill:</label>
