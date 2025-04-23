@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from "react";
 import TalentDetailModal from "../Candidates/ReviewCandidates/TalentDetailModal";
 
+function getBadgeInfo(score) {
+  const numericScore = Number(score);
+  if (numericScore >= 90) return { badge: "A+", color: "#2e8b57", icon: "🚀" };
+  if (numericScore >= 80) return { badge: "A", color: "#3cb371", icon: "🔥" };
+  if (numericScore >= 70) return { badge: "A−", color: "#66cdaa", icon: "🏎️" };
+  if (numericScore >= 60) return { badge: "B+", color: "#ffd700", icon: "💼" };
+  if (numericScore >= 50) return { badge: "B", color: "#f0e68c", icon: "🔧" };
+  if (numericScore >= 40) return { badge: "C", color: "#ffa07a", icon: "🧠" };
+  return { badge: "D", color: "#a9a9a9", icon: "🐢" };
+}
+
 function TalentResults({ results }) {
   const [currentPage, setCurrentPage] = useState(0);
   const [availabilityFilter, setAvailabilityFilter] = useState("");
@@ -88,42 +99,10 @@ function TalentResults({ results }) {
     setShowDetailModal(false);
   };
 
-  const toggleLocation = (locationValue) => {
-    setSelectedLocations((prev) =>
-      prev.includes(locationValue)
-        ? prev.filter((loc) => loc !== locationValue)
-        : [...prev, locationValue]
-    );
-  };
-
-  const handleLocationSearch = (input) => {
-    setLocationSearchInput(input);
-    const lowerInput = input.toLowerCase();
-    const filtered = locationOptions.filter((loc) =>
-      loc.label.toLowerCase().includes(lowerInput)
-    );
-    setFilteredLocationOptions(filtered);
-  };
-
-  const handleClearFilters = () => {
-    setAvailabilityFilter("");
-    setWorkModeFilter("");
-    setSelectedLocations([]);
-    setLocationSearchInput("");
-    setFilteredLocationOptions(locationOptions);
-    setMinSalaryFilter("");
-    setMaxSalaryFilter("");
-  };
-
   return (
     <div className="talent-results">
       <h3>Search Results</h3>
 
-      <div className="drilldown-filters" style={{ marginBottom: "10px" }}>
-        {/* Existing filters omitted for brevity */}
-      </div>
-
-      {/* Talent Table */}
       <table className="results-table">
         <thead>
           <tr>
@@ -139,31 +118,35 @@ function TalentResults({ results }) {
           </tr>
         </thead>
         <tbody>
-          {currentResults.map((profile) => (
-            <tr
-              key={profile.talent_id}
-              onClick={() => handleRowClick(profile)}
-              style={{ cursor: "pointer" }}
-            >
-              <td>{profile.talent_id}</td>
-              <td>{profile.full_name}</td>
-              <td>{profile.email}</td>
-              <td>${profile.desired_salary}</td>
-              <td>{profile.location}</td>
-              <td>{profile.skills && profile.skills.join(", ")}</td>
-              <td>{profile.work_preferences?.work_mode}</td>
-              <td>{profile.availability}</td>
-              <td>
-                <strong>{profile.match_score}%</strong>
-                <br />
-                <small>{profile.explanation}</small>
-              </td>
-            </tr>
-          ))}
+          {currentResults.map((profile) => {
+            const { badge, color, icon } = getBadgeInfo(profile.match_score);
+            return (
+              <tr
+                key={profile.talent_id}
+                onClick={() => handleRowClick(profile)}
+                style={{ cursor: "pointer" }}
+              >
+                <td>{profile.talent_id}</td>
+                <td>{profile.full_name}</td>
+                <td>{profile.email}</td>
+                <td>${profile.desired_salary}</td>
+                <td>{profile.location}</td>
+                <td>{profile.skills && profile.skills.join(", ")}</td>
+                <td>{profile.work_preferences?.work_mode}</td>
+                <td>{profile.availability}</td>
+                <td>
+                  <span style={{ color, fontWeight: "bold" }}>
+                    {icon} {profile.match_score}% <small>({badge})</small>
+                  </span>
+                  <br />
+                  <small>{profile.explanation}</small>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
 
-      {/* Pagination */}
       <div className="pagination" style={{ marginTop: "10px", textAlign: "center" }}>
         <button onClick={handlePrevious} disabled={currentPage === 0}>
           Previous
@@ -176,7 +159,6 @@ function TalentResults({ results }) {
         </button>
       </div>
 
-      {/* Talent Detail Modal */}
       {showDetailModal && selectedTalent && (
         <TalentDetailModal
           applicant={selectedTalent}
