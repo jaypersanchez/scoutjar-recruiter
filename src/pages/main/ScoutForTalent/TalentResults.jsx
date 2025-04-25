@@ -166,8 +166,10 @@ function TalentResults({ results }) {
             >
               <option value="">All</option>
               <option value="Immediate">Immediate</option>
+              <option value="Two Weeks Notice">Two Weeks Notice</option>
               <option value="1 Month">1 Month</option>
               <option value="2 Months">2 Months</option>
+              <option value="3 Months">3 Months</option>  
             </select>
           </div>
 
