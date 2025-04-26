@@ -132,14 +132,14 @@ export default function Sidebar({ className }) {
       >
         <header className="flex flex-row w-full items-center text-white h-16 mt-2 mb-8">
           <FlexBox className="gap-2 flex-1 pl-2" onClick={() => navigate("/")}>
-            <img className="rounded-md h-8 w-8" src="/logo.png" />
+            <img className="rounded-md h-8 w-8" src="./lookk.png" />
             <p
               className={cn(
                 "text-xl font-bold leading-9 uppercase tracking-tight text-center text-gray-600 lg:text-start",
                 isWrapped ? "hidden group-hover:block" : "block"
               )}
             >
-              ScoutJar
+              LooKK
             </p>
           </FlexBox>
 

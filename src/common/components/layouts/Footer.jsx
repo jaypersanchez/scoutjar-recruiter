@@ -8,7 +8,7 @@ export default function Footer() {
       )}
     >
       <p className="mt-1 text-xs font-semibold leading-5 text-neutral-400">
-        Copyright &copy; ScoutJar {new Date().getFullYear()}
+        Copyright &copy; LooKK {new Date().getFullYear()}
       </p>
     </footer>
   );
