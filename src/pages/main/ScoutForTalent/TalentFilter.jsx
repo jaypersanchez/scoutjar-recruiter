@@ -151,32 +151,44 @@ function TalentFilter() {
               disabled={!jobTitle.trim() || !jobDescription.trim() || suggestingSkills}
               className="form-button"
             >
-              {suggestingSkills ? "Suggesting..." : "Suggest Skills"}
+              {/*suggestingSkills ? "Suggesting..." : "Suggest Skills"*/}
+              {suggestingSkills ? (
+                <span className="animate-looking">👀 Looking......</span>
+              ) : (
+                "Suggest Skills"
+              )}
+
             </button>
           </div>
         </div>
 
         <div className="filter-column">
-  <div className="filter-field">
-    <label>
-      Required Experience:
-      <span
-        className="tooltip"
-        title="Tip: Describe the type of work, industry focus, responsibilities, required skills, and seniority. This helps AI suggest better skills, industry, and experience."
-        style={{ marginLeft: "6px", cursor: "pointer", color: "#4c51bf" }}
-      >
-        ℹ️
-      </span>
-    </label>
-    <textarea
-      value={jobDescription}
-      onChange={(e) => setJobDescription(e.target.value)}
-      placeholder="e.g. Build full-stack recruiting platforms for Human Capital industry clients. Must be able to demo to clients. 2+ years experience acceptable."
-      rows="4"
-      style={{ width: "100%" }}
-    />
-  </div>
-</div>
+        <div className="filter-field">
+          <label>
+            Required Experience:
+            <span
+              className="tooltip"
+              title="Tip for best AI suggestions:
+- Clearly describe technical skills and business context.
+- Mention if it's for recruiting, staffing, human capital, finance, healthcare, etc.
+- Include required years of experience if known.
+
+Example:
+'Building full-stack recruiting platform for Human Capital clients. Need 2+ years exp. in Node.js, PostgreSQL. Must demo to clients.'"
+              style={{ marginLeft: "6px", cursor: "pointer", color: "#4c51bf" }}
+            >
+              ℹ️
+            </span>
+          </label>
+          <textarea
+            value={jobDescription}
+            onChange={(e) => setJobDescription(e.target.value)}
+            placeholder="e.g. Build full-stack recruiting platforms for Human Capital industry clients. Must be able to demo to clients. 2+ years experience acceptable."
+            rows="4"
+            style={{ width: "100%" }}
+          />
+        </div>
+      </div>
 
 
         <div className="filter-row">
