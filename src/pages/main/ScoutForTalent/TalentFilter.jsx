@@ -15,6 +15,17 @@ function TalentFilter() {
   const [jobTitles, setJobTitles] = useState([]);
   const [suggestingSkills, setSuggestingSkills] = useState(false);
 
+  // Auto-suggest after delay
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      if (jobTitle.trim() && jobDescription.trim()) {
+        autoSuggestSkills();
+      }
+    }, 800); // 800ms debounce
+
+    return () => clearTimeout(delay);
+  }, [jobTitle, jobDescription]);
+
   useEffect(() => {
     const fetchJobTitles = async () => {
       try {
@@ -30,7 +41,8 @@ function TalentFilter() {
     fetchJobTitles();
   }, []);
 
-  const handleSuggestSkills = async () => {
+  const autoSuggestSkills = async () => {
+    if (suggestingSkills) return; // prevent double trigger
     setSuggestingSkills(true);
     try {
       const response = await fetch(
@@ -50,6 +62,10 @@ function TalentFilter() {
     } finally {
       setSuggestingSkills(false);
     }
+  };
+
+  const handleSuggestSkills = async () => {
+    await autoSuggestSkills(); // re-use the autoSuggestSkills function
   };
 
   const handleExecuteQuery = async () => {
@@ -131,7 +147,12 @@ function TalentFilter() {
           <div className="filter-field">
             <label>Required Skill:</label>
             <input type="text" value={skills} onChange={(e) => setSkills(e.target.value)} placeholder="e.g. JavaScript, SQL, Docker" />
-            <button type="button" onClick={handleSuggestSkills} disabled={!jobTitle.trim() || !jobDescription.trim() || suggestingSkills} className="form-button">
+            <button
+              type="button"
+              onClick={handleSuggestSkills}
+              disabled={!jobTitle.trim() || !jobDescription.trim() || suggestingSkills}
+              className="form-button"
+            >
               {suggestingSkills ? "Suggesting..." : "Suggest Skills"}
             </button>
           </div>
@@ -140,18 +161,35 @@ function TalentFilter() {
         <div className="filter-column">
           <div className="filter-field">
             <label>Required Experience:</label>
-            <textarea value={jobDescription} onChange={(e) => setJobDescription(e.target.value)} placeholder="e.g. Develop REST APIs with Express and PostgreSQL" rows="4" style={{ width: "100%" }} />
+            <textarea
+              value={jobDescription}
+              onChange={(e) => setJobDescription(e.target.value)}
+              placeholder="e.g. Develop REST APIs with Express and PostgreSQL"
+              rows="4"
+              style={{ width: "100%" }}
+            />
           </div>
         </div>
 
         <div className="filter-row">
           <div className="filter-field">
             <label>Industry Experience:</label>
-            <input type="text" value={industryExperience} onChange={(e) => setIndustryExperience(e.target.value)} placeholder="e.g. IT, Finance" />
+            <input
+              type="text"
+              value={industryExperience}
+              onChange={(e) => setIndustryExperience(e.target.value)}
+              placeholder="e.g. IT, Finance"
+            />
           </div>
           <div className="filter-field">
             <label>Years of Experience:</label>
-            <input type="number" min="0" value={yearsExperience === 0 ? "" : yearsExperience} onChange={(e) => setYearsExperience(parseInt(e.target.value) || 0)} placeholder="e.g. 3" />
+            <input
+              type="number"
+              min="0"
+              value={yearsExperience === 0 ? "" : yearsExperience}
+              onChange={(e) => setYearsExperience(parseInt(e.target.value) || 0)}
+              placeholder="e.g. 3"
+            />
           </div>
         </div>
 
@@ -182,7 +220,13 @@ function TalentFilter() {
         </div>
       )}
 
-      <TalentResults results={results} selectedLocations={[]} availabilityFilter={""} workModeFilter={""} matchThreshold={matchThreshold} />
+      <TalentResults
+        results={results}
+        selectedLocations={[]}
+        availabilityFilter={""}
+        workModeFilter={""}
+        matchThreshold={matchThreshold}
+      />
     </div>
   );
 }
