@@ -15,14 +15,12 @@ function TalentFilter() {
   const [jobTitles, setJobTitles] = useState([]);
   const [suggestingSkills, setSuggestingSkills] = useState(false);
 
-  // Auto-suggest after delay
   useEffect(() => {
     const delay = setTimeout(() => {
       if (jobTitle.trim() && jobDescription.trim()) {
-        autoSuggestSkills();
+        autoSuggestFields();
       }
-    }, 800); // 800ms debounce
-
+    }, 800);
     return () => clearTimeout(delay);
   }, [jobTitle, jobDescription]);
 
@@ -41,12 +39,12 @@ function TalentFilter() {
     fetchJobTitles();
   }, []);
 
-  const autoSuggestSkills = async () => {
-    if (suggestingSkills) return; // prevent double trigger
+  const autoSuggestFields = async () => {
+    if (suggestingSkills) return;
     setSuggestingSkills(true);
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}/suggest-skills`,
+        `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}/suggest-fields`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -54,18 +52,18 @@ function TalentFilter() {
         }
       );
       const data = await response.json();
-      if (data.suggested_skills) {
-        setSkills(data.suggested_skills);
-      }
+      if (data.suggested_skills) setSkills(data.suggested_skills);
+      if (data.industry_experience) setIndustryExperience(data.industry_experience);
+      if (data.years_experience !== undefined) setYearsExperience(data.years_experience);
     } catch (err) {
-      console.error("Error fetching suggested skills:", err);
+      console.error("Error suggesting fields:", err);
     } finally {
       setSuggestingSkills(false);
     }
   };
 
   const handleSuggestSkills = async () => {
-    await autoSuggestSkills(); // re-use the autoSuggestSkills function
+    await autoSuggestFields();
   };
 
   const handleExecuteQuery = async () => {
@@ -145,7 +143,7 @@ function TalentFilter() {
             </datalist>
           </div>
           <div className="filter-field">
-            <label>Required Skill:</label>
+            <label>Required Skills:</label>
             <input type="text" value={skills} onChange={(e) => setSkills(e.target.value)} placeholder="e.g. JavaScript, SQL, Docker" />
             <button
               type="button"
@@ -220,13 +218,7 @@ function TalentFilter() {
         </div>
       )}
 
-      <TalentResults
-        results={results}
-        selectedLocations={[]}
-        availabilityFilter={""}
-        workModeFilter={""}
-        matchThreshold={matchThreshold}
-      />
+      <TalentResults results={results} selectedLocations={[]} availabilityFilter={""} workModeFilter={""} matchThreshold={matchThreshold} />
     </div>
   );
 }
