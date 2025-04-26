@@ -157,17 +157,27 @@ function TalentFilter() {
         </div>
 
         <div className="filter-column">
-          <div className="filter-field">
-            <label>Required Experience:</label>
-            <textarea
-              value={jobDescription}
-              onChange={(e) => setJobDescription(e.target.value)}
-              placeholder="e.g. Develop REST APIs with Express and PostgreSQL"
-              rows="4"
-              style={{ width: "100%" }}
-            />
-          </div>
-        </div>
+  <div className="filter-field">
+    <label>
+      Required Experience:
+      <span
+        className="tooltip"
+        title="Tip: Describe the type of work, industry focus, responsibilities, required skills, and seniority. This helps AI suggest better skills, industry, and experience."
+        style={{ marginLeft: "6px", cursor: "pointer", color: "#4c51bf" }}
+      >
+        ℹ️
+      </span>
+    </label>
+    <textarea
+      value={jobDescription}
+      onChange={(e) => setJobDescription(e.target.value)}
+      placeholder="e.g. Build full-stack recruiting platforms for Human Capital industry clients. Must be able to demo to clients. 2+ years experience acceptable."
+      rows="4"
+      style={{ width: "100%" }}
+    />
+  </div>
+</div>
+
 
         <div className="filter-row">
           <div className="filter-field">
