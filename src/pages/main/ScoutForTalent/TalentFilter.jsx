@@ -16,6 +16,15 @@ function TalentFilter() {
   const [suggestingSkills, setSuggestingSkills] = useState(false);
 
   useEffect(() => {
+    const delay = setTimeout(() => {
+      if (jobTitle.trim() && jobDescription.trim()) {
+        autoSuggestFields();
+      }
+    }, 800);
+    return () => clearTimeout(delay);
+  }, [jobTitle, jobDescription]);
+
+  useEffect(() => {
     const fetchJobTitles = async () => {
       try {
         const response = await fetch(
@@ -30,11 +39,12 @@ function TalentFilter() {
     fetchJobTitles();
   }, []);
 
-  const handleSuggestSkills = async () => {
+  const autoSuggestFields = async () => {
+    if (suggestingSkills) return;
     setSuggestingSkills(true);
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}/suggest-skills`,
+        `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}/suggest-fields`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -42,14 +52,18 @@ function TalentFilter() {
         }
       );
       const data = await response.json();
-      if (data.suggested_skills) {
-        setSkills(data.suggested_skills);
-      }
+      if (data.suggested_skills) setSkills(data.suggested_skills);
+      if (data.industry_experience) setIndustryExperience(data.industry_experience);
+      if (data.years_experience !== undefined) setYearsExperience(data.years_experience);
     } catch (err) {
-      console.error("Error fetching suggested skills:", err);
+      console.error("Error suggesting fields:", err);
     } finally {
       setSuggestingSkills(false);
     }
+  };
+
+  const handleSuggestSkills = async () => {
+    await autoSuggestFields();
   };
 
   const handleExecuteQuery = async () => {
@@ -129,29 +143,61 @@ function TalentFilter() {
             </datalist>
           </div>
           <div className="filter-field">
-            <label>Required Skill:</label>
+            <label>Required Skills:</label>
             <input type="text" value={skills} onChange={(e) => setSkills(e.target.value)} placeholder="e.g. JavaScript, SQL, Docker" />
-            <button type="button" onClick={handleSuggestSkills} disabled={!jobTitle.trim() || !jobDescription.trim() || suggestingSkills} className="form-button">
+            <button
+              type="button"
+              onClick={handleSuggestSkills}
+              disabled={!jobTitle.trim() || !jobDescription.trim() || suggestingSkills}
+              className="form-button"
+            >
               {suggestingSkills ? "Suggesting..." : "Suggest Skills"}
             </button>
           </div>
         </div>
 
         <div className="filter-column">
-          <div className="filter-field">
-            <label>Required Experience:</label>
-            <textarea value={jobDescription} onChange={(e) => setJobDescription(e.target.value)} placeholder="e.g. Develop REST APIs with Express and PostgreSQL" rows="4" style={{ width: "100%" }} />
-          </div>
-        </div>
+  <div className="filter-field">
+    <label>
+      Required Experience:
+      <span
+        className="tooltip"
+        title="Tip: Describe the type of work, industry focus, responsibilities, required skills, and seniority. This helps AI suggest better skills, industry, and experience."
+        style={{ marginLeft: "6px", cursor: "pointer", color: "#4c51bf" }}
+      >
+        ℹ️
+      </span>
+    </label>
+    <textarea
+      value={jobDescription}
+      onChange={(e) => setJobDescription(e.target.value)}
+      placeholder="e.g. Build full-stack recruiting platforms for Human Capital industry clients. Must be able to demo to clients. 2+ years experience acceptable."
+      rows="4"
+      style={{ width: "100%" }}
+    />
+  </div>
+</div>
+
 
         <div className="filter-row">
           <div className="filter-field">
             <label>Industry Experience:</label>
-            <input type="text" value={industryExperience} onChange={(e) => setIndustryExperience(e.target.value)} placeholder="e.g. IT, Finance" />
+            <input
+              type="text"
+              value={industryExperience}
+              onChange={(e) => setIndustryExperience(e.target.value)}
+              placeholder="e.g. IT, Finance"
+            />
           </div>
           <div className="filter-field">
             <label>Years of Experience:</label>
-            <input type="number" min="0" value={yearsExperience === 0 ? "" : yearsExperience} onChange={(e) => setYearsExperience(parseInt(e.target.value) || 0)} placeholder="e.g. 3" />
+            <input
+              type="number"
+              min="0"
+              value={yearsExperience === 0 ? "" : yearsExperience}
+              onChange={(e) => setYearsExperience(parseInt(e.target.value) || 0)}
+              placeholder="e.g. 3"
+            />
           </div>
         </div>
 
