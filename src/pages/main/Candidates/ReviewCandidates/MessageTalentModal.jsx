@@ -48,6 +48,12 @@ export default function MessageTalentModal({ applicant, onClose }) {
     setSending(true);
     setErrorMessage("");
     try {
+      console.log("Sending message payload:", {
+        sender_id: recruiterId,
+        recipient_id: applicant.talent_id,
+        content: message,
+      });
+      
       const response = await fetch(`${baseUrl}/messages/send`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
