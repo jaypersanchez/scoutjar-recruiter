@@ -13,6 +13,8 @@ export default function JobsPosted() {
   const [modalExplanation, setModalExplanation] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [modalLoading, setModalLoading] = useState(false);
+  const [shortlistStatus, setShortlistStatus] = useState({});
+  const [isShortlisting, setIsShortlisting] = useState({});
 
   const storedUser = sessionStorage.getItem("sso-login");
   const user = storedUser ? JSON.parse(storedUser) : null;
@@ -121,6 +123,48 @@ export default function JobsPosted() {
     }
   };
 
+  const handleAiShortlist = async (jobId, talentId) => {
+    const storedUser = sessionStorage.getItem("sso-login");
+    const user = storedUser ? JSON.parse(storedUser) : null;
+    const recruiterId = user?.recruiter_id;
+  
+    if (!recruiterId) {
+      setShortlistStatus((prev) => ({
+        ...prev,
+        [talentId]: "Recruiter not logged in",
+      }));
+      return;
+    }
+  
+    setIsShortlisting((prev) => ({ ...prev, [talentId]: true }));
+  
+    try {
+      const response = await fetch(`${AIbaseUrl}/ai-shortlist`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ recruiter_id: recruiterId, talent_id: talentId }),
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(data.error || "Shortlisting failed");
+      }
+  
+      setShortlistStatus((prev) => ({
+        ...prev,
+        [talentId]: "✅ Added to Talent Filter Shortlist",
+      }));
+    } catch (err) {
+      setShortlistStatus((prev) => ({
+        ...prev,
+        [talentId]: `❌ ${err.message}`,
+      }));
+    } finally {
+      setIsShortlisting((prev) => ({ ...prev, [talentId]: false }));
+    }
+  };
+
   const getBadgeInfo = (score) => {
     const numericScore = Number(score);
     if (numericScore >= 90) return { badge: "A+", color: "#2e8b57", icon: "🚀" };
@@ -197,14 +241,31 @@ export default function JobsPosted() {
                               <td>{match.availability}</td>
                               <td>{(match.skills || []).join(", ")}</td>
                               <td>
-                                <button
-                                  title="Explain this match"
-                                  onClick={() => handleInfoClick(job, match)}
-                                  style={{ border: "none", background: "none", cursor: "pointer" }}
-                                >
-                                  ℹ️
-                                </button>
-                              </td>
+  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+    <button
+      title="Explain this match"
+      onClick={() => handleInfoClick(job, match)}
+      style={{ border: "none", background: "none", cursor: "pointer" }}
+    >
+      ℹ️
+    </button>
+    <button
+      title="Shortlist to Talent Filter"
+      onClick={() => handleAiShortlist(job.job_id, match.talent_id)}
+      disabled={isShortlisting[match.talent_id]}
+      style={{ border: "none", background: "none", cursor: "pointer" }}
+    >
+      📌
+    </button>
+  </div>
+
+  {shortlistStatus[match.talent_id] && (
+    <div style={{ fontSize: "11px", color: "#4c51bf", marginTop: "2px" }}>
+      {shortlistStatus[match.talent_id]}
+    </div>
+  )}
+</td>
+
                             </tr>
                           );
                         })}
