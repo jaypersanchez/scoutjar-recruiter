@@ -4,11 +4,11 @@ import TalentDetailModal from "../Candidates/ReviewCandidates/TalentDetailModal"
 function getBadgeInfo(score) {
   const numericScore = Number(score);
   if (numericScore >= 90) return { badge: "A+", color: "#2e8b57", icon: "🚀" };
-  if (numericScore >= 80) return { badge: "A", color: "#3cb371", icon: "🔥" };
-  if (numericScore >= 70) return { badge: "A−", color: "#66cdaa", icon: "🏎️" };
-  if (numericScore >= 60) return { badge: "B+", color: "#ffd700", icon: "💼" };
-  if (numericScore >= 50) return { badge: "B", color: "#f0e68c", icon: "🔧" };
-  if (numericScore >= 40) return { badge: "C", color: "#ffa07a", icon: "🧐" };
+  if (numericScore >= 70) return { badge: "A", color: "#3cb371", icon: "🔥" };
+  if (numericScore >= 50) return { badge: "A−", color: "#66cdaa", icon: "🏎️" };
+  if (numericScore >= 30) return { badge: "B+", color: "#ffd700", icon: "💼" };
+  if (numericScore >= 20) return { badge: "B", color: "#f0e68c", icon: "🔧" };
+  if (numericScore >= 15) return { badge: "C", color: "#ffa07a", icon: "🧐" };
   return { badge: "D", color: "#a9a9a9", icon: "🐢" };
 }
 
@@ -18,15 +18,16 @@ function TalentResults({ results }) {
   const [selectedLocations, setSelectedLocations] = useState([]);
   const [availabilityFilter, setAvailabilityFilter] = useState("");
   const [workModeFilter, setWorkModeFilter] = useState("");
-  const [filteredResults, setFilteredResults] = useState(results);
   const [selectedTalent, setSelectedTalent] = useState(null);
   const [shortlistStatus, setShortlistStatus] = useState({});
   const [isShortlisting, setIsShortlisting] = useState({});
   const [currentPage, setCurrentPage] = useState(0);
-  const rowsPerPage = 15;
 
   const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
   const AIbaseUrl = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}`;
+
+  const rowsPerPage = 15;
+
   useEffect(() => {
     fetch(`${baseUrl}/locations/all`)
       .then((res) => res.json())
@@ -34,34 +35,29 @@ function TalentResults({ results }) {
       .catch((err) => console.error("Failed to load locations:", err));
   }, []);
 
-  useEffect(() => {
-    const normalize = (str) => (str || "").toLowerCase().replace(/\s+/g, " ").trim();
+  const normalize = (str) => (str || "").toLowerCase().replace(/\s+/g, " ").trim();
 
-    const filtered = results.filter((profile) => {
-      const location = normalize(profile.location);
+  const filteredResults = results.filter((profile) => {
+    const location = normalize(profile.location);
 
-      const matchesLocation =
-        selectedLocations.length === 0
-          ? true
-          : selectedLocations.some((selected) => {
-              const sel = normalize(selected);
-              return location.includes(sel) || sel.includes(location);
-            });
+    const matchesLocation =
+      selectedLocations.length === 0
+        ? true
+        : selectedLocations.some((selected) => {
+            const sel = normalize(selected);
+            return location.includes(sel) || sel.includes(location);
+          });
 
-      const matchesAvailability = availabilityFilter
-        ? normalize(profile.availability) === normalize(availabilityFilter)
-        : true;
+    const matchesAvailability = availabilityFilter
+      ? normalize(profile.availability) === normalize(availabilityFilter)
+      : true;
 
-      const matchesWorkMode = workModeFilter
-        ? normalize(profile.work_preferences?.work_mode) === normalize(workModeFilter)
-        : true;
+    const matchesWorkMode = workModeFilter
+      ? normalize(profile.work_preferences?.work_mode) === normalize(workModeFilter)
+      : true;
 
-      return matchesLocation && matchesAvailability && matchesWorkMode;
-    });
-
-    setFilteredResults(filtered);
-    setCurrentPage(0);
-  }, [results, selectedLocations, availabilityFilter, workModeFilter]);
+    return matchesLocation && matchesAvailability && matchesWorkMode;
+  });
 
   const totalPages = Math.ceil(filteredResults.length / rowsPerPage);
   const startIndex = currentPage * rowsPerPage;
@@ -69,7 +65,6 @@ function TalentResults({ results }) {
 
   const handlePrevious = () => setCurrentPage((prev) => Math.max(prev - 1, 0));
   const handleNext = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1));
-
   const handleRowClick = (profile) => setSelectedTalent(profile);
   const handleCloseDetailModal = () => setSelectedTalent(null);
 
@@ -127,6 +122,7 @@ function TalentResults({ results }) {
     <div className="talent-results">
       <h3>Search Results</h3>
 
+      {/* Filters */}
       <div className="filter-form">
         <div className="filter-row">
           <div className="filter-column filter-field" style={{ flex: 1 }}>
@@ -169,7 +165,7 @@ function TalentResults({ results }) {
               <option value="Two Weeks Notice">Two Weeks Notice</option>
               <option value="1 Month">1 Month</option>
               <option value="2 Months">2 Months</option>
-              <option value="3 Months">3 Months</option>  
+              <option value="3 Months">3 Months</option>
             </select>
           </div>
 
@@ -189,80 +185,118 @@ function TalentResults({ results }) {
         </div>
       </div>
 
-      <table className="results-table">
-        <thead>
-          <tr>
-            <th>Candidate ID</th>
-            <th>Full Name</th>
-            <th>Email</th>
-            <th>Desired Salary</th>
-            <th>Location</th>
-            <th>Skills</th>
-            <th>Work Mode</th>
-            <th>Availability</th>
-            <th>Match Score</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentResults.map((profile) => {
+      {/* Talent List */}
+      <div className="results-list" style={{
+        marginTop: "20px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "16px",
+        minHeight: "400px",
+        justifyContent: currentResults.length === 0 ? "center" : "flex-start",
+        alignItems: "center"
+      }}>
+        {currentResults.length > 0 ? (
+          currentResults.map((profile) => {
             const { badge, color, icon } = getBadgeInfo(profile.match_score);
             return (
-              <tr
+              <div
                 key={profile.talent_id}
                 onClick={() => handleRowClick(profile)}
-                style={{ cursor: "pointer" }}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  padding: "16px",
+                  border: "1px solid #e2e8f0",
+                  borderRadius: "8px",
+                  backgroundColor: "#f9fafb",
+                  cursor: "pointer",
+                  width: "100%",
+                  transition: "background-color 0.2s ease",
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#edf2f7"}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#f9fafb"}
               >
-                <td>{profile.talent_id}</td>
-                <td>{profile.full_name}</td>
-                <td>{profile.email}</td>
-                <td>${profile.desired_salary}</td>
-                <td>{profile.location}</td>
-                <td>{profile.skills?.join(", ")}</td>
-                <td>{profile.work_preferences?.work_mode}</td>
-                <td>{profile.availability}</td>
-                <td onClick={(e) => e.stopPropagation()}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <span style={{ color, fontWeight: "bold" }}>
-                      {icon} {profile.match_score}% <small>({badge})</small>
-                    </span>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleAiShortlist(profile.talent_id);
-                      }}
-                      disabled={isShortlisting[profile.talent_id]}
-                      style={{
-                        fontSize: "11px",
-                        backgroundColor: "#4c51bf",
-                        color: "white",
-                        padding: "2px 6px",
-                        borderRadius: "4px",
-                        border: "none",
-                        cursor: "pointer"
-                      }}
-                    >
-                      {isShortlisting[profile.talent_id] ? "..." : "📌"}
-                    </button>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: "1.25rem", fontWeight: "bold", color: "#2d3748" }}>
+                    #{profile.talent_id} - {profile.full_name}
                   </div>
-                  <small>{profile.explanation}</small>
+                  <div style={{ fontSize: "1rem", color: "#4a5568", marginTop: "6px" }}>
+                    {profile.email}
+                  </div>
+                  <div style={{ fontSize: "1rem", color: "#4a5568", marginTop: "6px" }}>
+                    📍 {profile.location} | 🛠️ {profile.skills?.join(", ") || "No Skills"} | 🏢 {profile.work_preferences?.work_mode}
+                  </div>
+                  <div style={{ fontSize: "0.95rem", color: "#718096", marginTop: "6px" }}>
+                    Availability: {profile.availability || "N/A"}
+                  </div>
+                  {profile.explanation && (
+                    <div style={{ fontSize: "1.0rem", fontWeight: "bold",color: "#2d3748", marginTop: "8px" }}>
+                      {profile.explanation}
+                    </div>
+                  )}
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "8px", minWidth: "150px" }}>
+                  <div style={{
+                    backgroundColor: `${color}20`,
+                    color,
+                    fontWeight: "900",
+                    fontSize: "1.3rem",
+                    padding: "8px 14px",
+                    borderRadius: "12px",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "6px",
+                  }}>
+                    <span style={{ fontSize: "1.5rem", lineHeight: "1" }}>{icon}</span>
+                    {profile.match_score}%
+                    <small style={{ fontSize: "0.8rem", marginLeft: "4px" }}>({badge})</small>
+                  </div>
+
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAiShortlist(profile.talent_id);
+                    }}
+                    disabled={isShortlisting[profile.talent_id]}
+                    style={{
+                      fontSize: "11px",
+                      backgroundColor: "#4c51bf",
+                      color: "white",
+                      padding: "4px 8px",
+                      borderRadius: "6px",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {isShortlisting[profile.talent_id] ? "..." : "📌 Shortlist"}
+                  </button>
+
                   {shortlistStatus[profile.talent_id] && (
-                    <div style={{ fontSize: "11px", color: "#4c51bf", marginTop: "2px" }}>
+                    <div style={{ fontSize: "10px", color: "#4c51bf" }}>
                       {shortlistStatus[profile.talent_id]}
                     </div>
                   )}
-                </td>
-              </tr>
+                </div>
+              </div>
             );
-          })}
-        </tbody>
-      </table>
+          })
+        ) : (
+          <div style={{ textAlign: "center", color: "#718096", fontSize: "1.2rem" }}>
+            No matching talents found.
+          </div>
+        )}
+      </div>
 
+      {/* Pagination */}
       <div className="pagination" style={{ marginTop: "10px", textAlign: "center" }}>
         <button onClick={handlePrevious} disabled={currentPage === 0}>Previous</button>
         <span style={{ margin: "0 10px" }}>Page {currentPage + 1} of {totalPages}</span>
         <button onClick={handleNext} disabled={currentPage >= totalPages - 1}>Next</button>
       </div>
 
+      {/* Modal */}
       {selectedTalent && (
         <TalentDetailModal
           applicant={selectedTalent}

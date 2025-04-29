@@ -211,9 +211,21 @@ Example:
               placeholder="e.g. 3"
             />
           </div>
+          <div className="filter-field">
+            <label>Match Threshold (%):</label>
+            <input
+              type="number"
+              min="0"
+              max="100"
+              value={matchThreshold === 0 ? "" : matchThreshold}
+              onChange={(e) => setMatchThreshold(parseInt(e.target.value) || 0)}
+              placeholder="e.g. 3"
+              style={{ width: "80px" }}
+            />
+          </div>
         </div>
 
-        <div className="filter-column">
+        {/*<div className="filter-column">
           <div className="filter-field">
             <label>Match Threshold: {matchThreshold}%</label>
             <input
@@ -224,7 +236,22 @@ Example:
               onChange={(e) => setMatchThreshold(Number(e.target.value))}
             />
           </div>
-        </div>
+        </div>*/}
+        
+         {/* <div className="filter-field">
+            <label>Match Threshold (%):</label>
+            <input
+              type="number"
+              min="0"
+              max="100"
+              value={matchThreshold === 0 ? "" : matchThreshold}
+              onChange={(e) => setMatchThreshold(parseInt(e.target.value) || 0)}
+              placeholder="e.g. 3"
+              style={{ width: "80px" }}
+            />
+          </div>*/}
+        
+
 
         <div className="filter-row">
           <button type="submit" className="form-button">Search</button>
