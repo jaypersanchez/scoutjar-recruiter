@@ -262,8 +262,7 @@ Example:
       {loading && (
         <div className="text-center mt-6">
           <p className="text-primary font-medium">
-            <span className="hourglass-spin">⏳</span> Matching talents... Please wait, this may take up to 2 minutes.
-          </p>
+            <span className="hourglass-spin">⏳</span> Matching talents... Please wait a moment</p>
         </div>
       )}
 
