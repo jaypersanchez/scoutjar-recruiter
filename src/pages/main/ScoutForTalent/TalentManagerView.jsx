@@ -144,7 +144,7 @@ function TalentManagerView({
                 <td className="p-2 text-gray-700">{profile.location || "—"}</td>
                 <td className="p-2 text-gray-700">{profile.skills?.join(", ") || "No Skills"}</td>
                 <td className="p-2 text-gray-700">{profile.availability || "N/A"}</td>
-                <td className="p-2 font-semibold text-green-700">{profile.match_score}%</td>
+                <td className="p-2 font-semibold text-green-700">{Math.round(profile.match_score)}%</td>
                 <td className="p-2 text-center">
   <div className="text-2xl">{icon}</div>
   <div className="text-sm font-semibold text-gray-700">{badge}</div>

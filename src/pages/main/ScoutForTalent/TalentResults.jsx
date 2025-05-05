@@ -250,7 +250,7 @@ function TalentResults({ results, jobTitle, jobDescription, requiredSkills }) {
                     gap: "6px",
                   }}>
                     <span style={{ fontSize: "1.5rem", lineHeight: "1" }}>{icon}</span>
-                    {profile.match_score}%
+                    {Math.round(profile.match_score)}%
                     <small style={{ fontSize: "0.8rem", marginLeft: "4px" }}>({badge})</small>
                   </div>
 

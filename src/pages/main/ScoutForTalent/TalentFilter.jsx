@@ -206,7 +206,20 @@ function TalentFilter({ onResults }) {
             />
           </div>
           <div className="filter-field">
-            <label>Match Threshold (%):</label>
+          <label>
+  Match Threshold (%)
+  <span
+    title="Filters talents by how closely they match your job post. Use clear titles and detailed descriptions for better results."
+    style={{
+      marginLeft: "6px",
+      cursor: "help",
+      color: "#555",
+      fontSize: "16px",
+    }}
+  >
+    ℹ️
+  </span>
+</label>
             <input
               type="number"
               value={matchThreshold || ""}

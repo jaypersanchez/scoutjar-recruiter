@@ -177,12 +177,18 @@ export default function JobApplicants() {
       </div>
 
       {showModal && selectedApplicant && (
-        <TalentDetailModal
-          applicant={selectedApplicant}
-          onClose={closeModal}
-          showShortlist={true}
-        />
-      )}
+  <TalentDetailModal
+  isOpen={true}
+  onClose={closeModal}
+  applicant={selectedApplicant}
+  jobTitle={selectedApplicant.job_title}
+  jobDescription={selectedApplicant.job_description}
+  requiredSkills={selectedApplicant.required_skills}
+  showShortlist={true}
+/>
+
+)}
+
     </div>
   );
 }

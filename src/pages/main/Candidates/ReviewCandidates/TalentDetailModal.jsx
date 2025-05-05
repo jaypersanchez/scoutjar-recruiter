@@ -135,7 +135,38 @@ export default function TalentDetailModal({
       <div
         className="bg-white p-6 rounded shadow-lg w-11/12 max-w-2xl overflow-y-auto max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
-      >
+        >
+        {/* Sticky Top Action Bar */}
+<div className="sticky top-0 z-10 bg-white py-2 mb-2 border-b border-gray-200 flex justify-end gap-2">
+  <button
+    onClick={handleOpenMessage}
+    className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
+  >
+    Approach
+  </button>
+  <button
+    onClick={handleMailto}
+    className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
+  >
+    Send Email
+  </button>
+  {showShortlist && applicant.job_id && (
+    <button
+      onClick={handleShortlist}
+      className="px-3 py-1 bg-purple-600 text-white rounded hover:bg-purple-700 text-sm"
+      disabled={isShortlisting}
+    >
+      {isShortlisting ? "Shortlisting..." : "Shortlist"}
+    </button>
+  )}
+  <button
+    onClick={onClose}
+    className="px-3 py-1 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 text-sm"
+  >
+    Close
+  </button>
+</div>
+
         <div className="flex justify-end">
           <button onClick={onClose} className="text-gray-500 hover:text-gray-800 text-2xl">
             &times;
@@ -218,7 +249,7 @@ export default function TalentDetailModal({
           </div>
         )}
 
-        <div className="flex flex-wrap justify-end gap-2 mt-4">
+        {/*<div className="flex flex-wrap justify-end gap-2 mt-4">
           <button
             onClick={handleOpenMessage}
             className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
@@ -246,7 +277,7 @@ export default function TalentDetailModal({
           >
             Close
           </button>
-        </div>
+        </div>*/}
 
         {shortlistStatus && (
           <p className="mt-2 text-center text-sm text-red-600">{shortlistStatus}</p>
