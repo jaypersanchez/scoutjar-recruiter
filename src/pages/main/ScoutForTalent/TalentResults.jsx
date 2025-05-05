@@ -12,7 +12,7 @@ function getBadgeInfo(score) {
   return { badge: "D", color: "#a9a9a9", icon: "🐢" };
 }
 
-function TalentResults({ results }) {
+function TalentResults({ results, jobTitle, jobDescription, requiredSkills }) {
   const [locationOptions, setLocationOptions] = useState([]);
   const [locationSearchInput, setLocationSearchInput] = useState("");
   const [selectedLocations, setSelectedLocations] = useState([]);
@@ -230,11 +230,11 @@ function TalentResults({ results }) {
                   <div style={{ fontSize: "0.95rem", color: "#718096", marginTop: "6px" }}>
                     Availability: {profile.availability || "N/A"}
                   </div>
-                  {profile.explanation && (
+                  {/*{profile.explanation && (
                     <div style={{ fontSize: "1.0rem", fontWeight: "bold",color: "#2d3748", marginTop: "8px" }}>
                       {profile.explanation}
                     </div>
-                  )}
+                  )}*/}
                 </div>
 
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "8px", minWidth: "150px" }}>
@@ -302,6 +302,9 @@ function TalentResults({ results }) {
           applicant={selectedTalent}
           onClose={handleCloseDetailModal}
           showShortlist={false}
+          jobTitle={jobTitle}
+          jobDescription={jobDescription}
+          requiredSkills={requiredSkills}
         />
       )}
     </div>

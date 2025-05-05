@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import TalentResults from "./TalentResults";
+import TalentDisplaySwitcher from "./TalentDisplaySwitcher";
 import Button from "@/components/common/Button";
 import "@/common/styles/App.css";
 
-function TalentFilter() {
+function TalentFilter({onResults}) {
   const [skills, setSkills] = useState("");
   const [jobTitle, setJobTitle] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [matchThreshold, setMatchThreshold] = useState(0);
-  const [results, setResults] = useState([]);
+  //const [results, setResults] = useState([]);
   const [industryExperience, setIndustryExperience] = useState("");
   const [yearsExperience, setYearsExperience] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -31,6 +32,7 @@ function TalentFilter() {
           `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}/job-titles/all`
         );
         const data = await response.json();
+        console.log("🟢 AI Match Response:", response.status, data);
         setJobTitles(data || []);
       } catch (err) {
         console.error("Failed to fetch job titles:", err);
@@ -82,6 +84,7 @@ function TalentFilter() {
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 120000);
+      console.log("🧪 API URL:", `${baseUrl}/ai-match-talents`);
 
       const response = await fetch(`${baseUrl}/ai-match-talents`, {
         method: "POST",
@@ -109,9 +112,12 @@ function TalentFilter() {
         years_experience: parseFloat(item.years_experience) || 0,
         resume: item.resume || "",
       }));
-      setResults(transformed);
+      //setResults(transformed);
+      //onResults && onResults(transformed);
+      //setResults(transformed)
+      onResults(transformed)
     } catch (error) {
-      console.error("Error executing query:", error);
+      console.error("🧪 API URL:", `${baseUrl}/ai-match-talents`);
       alert("Error executing query. This may take time due to AI processing.");
     } finally {
       setLoading(false);
@@ -266,7 +272,15 @@ Example:
         </div>
       )}
 
-      <TalentResults results={results} selectedLocations={[]} availabilityFilter={""} workModeFilter={""} matchThreshold={matchThreshold} />
+      {/*<TalentResults results={results} selectedLocations={[]} availabilityFilter={""} workModeFilter={""} matchThreshold={matchThreshold} />*/}
+      {/*<TalentDisplaySwitcher
+        results={results}
+        jobTitle={jobTitle}
+        jobDescription={jobDescription}
+        requiredSkills={skills}
+      />*/}
+
+
     </div>
   );
 }

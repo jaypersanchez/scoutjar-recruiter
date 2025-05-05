@@ -1,12 +1,85 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MessageTalentModal from "../ReviewCandidates/MessageTalentModal";
 
-export default function TalentDetailModal({ applicant, onClose, showShortlist = false }) {
+export default function TalentDetailModal({
+  applicant,
+  onClose,
+  showShortlist = false,
+  jobTitle,
+  jobDescription,
+  requiredSkills
+}) {
   const [showMessageModal, setShowMessageModal] = useState(false);
   const [shortlistStatus, setShortlistStatus] = useState(null);
   const [isShortlisting, setIsShortlisting] = useState(false);
+  const [explanation, setExplanation] = useState("⏳ Generating explanation...");
+  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}`;
 
-  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
+  console.log("🧪 Modal props on load", {
+    applicant,
+    jobTitle,
+    jobDescription,
+    requiredSkills
+  });
+  
+
+  useEffect(() => {
+    if (!applicant || !applicant.full_name ) { //|| !Array.isArray(requiredSkills) || requiredSkills.length === 0) {
+      console.log("⛔ Missing required fields, skipping explanation");
+      //setExplanation(null);
+      return;
+    }
+    
+
+    console.log("📩 Sending fetchExplanation payload:", {
+      job: {
+        title: jobTitle,
+        description: jobDescription,
+        skills: requiredSkills,
+      },
+      talent: {
+        name: applicant.full_name,
+        resume: applicant.resume,
+        bio: applicant.bio,
+        experience: applicant.experience,
+        skills: applicant.skills,
+      },
+    });
+
+    const fetchExplanation = async () => {
+      try {
+        const res = await fetch(`${baseUrl}/explain-match`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            job: {
+              title: jobTitle,
+              description: jobDescription,
+              skills: requiredSkills,
+            },
+            talent: {
+              name: applicant.full_name,
+              resume: applicant.resume,
+              bio: applicant.bio,
+              experience: applicant.experience,
+              skills: applicant.skills,
+            },
+          }),
+        });
+
+        const data = await res.json();
+        console.log("🎯 OpenAI explanation response:", data);
+        setExplanation(data.explanation || "Explanation not available.");
+      } catch (err) {
+        console.error("❌ Failed to fetch explanation:", err);
+        setExplanation("Failed to load explanation.");
+      }
+    };
+
+    fetchExplanation();
+    console.log("✅ Triggered explanation fetch for:", applicant.full_name);
+
+  }, [applicant, jobTitle, jobDescription, requiredSkills]);
 
   const handleShortlist = async () => {
     setIsShortlisting(true);
@@ -75,19 +148,17 @@ export default function TalentDetailModal({ applicant, onClose, showShortlist = 
           <p><strong>Talent ID:</strong> {applicant.talent_id}</p>
           <p><strong>User ID:</strong> {applicant.user_id}</p>
           <div className="flex items-center gap-4 mb-4">
-  <img
-    src={applicant.profile_picture || "https://via.placeholder.com/80"}
-    alt={applicant.full_name}
-    className="w-20 h-20 rounded-full object-cover border"
-  />
-  <div>
-    <h3 className="text-xl font-semibold">{applicant.full_name}</h3>
-    <p className="text-sm text-gray-600">{applicant.email}</p>
-  </div>
-</div>
-          {applicant.job_id && (
-            <p><strong>Job ID:</strong> {applicant.job_id}</p>
-          )}
+            <img
+              src={applicant.profile_picture || "https://placehold.co/80x80?text=No+Image"}
+              alt={applicant.full_name}
+              className="w-20 h-20 rounded-full object-cover border"
+            />
+            <div>
+              <h3 className="text-xl font-semibold">{applicant.full_name}</h3>
+              <p className="text-sm text-gray-600">{applicant.email}</p>
+            </div>
+          </div>
+          {applicant.job_id && <p><strong>Job ID:</strong> {applicant.job_id}</p>}
           {applicant.location && <p><strong>Location:</strong> {applicant.location}</p>}
           {applicant.desired_salary && (
             <p><strong>Desired Salary:</strong> ${parseInt(applicant.desired_salary).toLocaleString()}</p>
@@ -104,7 +175,7 @@ export default function TalentDetailModal({ applicant, onClose, showShortlist = 
           )}
         </div>
 
-        {applicant.skills && applicant.skills.length > 0 && (
+        {applicant.skills?.length > 0 && (
           <div className="mb-4">
             <h4 className="font-semibold mb-1">Skills</h4>
             <div className="flex flex-wrap gap-2 text-xs">
@@ -135,6 +206,15 @@ export default function TalentDetailModal({ applicant, onClose, showShortlist = 
           <div className="mb-4">
             <h4 className="font-semibold mb-1">Resume</h4>
             <p className="text-sm text-gray-700 whitespace-pre-line">{applicant.resume}</p>
+            
+          </div>
+        )}
+
+        {explanation && (
+          <div className="mb-4">
+            <h4 className="font-semibold mb-1">AI Match Explanation</h4>
+            <p className="text-sm text-gray-800 whitespace-pre-line">{explanation}</p>
+            
           </div>
         )}
 

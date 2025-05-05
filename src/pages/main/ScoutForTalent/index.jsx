@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import TalentFilter from "./TalentFilter";
 import TalentResults from "./TalentResults";
+import TalentDisplaySwitcher from "./TalentDisplaySwitcher";
 
 export default function ScoutForTalentPage() {
   // State to hold the query results returned from the filter component
@@ -16,9 +17,9 @@ export default function ScoutForTalentPage() {
   return (
     <div>
       {/* Render the filter component and pass the callback */}
-      <TalentFilter onResults={handleResults} />
-      {/* Render the results component below the filter */}
-      {/*<TalentResults results={results} />*/}
+      {/*<TalentFilter onResults={handleResults} />*/}
+      <TalentFilter onResults={setResults} />
+      <TalentDisplaySwitcher results={results} />
     </div>
   );
 }
