@@ -54,7 +54,7 @@ export default function CreateAJob() {
     }));
   };
 
-  const handleJobTitleSelect = (e) => {
+  /*const handleJobTitleSelect = (e) => {
     const selectedId = e.target.value;
     const selectedOption = jobTitleOptions.find(
       (option) => String(option.job_title_id) === selectedId
@@ -64,7 +64,55 @@ export default function CreateAJob() {
       job_title: selectedOption ? selectedOption.job_title : "",
       job_description: selectedOption ? selectedOption.job_description : "",
     }));
+  };*/
+
+  const handleJobTitleSelect = async (e) => {
+    const selectedId = e.target.value;
+    const selectedOption = jobTitleOptions.find(
+      (option) => String(option.job_title_id) === selectedId
+    );
+  
+    const title = selectedOption?.job_title || "";
+    const desc = selectedOption?.job_description || "";
+  
+    // Set initial values from database
+    setFormData((prev) => ({
+      ...prev,
+      job_title: title,
+      job_description: desc
+    }));
+  
+    // 🚀 Now fetch enhanced AI-based prefill values
+    try {
+      const response = await fetch(`${AIbaseUrl}/prefill-job-from-title`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          job_title: title,
+          job_description: desc
+        })
+      });
+  
+      const data = await response.json();
+      if (response.ok) {
+        setFormData((prev) => ({
+          ...prev,
+          job_description: data.job_description || prev.job_description,
+          required_skills: data.required_skills || "",
+          experience_level: data.experience_level || "",
+          work_mode: data.work_mode || "",
+          employment_type: data.employment_type || "",
+          salary_min: data.salary_min || "",
+          salary_max: data.salary_max || ""
+        }));
+      } else {
+        console.error("Failed to prefill fields:", data);
+      }
+    } catch (error) {
+      console.error("Prefill API error:", error);
+    }
   };
+  
 
   const handleLocationToggle = (location) => {
     setFormData((prev) => ({
@@ -188,7 +236,7 @@ export default function CreateAJob() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="create-job-form">
+      <form onSubmit={handleSubmit} className="create-job-form grid-2">
 
         {/* Job Title */}
         <div className="form-group">
@@ -213,7 +261,7 @@ export default function CreateAJob() {
         </div>
 
         {/* Job Description */}
-        <div className="form-group">
+        <div className="form-group full-span">
           <label className="form-label">Job Description</label>
           <textarea
             name="job_description"
@@ -340,7 +388,7 @@ export default function CreateAJob() {
         </div>
 
         {/* Locations Multi-Select */}
-        <div className="form-group">
+        <div className="form-group full-span">
           <label className="form-label">Select Locations</label>
           <input
             type="text"
