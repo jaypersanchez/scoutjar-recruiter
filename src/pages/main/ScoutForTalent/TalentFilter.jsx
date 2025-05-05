@@ -142,17 +142,26 @@ function TalentFilter({ onResults }) {
           <div className="filter-field">
             <label>Job Title:</label>
             <input
-              list="job-titles"
-              type="text"
-              value={jobTitle}
-              onChange={(e) => setJobTitle(e.target.value)}
-              placeholder="e.g. Backend Engineer"
-            />
-            <datalist id="job-titles">
-              {jobTitles.map((title) => (
-                <option key={title} value={title} />
-              ))}
-            </datalist>
+  list="job-titles"
+  type="text"
+  value={jobTitle}
+  onChange={(e) => {
+    const selectedTitle = e.target.value;
+    setJobTitle(selectedTitle);
+
+    const match = jobTitles.find(j => j.job_title === selectedTitle);
+    if (match && match.job_description) {
+      setJobDescription(match.job_description);
+    }
+  }}
+  placeholder="e.g. Backend Engineer"
+/>
+<datalist id="job-titles">
+  {jobTitles.map((jt) => (
+    <option key={jt.job_title} value={jt.job_title} />
+  ))}
+</datalist>
+
           </div>
 
           <div className="filter-field">
