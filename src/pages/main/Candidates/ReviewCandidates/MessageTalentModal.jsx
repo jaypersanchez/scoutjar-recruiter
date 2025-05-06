@@ -24,7 +24,8 @@ export default function MessageTalentModal({ applicant, onClose }) {
     setHistoryError("");
     try {
       const response = await fetch(
-        `${baseUrl}/messages/history?sender_id=${recruiterId}&recipient_id=${applicant.talent_id}`
+        //`${baseUrl}/messages/history?sender_id=${recruiterId}&recipient_id=${applicant.talent_id}`
+        `${baseUrl}/messages/history?sender_id=${recruiterId}&recipient_id=${applicant.user_id || applicant.talent_id}`
       );
       const data = await response.json();
       if (response.ok) {
@@ -48,12 +49,18 @@ export default function MessageTalentModal({ applicant, onClose }) {
     setSending(true);
     setErrorMessage("");
     try {
+      console.log("Sending message payload:", {
+        sender_id: recruiterId,
+        recipient_id: applicant.user_id || applicant.talent_id,
+        content: message,
+      });
+      
       const response = await fetch(`${baseUrl}/messages/send`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           sender_id: recruiterId,
-          recipient_id: applicant.talent_id,
+          recipient_id: applicant.user_id || applicant.talent_id,
           content: message,
         }),
       });

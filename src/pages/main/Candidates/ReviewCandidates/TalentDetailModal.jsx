@@ -1,12 +1,85 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MessageTalentModal from "../ReviewCandidates/MessageTalentModal";
 
-export default function TalentDetailModal({ applicant, onClose, showShortlist = false }) {
+export default function TalentDetailModal({
+  applicant,
+  onClose,
+  showShortlist = false,
+  jobTitle,
+  jobDescription,
+  requiredSkills
+}) {
   const [showMessageModal, setShowMessageModal] = useState(false);
   const [shortlistStatus, setShortlistStatus] = useState(null);
   const [isShortlisting, setIsShortlisting] = useState(false);
+  const [explanation, setExplanation] = useState("⏳ Generating explanation...");
+  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}`;
 
-  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
+  console.log("🧪 Modal props on load", {
+    applicant,
+    jobTitle,
+    jobDescription,
+    requiredSkills
+  });
+  
+
+  useEffect(() => {
+    if (!applicant || !applicant.full_name ) { //|| !Array.isArray(requiredSkills) || requiredSkills.length === 0) {
+      console.log("⛔ Missing required fields, skipping explanation");
+      //setExplanation(null);
+      return;
+    }
+    
+
+    console.log("📩 Sending fetchExplanation payload:", {
+      job: {
+        title: jobTitle,
+        description: jobDescription,
+        skills: requiredSkills,
+      },
+      talent: {
+        name: applicant.full_name,
+        resume: applicant.resume,
+        bio: applicant.bio,
+        experience: applicant.experience,
+        skills: applicant.skills,
+      },
+    });
+
+    const fetchExplanation = async () => {
+      try {
+        const res = await fetch(`${baseUrl}/explain-match`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            job: {
+              title: jobTitle,
+              description: jobDescription,
+              skills: requiredSkills,
+            },
+            talent: {
+              name: applicant.full_name,
+              resume: applicant.resume,
+              bio: applicant.bio,
+              experience: applicant.experience,
+              skills: applicant.skills,
+            },
+          }),
+        });
+
+        const data = await res.json();
+        console.log("🎯 OpenAI explanation response:", data);
+        setExplanation(data.explanation || "Explanation not available.");
+      } catch (err) {
+        console.error("❌ Failed to fetch explanation:", err);
+        setExplanation("Failed to load explanation.");
+      }
+    };
+
+    fetchExplanation();
+    console.log("✅ Triggered explanation fetch for:", applicant.full_name);
+
+  }, [applicant, jobTitle, jobDescription, requiredSkills]);
 
   const handleShortlist = async () => {
     setIsShortlisting(true);
@@ -62,7 +135,38 @@ export default function TalentDetailModal({ applicant, onClose, showShortlist = 
       <div
         className="bg-white p-6 rounded shadow-lg w-11/12 max-w-2xl overflow-y-auto max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
-      >
+        >
+        {/* Sticky Top Action Bar */}
+<div className="sticky top-0 z-10 bg-white py-2 mb-2 border-b border-gray-200 flex justify-end gap-2">
+  <button
+    onClick={handleOpenMessage}
+    className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
+  >
+    Approach
+  </button>
+  <button
+    onClick={handleMailto}
+    className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
+  >
+    Send Email
+  </button>
+  {showShortlist && applicant.job_id && (
+    <button
+      onClick={handleShortlist}
+      className="px-3 py-1 bg-purple-600 text-white rounded hover:bg-purple-700 text-sm"
+      disabled={isShortlisting}
+    >
+      {isShortlisting ? "Shortlisting..." : "Shortlist"}
+    </button>
+  )}
+  <button
+    onClick={onClose}
+    className="px-3 py-1 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 text-sm"
+  >
+    Close
+  </button>
+</div>
+
         <div className="flex justify-end">
           <button onClick={onClose} className="text-gray-500 hover:text-gray-800 text-2xl">
             &times;
@@ -75,19 +179,17 @@ export default function TalentDetailModal({ applicant, onClose, showShortlist = 
           <p><strong>Talent ID:</strong> {applicant.talent_id}</p>
           <p><strong>User ID:</strong> {applicant.user_id}</p>
           <div className="flex items-center gap-4 mb-4">
-  <img
-    src={applicant.profile_picture || "https://via.placeholder.com/80"}
-    alt={applicant.full_name}
-    className="w-20 h-20 rounded-full object-cover border"
-  />
-  <div>
-    <h3 className="text-xl font-semibold">{applicant.full_name}</h3>
-    <p className="text-sm text-gray-600">{applicant.email}</p>
-  </div>
-</div>
-          {applicant.job_id && (
-            <p><strong>Job ID:</strong> {applicant.job_id}</p>
-          )}
+            <img
+              src={applicant.profile_picture || "https://placehold.co/80x80?text=No+Image"}
+              alt={applicant.full_name}
+              className="w-20 h-20 rounded-full object-cover border"
+            />
+            <div>
+              <h3 className="text-xl font-semibold">{applicant.full_name}</h3>
+              <p className="text-sm text-gray-600">{applicant.email}</p>
+            </div>
+          </div>
+          {applicant.job_id && <p><strong>Job ID:</strong> {applicant.job_id}</p>}
           {applicant.location && <p><strong>Location:</strong> {applicant.location}</p>}
           {applicant.desired_salary && (
             <p><strong>Desired Salary:</strong> ${parseInt(applicant.desired_salary).toLocaleString()}</p>
@@ -104,7 +206,7 @@ export default function TalentDetailModal({ applicant, onClose, showShortlist = 
           )}
         </div>
 
-        {applicant.skills && applicant.skills.length > 0 && (
+        {applicant.skills?.length > 0 && (
           <div className="mb-4">
             <h4 className="font-semibold mb-1">Skills</h4>
             <div className="flex flex-wrap gap-2 text-xs">
@@ -135,10 +237,19 @@ export default function TalentDetailModal({ applicant, onClose, showShortlist = 
           <div className="mb-4">
             <h4 className="font-semibold mb-1">Resume</h4>
             <p className="text-sm text-gray-700 whitespace-pre-line">{applicant.resume}</p>
+            
           </div>
         )}
 
-        <div className="flex flex-wrap justify-end gap-2 mt-4">
+        {explanation && (
+          <div className="mb-4">
+            <h4 className="font-semibold mb-1">AI Match Explanation</h4>
+            <p className="text-sm text-gray-800 whitespace-pre-line">{explanation}</p>
+            
+          </div>
+        )}
+
+        {/*<div className="flex flex-wrap justify-end gap-2 mt-4">
           <button
             onClick={handleOpenMessage}
             className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
@@ -166,7 +277,7 @@ export default function TalentDetailModal({ applicant, onClose, showShortlist = 
           >
             Close
           </button>
-        </div>
+        </div>*/}
 
         {shortlistStatus && (
           <p className="mt-2 text-center text-sm text-red-600">{shortlistStatus}</p>
