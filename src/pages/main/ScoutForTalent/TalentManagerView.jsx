@@ -130,47 +130,49 @@ function TalentManagerView({
           </tr>
         </thead>
         <tbody>
-          {filteredResults.map((profile, index) => {
-            const { badge, icon } = getBadgeInfo(profile.match_score);
+  {filteredResults.map((profile, index) => {
+    const { badge, icon } = getBadgeInfo(profile.match_score);
+    // Conditional background color
+    const rowClass = index % 2 === 0 ? 'bg-blue-50' : 'bg-white'; // Light gray for even rows, white for odd
 
-            return (
-              <tr
-                key={profile.talent_id}
-                className="border-b hover:bg-gray-50 cursor-pointer"
-                onClick={() => setSelectedTalent(profile)}
-              >
-                <td className="p-2 text-gray-500">{index + 1}</td>
-                <td className="p-2 font-medium text-gray-800">{profile.full_name}</td>
-                <td className="p-2 text-gray-700">{profile.location || "—"}</td>
-                <td className="p-2 text-gray-700">{profile.skills?.join(", ") || "No Skills"}</td>
-                <td className="p-2 text-gray-700">{profile.availability || "N/A"}</td>
-                <td className="p-2 font-semibold text-green-700">{Math.round(profile.match_score)}%</td>
-                <td className="p-2 text-center">
-  <div className="text-2xl">{icon}</div>
-  <div className="text-sm font-semibold text-gray-700">{badge}</div>
-</td>
+    return (
+      <tr
+        key={profile.talent_id}
+        className={`${rowClass} border-b hover:bg-gray-100 cursor-pointer`} // Adding hover effect for rows
+        onClick={() => setSelectedTalent(profile)}
+      >
+        <td className="p-2 text-gray-500">{index + 1}</td>
+        <td className="p-2 font-medium text-gray-800">{profile.full_name}</td>
+        <td className="p-2 text-gray-700">{profile.location || "—"}</td>
+        <td className="p-2 text-gray-700">{profile.skills?.join(", ") || "No Skills"}</td>
+        <td className="p-2 text-gray-700">{profile.availability || "N/A"}</td>
+        <td className="p-2 font-semibold text-green-700">{Math.round(profile.match_score)}%</td>
+        <td className="p-2 text-center">
+          <div className="text-2xl">{icon}</div>
+          <div className="text-sm font-semibold text-gray-700">{badge}</div>
+        </td>
+        <td className="p-2">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleAiShortlist(profile.talent_id);
+            }}
+            disabled={isShortlisting[profile.talent_id]}
+            className="text-xs bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+          >
+            {isShortlisting[profile.talent_id] ? "..." : "📌 Shortlist"}
+          </button>
+          {shortlistStatus[profile.talent_id] && (
+            <div className="text-xs mt-1 text-blue-600">
+              {shortlistStatus[profile.talent_id]}
+            </div>
+          )}
+        </td>
+      </tr>
+    );
+  })}
+</tbody>
 
-                <td className="p-2">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleAiShortlist(profile.talent_id);
-                    }}
-                    disabled={isShortlisting[profile.talent_id]}
-                    className="text-xs bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
-                  >
-                    {isShortlisting[profile.talent_id] ? "..." : "📌 Shortlist"}
-                  </button>
-                  {shortlistStatus[profile.talent_id] && (
-                    <div className="text-xs mt-1 text-blue-600">
-                      {shortlistStatus[profile.talent_id]}
-                    </div>
-                  )}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
       </table>
 
       {filteredResults.length === 0 && (
