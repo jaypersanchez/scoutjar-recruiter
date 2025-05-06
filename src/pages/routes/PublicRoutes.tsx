@@ -101,14 +101,14 @@ const PAGE_ROUTES: Array<PageRouteProps> = [
     children: [
       {
         path: "create",
-        label: "Create",
+        label: "Create Job Postings",
         icon: MdNoteAdd,
         Component: CreateAJob,
         hidden: false,
       },
       {
         path: "posted",
-        label: "Postings",
+        label: "Job Postings",
         icon: IoMdListBox,
         Component: JobsPosted,
         hidden: false,

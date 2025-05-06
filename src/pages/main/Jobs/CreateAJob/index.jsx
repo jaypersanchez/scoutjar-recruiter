@@ -226,7 +226,7 @@ export default function CreateAJob() {
   return (
     <div className="max-w-7xl mx-auto p-8">
       <h2 className="text-2xl font-bold mb-10 uppercase text-center text-primary">
-        Create a New Job
+        Create a New Job with AI
       </h2>
 
       {/* Toast Notification */}

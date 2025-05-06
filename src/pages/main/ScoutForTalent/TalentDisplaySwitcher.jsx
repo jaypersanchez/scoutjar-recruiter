@@ -21,7 +21,7 @@ function TalentDisplaySwitcher({ results, jobTitle, jobDescription, requiredSkil
             cursor: "pointer",
           }}
         >
-          Talent Results
+          Profile View
         </button>
         <button
           onClick={() => setViewMode("manager")}
@@ -34,7 +34,7 @@ function TalentDisplaySwitcher({ results, jobTitle, jobDescription, requiredSkil
             cursor: "pointer",
           }}
         >
-          Manager View
+          Table View
         </button>
       </div>
 

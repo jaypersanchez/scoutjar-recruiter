@@ -109,7 +109,7 @@ function TalentManagerView({
   return (
     <div className="p-4 overflow-x-auto">
       <h3 className="text-2xl font-semibold text-center text-gray-800 mb-6">
-        Talent Manager Roster
+        Talent Manager
       </h3>
 
       {/* Filters: location, availability, work mode */}
