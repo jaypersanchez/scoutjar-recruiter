@@ -123,6 +123,7 @@ function TalentManagerView({
             <th className="p-2">Name</th>
             <th className="p-2">Location</th>
             <th className="p-2">Skills</th>
+            <th className="p-2">Work Mode</th>
             <th className="p-2">Availability</th>
             <th className="p-2">Match %</th>
             <th className="p-2">Badge</th>
@@ -143,14 +144,36 @@ function TalentManagerView({
       >
         <td className="p-2 text-gray-500">{index + 1}</td>
         <td className="p-2 font-medium text-gray-800">{profile.full_name}</td>
-        <td className="p-2 text-gray-700">{profile.location || "—"}</td>
+        {/*<td className="p-2 text-gray-700">{profile.location || "—"}</td>*/}
+        <td className="p-2 text-gray-700">
+  <div className="flex items-center gap-2">
+    {profile.country_code && (
+      <img
+        src={`https://flagcdn.com/w40/${profile.country_code.toLowerCase().slice(0, 2)}.png`}
+        alt={profile.country_code}
+        style={{ width: 20, height: 14, borderRadius: "2px", objectFit: "cover" }}
+        onError={(e) => { e.target.style.display = 'none'; }} // hide broken flags
+      />
+    )}
+    <span>{profile.location || "—"}</span>
+  </div>
+</td>
+
         <td className="p-2 text-gray-700">{profile.skills?.join(", ") || "No Skills"}</td>
+        <td className="p-2 text-gray-700">{profile.work_preferences?.work_mode || "N/A"}</td>
         <td className="p-2 text-gray-700">{profile.availability || "N/A"}</td>
-        <td className="p-2 font-semibold text-green-700">{Math.round(profile.match_score)}%</td>
-        <td className="p-2 text-center">
-          <div className="text-2xl">{icon}</div>
-          <div className="text-sm font-semibold text-gray-700">{badge}</div>
-        </td>
+        <td className="p-2">
+  <span className="text-2xl font-bold text-green-700">
+    {Math.round(profile.match_score)}%
+  </span>
+</td>
+        <td className="p-2">
+  <div className="flex items-center justify-start gap-2">
+    <span className="text-3xl">{icon}</span>
+    <span className="text-xl font-bold text-gray-800">{badge}</span>
+  </div>
+</td>
+
         <td className="p-2">
           <button
             onClick={(e) => {
