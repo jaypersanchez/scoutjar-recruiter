@@ -18,8 +18,9 @@ function TalentManagerView({
 
   const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
   const AIbaseUrl = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}`;
-
+  
   useEffect(() => {
+    
     fetch(`${baseUrl}/locations/all`)
       .then((res) => res.json())
       .then(setLocationOptions)
@@ -114,6 +115,66 @@ function TalentManagerView({
 
       {/* Filters: location, availability, work mode */}
       {/* ... (your filter controls remain unchanged) ... */}
+      {/* Filters */}
+<div className="flex flex-wrap gap-4 mb-6">
+  <div>
+    <label className="block font-medium text-sm text-gray-700 mb-1">Location</label>
+    <input
+      type="text"
+      value={locationSearchInput}
+      onChange={(e) => setLocationSearchInput(e.target.value)}
+      placeholder="Search city/country..."
+      className="border border-gray-300 px-3 py-2 rounded w-64"
+    />
+    <div className="border border-gray-300 p-2 mt-2 max-h-40 overflow-y-scroll rounded bg-white w-64">
+      {locationOptions
+        .filter((loc) =>
+          loc.label.toLowerCase().includes(locationSearchInput.toLowerCase())
+        )
+        .map((loc, idx) => (
+          <label key={idx} className="block mb-1 text-sm">
+            <input
+              type="checkbox"
+              checked={selectedLocations.includes(loc.value)}
+              onChange={() => toggleLocation(loc.value)}
+              className="mr-2"
+            />
+            {loc.label}
+          </label>
+        ))}
+    </div>
+  </div>
+
+  <div>
+    <label className="block font-medium text-sm text-gray-700 mb-1">Availability</label>
+    <select
+      value={availabilityFilter}
+      onChange={(e) => setAvailabilityFilter(e.target.value)}
+      className="border border-gray-300 px-3 py-2 rounded"
+    >
+      <option value="">All</option>
+      <option value="Immediate">Immediate</option>
+      <option value="Two Weeks Notice">Two Weeks Notice</option>
+      <option value="1 Month">1 Month</option>
+      <option value="2 Months">2 Months</option>
+      <option value="3 Months">3 Months</option>
+    </select>
+  </div>
+
+  <div>
+    <label className="block font-medium text-sm text-gray-700 mb-1">Work Mode</label>
+    <select
+      value={workModeFilter}
+      onChange={(e) => setWorkModeFilter(e.target.value)}
+      className="border border-gray-300 px-3 py-2 rounded"
+    >
+      <option value="">All</option>
+      <option value="Remote">Remote</option>
+      <option value="On-site">On-site</option>
+      <option value="Hybrid">Hybrid</option>
+    </select>
+  </div>
+</div>
 
       {/* Table */}
       <table className="w-full border-collapse text-sm text-left">
@@ -123,6 +184,7 @@ function TalentManagerView({
             <th className="p-2">Name</th>
             <th className="p-2">Location</th>
             <th className="p-2">Skills</th>
+            <th className="p-2">Desired Salary</th>
             <th className="p-2">Work Mode</th>
             <th className="p-2">Availability</th>
             <th className="p-2">Match %</th>
@@ -160,6 +222,7 @@ function TalentManagerView({
 </td>
 
         <td className="p-2 text-gray-700">{profile.skills?.join(", ") || "No Skills"}</td>
+        <td className="p-2 text-gray-700">{profile.desired_salary || "N/A"}</td>
         <td className="p-2 text-gray-700">{profile.work_preferences?.work_mode || "N/A"}</td>
         <td className="p-2 text-gray-700">{profile.availability || "N/A"}</td>
         <td className="p-2">
