@@ -92,6 +92,8 @@ function TalentFilter({ onResults }) {
         email: item.email || "n/a@example.com",
         desired_salary: parseFloat(item.desired_salary) || 0,
         location: item.location || "Unknown",
+        country: item.country || "",
+        country_code: item.country_code || "",
         skills: Array.isArray(item.skills) ? item.skills : [],
         work_preferences: typeof item.work_preferences === "object" ? item.work_preferences : {},
         availability: item.availability || "Unknown",
