@@ -182,7 +182,7 @@ export default function JobsPosted() {
   if (loading) return <p>Loading job posts...</p>;
   if (error) return <p>Error: {error}</p>;
 
-  return (
+  /*return (
     <div className="job-posts-container">
       <h2>My Job Posts</h2>
       {jobs.length === 0 ? (
@@ -286,5 +286,143 @@ export default function JobsPosted() {
         />
       )}
     </div>
-  );
+  );*/
+  return (
+  <div className="job-posts-container">
+    <h2>My Job Posts</h2>
+    {jobs.length === 0 ? (
+      <p>No job posts found.</p>
+    ) : (
+      <div className="job-posts-list" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+        {jobs.map((job) => (
+          <div
+            key={job.job_id}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "10px",
+              padding: "16px",
+              border: "1px solid #e2e8f0",
+              borderRadius: "8px",
+              backgroundColor: "#f9fafb"
+            }}
+          >
+            {/* Job Details */}
+            <div>
+              <div style={{ fontSize: "1.25rem", fontWeight: "bold", color: "#2d3748" }}>
+                #{job.job_id} - {job.job_title}
+              </div>
+              <div style={{ fontSize: "1rem", color: "#4a5568", marginTop: "6px" }}>
+                {job.job_description}
+              </div>
+              <div style={{ fontSize: "1rem", color: "#4a5568", marginTop: "6px" }}>
+                📍 {job.location} | 🧠 {(job.required_skills || []).join(", ")} | 💼 {job.employment_type} | 🏢 {job.work_mode}
+              </div>
+              <div style={{ fontSize: "0.95rem", color: "#718096", marginTop: "6px" }}>
+                Experience: {job.experience_level || "N/A"} | Salary: {job.salary_range?.[0]} - {job.salary_range?.[1]}
+              </div>
+              <div style={{ fontSize: "0.95rem", color: "#718096", marginTop: "6px" }}>
+                📅 Posted: {new Date(job.date_posted).toLocaleDateString()} | Applicants: {applicantCounts[job.job_id] ?? 0}
+              </div>
+            </div>
+
+            {/* Ask LooKK Button */}
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <button
+                onClick={() => askAndrew(job)}
+                disabled={andrewLoading === job.job_id}
+                style={{
+                  fontSize: "12px",
+                  backgroundColor: "#4c51bf",
+                  color: "white",
+                  padding: "6px 10px",
+                  borderRadius: "6px",
+                  border: "none",
+                  cursor: "pointer"
+                }}
+              >
+                {andrewLoading === job.job_id ? "LooKKing..." : "✨ Ask LooKK"}
+              </button>
+            </div>
+
+            {/* Matched Talents */}
+            {andrewMatches[job.job_id] && (
+              <div style={{ marginTop: "8px", width: "100%" }}>
+                <h4 style={{ fontSize: "1rem", fontWeight: "bold", color: "#2d3748", marginBottom: "8px" }}>
+                  Found {andrewMatches[job.job_id].length} match(es):
+                </h4>
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                  {[...andrewMatches[job.job_id]]
+                    .sort((a, b) => b.match_score - a.match_score)
+                    .map((match) => {
+                      const { badge, color, icon } = getBadgeInfo(match.match_score);
+                      return (
+                        <div
+                          key={match.talent_id}
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            padding: "12px",
+                            border: "1px solid #cbd5e0",
+                            borderRadius: "6px",
+                            backgroundColor: "#edf2f7"
+                          }}
+                        >
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontWeight: "bold", fontSize: "1rem" }}>{match.name}</div>
+                            <div style={{ color: "#4a5568", marginTop: "4px" }}>
+                              📍 {match.location} | 🛠 {match.skills?.join(", ") || "No skills"} | 🕒 {match.availability}
+                            </div>
+                          </div>
+                          <div style={{ textAlign: "right", minWidth: "120px" }}>
+                            <div style={{ fontWeight: "bold", color }}>
+                              {icon} {Math.round(match.match_score)}% <small>({badge})</small>
+                            </div>
+                            <div style={{ display: "flex", gap: "6px", marginTop: "4px", justifyContent: "flex-end" }}>
+                              <button
+                                onClick={() => handleInfoClick(job, match)}
+                                title="Explain this match"
+                                style={{ background: "none", border: "none", cursor: "pointer" }}
+                              >
+                                ℹ️
+                              </button>
+                              <button
+                                onClick={() => handleAiShortlist(job.job_id, match.talent_id)}
+                                disabled={isShortlisting[match.talent_id]}
+                                title="Shortlist"
+                                style={{ background: "none", border: "none", cursor: "pointer" }}
+                              >
+                                📌
+                              </button>
+                            </div>
+                            {shortlistStatus[match.talent_id] && (
+                              <div style={{ fontSize: "11px", color: "#4c51bf", marginTop: "2px" }}>
+                                {shortlistStatus[match.talent_id]}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    )}
+
+    {/* Explanation Modal */}
+    {showModal && (
+      <MatchExplanationModal
+        explanation={modalExplanation}
+        loading={modalLoading}
+        onClose={() => setShowModal(false)}
+      />
+    )}
+  </div>
+);
+
+
 }
