@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
 import TalentDetailModal from "../Candidates/ReviewCandidates/TalentDetailModal";
+import BadgeAplus from "../../../assets/images/badges/aplus.png";
+import BadgeA from "../../../assets/images/badges/a.png";
+import BadgeBplus from "../../../assets/images/badges/bplus.png";
+import BadgeB from "../../../assets/images/badges/b.png";
+import BadgeC from "../../../assets/images/badges/c.png";
+import BadgeD from "../../../assets/images/badges/d.png";
+
 
 function TalentManagerView({
   results = [],
@@ -97,7 +104,7 @@ function TalentManagerView({
     }
   };
 
-  const getBadgeInfo = (score) => {
+  /*const getBadgeInfo = (score) => {
     const n = Number(score);
     if (n >= 90) return { badge: "A+", icon: "🚀" };
     if (n >= 70) return { badge: "A", icon: "🔥" };
@@ -105,6 +112,16 @@ function TalentManagerView({
     if (n >= 30) return { badge: "B", icon: "💼" };
     if (n >= 20) return { badge: "C", icon: "🧐" };
     return { badge: "D", icon: "🐢" };
+  };*/
+
+  const getBadgeInfo = (score) => {
+    const n = Number(score);
+    if (n >= 90) return { badge: "A+", image: BadgeAplus };
+    if (n >= 70) return { badge: "A", image: BadgeA };
+    if (n >= 50) return { badge: "B+", image: BadgeBplus };
+    if (n >= 30) return { badge: "B", image: BadgeB };
+    if (n >= 20) return { badge: "C", image: BadgeC };
+    return { badge: "D", image: BadgeD };
   };
 
   return (
@@ -194,7 +211,7 @@ function TalentManagerView({
         </thead>
         <tbody>
   {filteredResults.map((profile, index) => {
-    const { badge, icon } = getBadgeInfo(profile.match_score);
+    const { badge, image } = getBadgeInfo(profile.match_score);
     // Conditional background color
     const rowClass = index % 2 === 0 ? 'bg-blue-50' : 'bg-white'; // Light gray for even rows, white for odd
 
@@ -232,10 +249,15 @@ function TalentManagerView({
 </td>
         <td className="p-2">
   <div className="flex items-center justify-start gap-2">
-    <span className="text-3xl">{icon}</span>
+    <img
+      src={image}
+      alt={badge}
+      className="w-8 h-8 object-contain"
+    />
     <span className="text-xl font-bold text-gray-800">{badge}</span>
   </div>
 </td>
+
 
         <td className="p-2">
           <button
