@@ -36,6 +36,20 @@ export default function LoginPage() {
             handleSignIn();
           }}
         />
+
+      <p className="text-sm font-medium text-center text-gray-500 mt-4 px-4">
+        By signing in to LooKK, you agree to our{" "}
+        <a
+          href="/TermsCondition.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline font-semibold text-gray-600 hover:text-gray-800 transition"
+        >
+          Terms&nbsp;and&nbsp;Conditions
+        </a>
+        .
+      </p>
+
       </div>
     </FlexCol>
   );
