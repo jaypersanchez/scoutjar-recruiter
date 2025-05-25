@@ -254,7 +254,7 @@ function TalentManagerView({
       alt={badge}
       className="w-8 h-8 object-contain"
     />
-    <span className="text-xl font-bold text-gray-800">{badge}</span>
+    {/*<span className="text-xl font-bold text-gray-800">{badge}</span>*/}
   </div>
 </td>
 
