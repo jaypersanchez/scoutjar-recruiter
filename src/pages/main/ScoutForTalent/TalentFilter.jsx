@@ -86,6 +86,7 @@ function TalentFilter({ onResults }) {
 
       clearTimeout(timeout);
       const data = await response.json();
+      
       const transformed = (data.matches || []).map((item) => ({
         talent_id: item.talent_id,
         full_name: item.name || item.full_name || "N/A",
@@ -104,7 +105,14 @@ function TalentFilter({ onResults }) {
         education: item.education || "",
         years_experience: parseFloat(item.years_experience) || 0,
         resume: item.resume || "",
+        profile_mode: typeof item.profile_mode === "string" ? item.profile_mode : null,
       }));
+
+      console.log("🔍 Transformed profile_modes:", transformed.map(t => ({
+  id: t.talent_id,
+  name: t.full_name,
+  mode: t.profile_mode
+})));
 
       // ✅ Send results and job context
       onResults &&

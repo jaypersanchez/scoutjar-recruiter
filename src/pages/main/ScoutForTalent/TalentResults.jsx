@@ -235,10 +235,37 @@ function TalentResults({ results, jobTitle, jobDescription, requiredSkills }) {
                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#f9fafb"}
               >
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: "1.25rem", fontWeight: "bold", color: "#2d3748" }}>
+
+                  {/*<div style={{ fontSize: "1.25rem", fontWeight: "bold", color: "#2d3748" }}>
                     #{profile.talent_id} - {profile.full_name}
-                  </div>
-                  <div style={{ fontSize: "1rem", color: "#4a5568", marginTop: "6px" }}>
+                  </div>*/}
+                  {profile.profile_mode === "passive" || !profile.profile_mode ? (
+                    <>
+                      <div style={{ fontSize: "1.25rem", fontWeight: "bold", color: "#2d3748" }}>
+                        #{profile.talent_id} - {profile.full_name}
+                      </div>
+                      <div style={{ fontSize: "1rem", color: "#4a5568", marginTop: "6px" }}>
+                        ⭐ This candidate is highly sought after.
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div style={{ fontSize: "1.25rem", fontWeight: "bold", color: "#2d3748" }}>
+                        #{profile.talent_id} - {profile.full_name} - {profile.profile_mode}
+                      </div>
+                      <div style={{ fontSize: "1rem", color: "#4a5568", marginTop: "6px" }}>
+                        {profile.email}
+                      </div>
+                      <div style={{ fontSize: "1rem", color: "#4a5568", marginTop: "6px" }}>
+                        📍 {profile.location} | 🛠️ {profile.skills?.join(", ") || "No Skills"} | 🏢 {profile.work_preferences?.work_mode}
+                      </div>
+                      <div style={{ fontSize: "0.95rem", color: "#718096", marginTop: "6px" }}>
+                        Availability: {profile.availability || "N/A"}
+                      </div>
+                    </>
+                  )}
+
+                  {/*<div style={{ fontSize: "1rem", color: "#4a5568", marginTop: "6px" }}>
                     {profile.email}
                   </div>
                   <div style={{ fontSize: "1rem", color: "#4a5568", marginTop: "6px" }}>
@@ -246,7 +273,7 @@ function TalentResults({ results, jobTitle, jobDescription, requiredSkills }) {
                   </div>
                   <div style={{ fontSize: "0.95rem", color: "#718096", marginTop: "6px" }}>
                     Availability: {profile.availability || "N/A"}
-                  </div>
+                  </div>*/}
                   {/*{profile.explanation && (
                     <div style={{ fontSize: "1.0rem", fontWeight: "bold",color: "#2d3748", marginTop: "8px" }}>
                       {profile.explanation}
