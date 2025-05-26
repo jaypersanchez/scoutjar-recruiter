@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import TalentDetailModal from "../Candidates/ReviewCandidates/TalentDetailModal";
+import MessageTalentModal from "../Candidates/ReviewCandidates/MessageTalentModal";
 import BadgeAplus from "../../../assets/images/badges/aplus.png";
 import BadgeA from "../../../assets/images/badges/a.png";
 import BadgeBplus from "../../../assets/images/badges/bplus.png";
 import BadgeB from "../../../assets/images/badges/b.png";
 import BadgeC from "../../../assets/images/badges/c.png";
 import BadgeD from "../../../assets/images/badges/d.png";
+
 
 
 function TalentManagerView({
@@ -22,6 +24,7 @@ function TalentManagerView({
   const [shortlistStatus, setShortlistStatus] = useState({});
   const [isShortlisting, setIsShortlisting] = useState({});
   const [selectedTalent, setSelectedTalent] = useState(null);
+  const [messageTalent, setMessageTalent] = useState(null);
 
   const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
   const AIbaseUrl = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}`;
@@ -212,68 +215,102 @@ function TalentManagerView({
         <tbody>
   {filteredResults.map((profile, index) => {
     const { badge, image } = getBadgeInfo(profile.match_score);
-    // Conditional background color
-    const rowClass = index % 2 === 0 ? 'bg-blue-50' : 'bg-white'; // Light gray for even rows, white for odd
+    const isPassive = profile.profile_mode === "passive" || !profile.profile_mode;
+    const rowClass = index % 2 === 0 ? "bg-blue-50" : "bg-white";
 
     return (
       <tr
         key={profile.talent_id}
-        className={`${rowClass} border-b hover:bg-gray-100 cursor-pointer`} // Adding hover effect for rows
-        onClick={() => setSelectedTalent(profile)}
+        className={`${rowClass} border-b hover:bg-gray-100 cursor-pointer`}
+        onClick={() => {
+          if (!isPassive) setSelectedTalent(profile);
+        }}
       >
         <td className="p-2 text-gray-500">{index + 1}</td>
-        <td className="p-2 font-medium text-gray-800">{profile.full_name}</td>
-        {/*<td className="p-2 text-gray-700">{profile.location || "—"}</td>*/}
-        <td className="p-2 text-gray-700">
-  <div className="flex items-center gap-2">
-    {profile.country_code && (
-      <img
-        src={`https://flagcdn.com/w40/${profile.country_code.toLowerCase().slice(0, 2)}.png`}
-        alt={profile.country_code}
-        style={{ width: 20, height: 14, borderRadius: "2px", objectFit: "cover" }}
-        onError={(e) => { e.target.style.display = 'none'; }} // hide broken flags
-      />
-    )}
-    <span>{profile.location || "—"}</span>
-  </div>
-</td>
 
-        <td className="p-2 text-gray-700">{profile.skills?.join(", ") || "No Skills"}</td>
-        <td className="p-2 text-gray-700">{profile.desired_salary || "N/A"}</td>
-        <td className="p-2 text-gray-700">{profile.work_preferences?.work_mode || "N/A"}</td>
-        <td className="p-2 text-gray-700">{profile.availability || "N/A"}</td>
-        <td className="p-2">
-  <span className="text-2xl font-bold text-green-700">
-    {Math.round(profile.match_score)}%
-  </span>
-</td>
-        <td className="p-2">
-  <div className="flex items-center justify-start gap-2">
-    <img
-      src={image}
-      alt={badge}
-      className="w-8 h-8 object-contain"
-    />
-    {/*<span className="text-xl font-bold text-gray-800">{badge}</span>*/}
-  </div>
-</td>
+        {isPassive ? (
+          <>
+            <td colSpan={6} className="p-2 text-sm text-gray-600 italic">
+              ⭐ This candidate is highly sought after.
+            </td>
+          </>
+        ) : (
+          <>
+            <td className="p-2 font-medium text-gray-800">{profile.full_name}</td>
+            <td className="p-2 text-gray-700">
+              <div className="flex items-center gap-2">
+                {profile.country_code && (
+                  <img
+                    src={`https://flagcdn.com/w40/${profile.country_code
+                      .toLowerCase()
+                      .slice(0, 2)}.png`}
+                    alt={profile.country_code}
+                    style={{ width: 20, height: 14, borderRadius: "2px", objectFit: "cover" }}
+                    onError={(e) => {
+                      e.target.style.display = "none";
+                    }}
+                  />
+                )}
+                <span>{profile.location || "—"}</span>
+              </div>
+            </td>
+            <td className="p-2 text-gray-700">
+              {profile.skills?.join(", ") || "No Skills"}
+            </td>
+            <td className="p-2 text-gray-700">
+              {profile.desired_salary || "N/A"}
+            </td>
+            <td className="p-2 text-gray-700">
+              {profile.work_preferences?.work_mode || "N/A"}
+            </td>
+            <td className="p-2 text-gray-700">
+              {profile.availability || "N/A"}
+            </td>
+          </>
+        )}
 
+        <td className="p-2">
+          <span className="text-2xl font-bold text-green-700">
+            {Math.round(profile.match_score)}%
+          </span>
+        </td>
 
         <td className="p-2">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleAiShortlist(profile.talent_id);
-            }}
-            disabled={isShortlisting[profile.talent_id]}
-            className="text-xs bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
-          >
-            {isShortlisting[profile.talent_id] ? "..." : "📌 Shortlist"}
-          </button>
-          {shortlistStatus[profile.talent_id] && (
-            <div className="text-xs mt-1 text-blue-600">
-              {shortlistStatus[profile.talent_id]}
-            </div>
+          <div className="flex items-center justify-start gap-2">
+            <img src={image} alt={badge} className="w-8 h-8 object-contain" />
+          </div>
+        </td>
+
+        <td className="p-2">
+          {isPassive ? (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setMessageTalent(profile);
+                //alert("To contact this talent, please use the messaging feature in Talent View.");
+              }}
+              className="text-xs bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600"
+            >
+              💬 Message
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleAiShortlist(profile.talent_id);
+                }}
+                disabled={isShortlisting[profile.talent_id]}
+                className="text-xs bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+              >
+                {isShortlisting[profile.talent_id] ? "..." : "📌 Shortlist"}
+              </button>
+              {shortlistStatus[profile.talent_id] && (
+                <div className="text-xs mt-1 text-blue-600">
+                  {shortlistStatus[profile.talent_id]}
+                </div>
+              )}
+            </>
           )}
         </td>
       </tr>
@@ -281,23 +318,32 @@ function TalentManagerView({
   })}
 </tbody>
 
+
       </table>
 
       {filteredResults.length === 0 && (
         <div className="text-center mt-8 text-gray-500">No matching talents found.</div>
       )}
 
-      {/* Modal */}
-      {selectedTalent && (
-        <TalentDetailModal
-          applicant={selectedTalent}
-          onClose={() => setSelectedTalent(null)}
-          showShortlist={true}
-          jobTitle={jobTitle}
-          jobDescription={jobDescription}
-          requiredSkills={requiredSkills}
-        />
-      )}
+      {/* Modals */}
+{selectedTalent && (
+  <TalentDetailModal
+    applicant={selectedTalent}
+    onClose={() => setSelectedTalent(null)}
+    showShortlist={true}
+    jobTitle={jobTitle}
+    jobDescription={jobDescription}
+    requiredSkills={requiredSkills}
+  />
+)}
+
+{messageTalent && (
+  <MessageTalentModal
+    applicant={messageTalent}
+    onClose={() => setMessageTalent(null)}
+  />
+)}
+
     </div>
   );
 }

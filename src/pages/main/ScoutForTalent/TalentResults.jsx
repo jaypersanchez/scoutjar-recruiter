@@ -39,6 +39,8 @@ function TalentResults({ results, jobTitle, jobDescription, requiredSkills }) {
   const [shortlistStatus, setShortlistStatus] = useState({});
   const [isShortlisting, setIsShortlisting] = useState({});
   const [currentPage, setCurrentPage] = useState(0);
+  const [messageTalent, setMessageTalent] = useState(null);
+
 
   const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
   const AIbaseUrl = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}`;
@@ -218,7 +220,15 @@ function TalentResults({ results, jobTitle, jobDescription, requiredSkills }) {
             return (
               <div
                 key={profile.talent_id}
-                onClick={() => handleRowClick(profile)}
+                /*onClick={() => handleRowClick(profile)}*/
+                onClick={() => {
+                  if (profile.profile_mode === "passive" || !profile.profile_mode) {
+                    setMessageTalent(profile);  // new state
+                  } else {
+                    handleRowClick(profile);
+                  }
+                }}
+
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
@@ -284,14 +294,14 @@ function TalentResults({ results, jobTitle, jobDescription, requiredSkills }) {
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "8px", minWidth: "150px" }}>
                   <div style={{
                    fontWeight: "900",
-  fontSize: "1.3rem",
-  padding: "8px 14px",
-  borderRadius: "12px",
-  display: "inline-flex",
-  alignItems: "center",
-  gap: "6px",
-  backgroundColor: "#edf2f7", // subtle gray
-  color: "#2d3748" // strong readable text
+                    fontSize: "1.3rem",
+                    padding: "8px 14px",
+                    borderRadius: "12px",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    backgroundColor: "#edf2f7", // subtle gray
+                    color: "#2d3748" // strong readable text
                   }}>
                     <img
                       src={image}
