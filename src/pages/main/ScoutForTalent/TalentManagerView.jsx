@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import TalentDetailModal from "../Candidates/ReviewCandidates/TalentDetailModal";
 import MessageTalentModal from "../Candidates/ReviewCandidates/MessageTalentModal";
-import BadgeAplus from "../../../assets/images/badges/aplus.png";
-import BadgeA from "../../../assets/images/badges/a.png";
-import BadgeBplus from "../../../assets/images/badges/bplus.png";
-import BadgeB from "../../../assets/images/badges/b.png";
-import BadgeC from "../../../assets/images/badges/c.png";
-import BadgeD from "../../../assets/images/badges/d.png";
-
+import BadgeAplus from "../../../assets/images/badges-alternative/aplus.png";
+import BadgeA from "../../../assets/images/badges-alternative/a.png";
+import BadgeBplus from "../../../assets/images/badges-alternative/bplus.png";
+import BadgeB from "../../../assets/images/badges-alternative/b.png";
+import BadgeC from "../../../assets/images/badges-alternative/c.png";
+import BadgeD from "../../../assets/images/badges-alternative/d.png";
+import BadgeE from "../../../assets/images/badges-alternative/e.png"
 
 
 function TalentManagerView({
@@ -117,7 +117,7 @@ function TalentManagerView({
     return { badge: "D", icon: "🐢" };
   };*/
 
-  const getBadgeInfo = (score) => {
+  /*const getBadgeInfo = (score) => {
     const n = Number(score);
     if (n >= 90) return { badge: "A+", image: BadgeAplus };
     if (n >= 70) return { badge: "A", image: BadgeA };
@@ -125,7 +125,20 @@ function TalentManagerView({
     if (n >= 30) return { badge: "B", image: BadgeB };
     if (n >= 20) return { badge: "C", image: BadgeC };
     return { badge: "D", image: BadgeD };
-  };
+  };*/
+
+  const getBadgeInfo = (score) => {
+  const n = Number(score);
+  if (n >= 90) return { badge: "A++", image: BadgeAplus }; // You may swap this with a separate Dark Green image if needed
+  if (n >= 80) return { badge: "A+", image: BadgeAplus };
+  if (n >= 70) return { badge: "A", image: BadgeA };
+  if (n >= 60) return { badge: "B+", image: BadgeBplus };
+  if (n >= 50) return { badge: "B", image: BadgeB };
+  if (n >= 40) return { badge: "C", image: BadgeC };
+  if (n >= 30) return { badge: "D", image: BadgeD };
+  return { badge: "E", image: BadgeE };
+};
+
 
   return (
     <div className="p-4 overflow-x-auto">
