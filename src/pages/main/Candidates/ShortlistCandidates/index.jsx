@@ -232,32 +232,70 @@ export default function ShortlistedCandidates() {
         )
       )}*/}
 
+      {/*{viewMode === "ai" && (
+        aiShortlisted?.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {aiShortlisted.map((c) => (
+              <div
+                key={c.shortlist_id}
+                onClick={() => handleCandidateClick(c)}
+                className="bg-white border rounded-lg shadow p-4 hover:shadow-md cursor-pointer transition"
+              >
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="font-semibold text-purple-700">#{c.shortlist_id}</h3>
+                  <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full">
+                    AI Shortlisted
+                  </span>
+                </div>
+                <p className="text-sm text-gray-700"><strong>Talent ID:</strong> {c.talent_id}</p>
+                <p className="text-sm text-gray-700"><strong>Name:</strong> {c.full_name}</p>
+                <p className="text-sm text-gray-700"><strong>Email:</strong> {c.email}</p>
+                <p className="text-sm text-gray-600"><strong>Added:</strong> {new Date(c.added_at).toLocaleString()}</p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-center">No AI-shortlisted candidates found.</p>
+        )
+      )}*/}
+
       {viewMode === "ai" && (
   aiShortlisted?.length > 0 ? (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      {aiShortlisted.map((c) => (
-        <div
-          key={c.shortlist_id}
-          onClick={() => handleCandidateClick(c)}
-          className="bg-white border rounded-lg shadow p-4 hover:shadow-md cursor-pointer transition"
-        >
-          <div className="flex justify-between items-center mb-2">
-            <h3 className="font-semibold text-purple-700">#{c.shortlist_id}</h3>
-            <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full">
-              AI Shortlisted
-            </span>
-          </div>
-          <p className="text-sm text-gray-700"><strong>Talent ID:</strong> {c.talent_id}</p>
-          <p className="text-sm text-gray-700"><strong>Name:</strong> {c.full_name}</p>
-          <p className="text-sm text-gray-700"><strong>Email:</strong> {c.email}</p>
-          <p className="text-sm text-gray-600"><strong>Added:</strong> {new Date(c.added_at).toLocaleString()}</p>
-        </div>
-      ))}
+    <div className="overflow-x-auto">
+      <table className="min-w-full border-collapse text-sm text-left">
+        <thead>
+          <tr className="bg-purple-100 text-purple-800 font-semibold border-b border-purple-300">
+            <th className="px-4 py-2 border border-purple-200">Talent ID</th>
+            <th className="px-4 py-2 border border-purple-200">Name</th>
+            <th className="px-4 py-2 border border-purple-200">Email</th>
+            <th className="px-4 py-2 border border-purple-200">Added</th>
+          </tr>
+        </thead>
+        <tbody>
+          {aiShortlisted.map((c, index) => (
+            <tr
+              key={c.shortlist_id}
+              className={`${
+                index % 2 === 0 ? "bg-white" : "bg-purple-50"
+              } hover:bg-purple-100 cursor-pointer`}
+              onClick={() => handleCandidateClick(c)}
+            >
+              <td className="px-4 py-2 border border-purple-200">{c.talent_id}</td>
+              <td className="px-4 py-2 border border-purple-200">{c.full_name}</td>
+              <td className="px-4 py-2 border border-purple-200">{c.email || "—"}</td>
+              <td className="px-4 py-2 border border-purple-200">
+                {c.added_at ? new Date(c.added_at).toLocaleString() : "—"}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   ) : (
     <p className="text-center">No AI-shortlisted candidates found.</p>
   )
 )}
+
 
 
       {showModal && selectedCandidate && (
