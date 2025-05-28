@@ -15,51 +15,103 @@ export default function ProfileForm() {
   const [website, setWebsite] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [logo, setLogo] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [profileData, setProfileData] = useState({});
 
   const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
 
   useEffect(() => {
-    const data = sessionStorage.getItem("sso-login");
-    if (data) {
-      try {
-        const parsed = JSON.parse(data);
-        setSsoData({
-          full_name: parsed.full_name || "",
-          email: parsed.email || "",
-          recruiter_id: parsed.recruiter_id || null,
-        });
+  const data = sessionStorage.getItem("sso-login");
+  if (data) {
+    try {
+      const parsed = JSON.parse(data);
+      setSsoData({
+        full_name: parsed.full_name || "",
+        email: parsed.email || "",
+        recruiter_id: parsed.recruiter_id || null,
+      });
 
-        if (parsed.recruiter_id) {
-          fetch(`${baseUrl}/talent-profiles/by-recruiter/${parsed.recruiter_id}`)
-            .then((res) => res.ok ? res.json() : Promise.reject("Profile not found"))
-            .then((data) => {
-              if (data.company_name) setCompany(data.company_name);
-              if (data.company_website) setWebsite(data.company_website);
-            })
-            .catch((err) => console.error("Error loading recruiter data:", err));
-        }
-      } catch (error) {
-        console.error("Error parsing sso-login data", error);
+      if (parsed.recruiter_id) {
+        fetch(`${baseUrl}/talent-profiles/by-recruiter/${parsed.recruiter_id}`)
+          .then((res) => res.ok ? res.json() : Promise.reject("Profile not found"))
+          .then((data) => {
+            if (data.company_name) setCompany(data.company_name);
+            if (data.company_website) setWebsite(data.company_website);
+            setProfileData(data); // ✅ This ensures company_logo and other fields are available
+          })
+          .catch((err) => console.error("Error loading recruiter data:", err));
       }
+    } catch (error) {
+      console.error("Error parsing sso-login data", error);
     }
-  }, []);
+  }
+}, []);
+
+
+  const handleLogoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setLogo(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
+
+  const handleLogoClick = () => {
+    document.getElementById('logoInput').click();
+  };
 
   const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setStatusMessage("");
+
+  const formData = new FormData();
+  formData.append("recruiter_id", ssoData.recruiter_id);
+  formData.append("company_name", company);
+  formData.append("company_website", website);
+  if (logo) {
+    formData.append("company_logo", logo);
+  }
+
+  try {
+    const res = await fetch(`${baseUrl}/talent-profiles/update-recruiter-profile`, {
+      method: "POST",
+      body: formData, // DO NOT set headers when using FormData
+    });
+
+    if (!res.ok) throw new Error("Failed to update profile");
+
+    await res.json();
+    setStatusMessage("✅ Profile updated successfully!");
+  } catch (err) {
+    console.error("❌ Update failed:", err);
+    setStatusMessage("❌ Failed to update profile.");
+  } finally {
+    setLoading(false);
+  }
+};
+
+  /*const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setStatusMessage("");
 
-    const payload = {
-      recruiter_id: ssoData.recruiter_id,
-      company_name: company,
-      company_website: website,
-    };
+    
+    const formData = new FormData();
+    formData.append("recruiter_id", ssoData.recruiter_id);
+    formData.append("company_name", company);
+    formData.append("company_website", website);
+    if (logo) {
+        formData.append("company_logo", logo);
+    }
+
 
     try {
       const res = await fetch(`${baseUrl}/talent-profiles/update-recruiter-profile`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        headers: { "Content-Type": "multipart/form-data" },
+        body: formData, //JSON.stringify(payload),
       });
 
       if (!res.ok) throw new Error("Failed to update profile");
@@ -72,13 +124,55 @@ export default function ProfileForm() {
     } finally {
       setLoading(false);
     }
-  };
+  };*/
 
   return (
     <form className="profile-form-container" onSubmit={handleSubmit}>
-  <div className="logo-section">
+  {/*<div className="logo-section">
     <img src="/logo.png" alt="Logo" className="logo-img" />
-  </div>
+  </div>*/}
+
+  {/*  {profileData.company_logo && (
+  <img
+    src={`${baseUrl}${profileData.company_logo}`}
+    alt="Current company logo"
+    style={{ width: "120px", height: "120px", borderRadius: "50%", objectFit: "cover", marginBottom: "10px" }}
+  />
+)}*/}
+
+  <div className="logo-section">
+  <input
+    id="logoInput"
+    type="file"
+    accept="image/*"
+    style={{ display: "none" }}
+    onChange={handleLogoChange}
+  />
+  
+  <img
+    src={
+      previewUrl
+        ? previewUrl
+        : profileData.company_logo
+        ? `${baseUrl}${profileData.company_logo}`
+        : "/logo.png"
+    }
+    alt="Company Logo"
+    onClick={handleLogoClick}
+    style={{
+      cursor: "pointer",
+      borderRadius: "50%",
+      width: "120px",
+      height: "120px",
+      objectFit: "cover",
+      border: "2px solid #ccc",
+      marginBottom: "10px",
+    }}
+    title="Click to upload company logo"
+  />
+</div>
+
+
 
   <div className="profile-fields">
     <div className="readonly-field">
