@@ -262,13 +262,13 @@ export default function ShortlistedCandidates() {
       {viewMode === "ai" && (
   aiShortlisted?.length > 0 ? (
     <div className="overflow-x-auto">
-      <table className="min-w-full border-collapse text-sm text-left">
+      <table className="min-w-full table-auto text-sm text-left">
         <thead>
-          <tr className="bg-purple-100 text-purple-800 font-semibold border-b border-purple-300">
-            <th className="px-4 py-2 border border-purple-200">Talent ID</th>
-            <th className="px-4 py-2 border border-purple-200">Name</th>
-            <th className="px-4 py-2 border border-purple-200">Email</th>
-            <th className="px-4 py-2 border border-purple-200">Added</th>
+          <tr className="bg-gray-100 text-gray-800 font-medium">
+            <th className="px-3 py-2 border-b">Talent ID</th>
+            <th className="px-3 py-2 border-b">Name</th>
+            <th className="px-3 py-2 border-b">Email</th>
+            <th className="px-3 py-2 border-b">Added</th>
           </tr>
         </thead>
         <tbody>
@@ -276,14 +276,14 @@ export default function ShortlistedCandidates() {
             <tr
               key={c.shortlist_id}
               className={`${
-                index % 2 === 0 ? "bg-white" : "bg-purple-50"
-              } hover:bg-purple-100 cursor-pointer`}
+                index % 2 === 0 ? "bg-white" : "bg-blue-50"
+              } hover:bg-blue-100 transition cursor-pointer`}
               onClick={() => handleCandidateClick(c)}
             >
-              <td className="px-4 py-2 border border-purple-200">{c.talent_id}</td>
-              <td className="px-4 py-2 border border-purple-200">{c.full_name}</td>
-              <td className="px-4 py-2 border border-purple-200">{c.email || "—"}</td>
-              <td className="px-4 py-2 border border-purple-200">
+              <td className="px-3 py-2 border-b text-gray-700">{c.talent_id}</td>
+              <td className="px-3 py-2 border-b text-gray-800">{c.full_name}</td>
+              <td className="px-3 py-2 border-b text-gray-700">{c.email || "—"}</td>
+              <td className="px-3 py-2 border-b text-gray-600">
                 {c.added_at ? new Date(c.added_at).toLocaleString() : "—"}
               </td>
             </tr>
@@ -292,9 +292,11 @@ export default function ShortlistedCandidates() {
       </table>
     </div>
   ) : (
-    <p className="text-center">No AI-shortlisted candidates found.</p>
+    <p className="text-center text-gray-600 mt-4">No AI-shortlisted candidates found.</p>
   )
 )}
+
+
 
 
 
