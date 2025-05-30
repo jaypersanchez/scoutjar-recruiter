@@ -155,7 +155,7 @@ export default function ProfileForm() {
         ? previewUrl
         : profileData.company_logo
         ? `${baseUrl}${profileData.company_logo}`
-        : "/logo.png"
+        : "/lookk.png"
     }
     alt="Company Logo"
     onClick={handleLogoClick}
