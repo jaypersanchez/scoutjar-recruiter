@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";useEffect
 import { Link, useNavigate } from "react-router-dom"; // ← useNavigate here
 import { TextField } from "@/common/components/input-fields";
 import { LuEye, LuEyeClosed } from "react-icons/lu";
@@ -74,7 +74,7 @@ export default function LoginForm({ onSignIn }) {
 
       // Always redirect to /dashboard after login
       //navigate("/dashboard");
-      navigate("/");
+      //navigate("/");
     } catch (err) {
       console.error("Login error:", err.message);
       alert(err.message);
