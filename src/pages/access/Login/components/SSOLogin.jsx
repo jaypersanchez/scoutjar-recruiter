@@ -67,32 +67,6 @@ export default function SSOLogin({ onSignIn }) {
   }
 }, [navigate]);
 
-
-
-  /*useEffect(() => {
-    if (user || sessionStorage.getItem("sso-login")) {
-      navigate("/dashboard"); // ✅ Explicit redirect
-    }
-  }, [user, navigate]);*/
-
-
-  /*useEffect(() => {
-    if (user) {
-      sessionStorage.setItem("sso-login", "true");
-      navigate("/dashboard");
-    } else if (sessionStorage.getItem("sso-login")) {
-      navigate("/dashboard");
-    }
-  }, [user, navigate]);*/
-
-  /*useEffect(() => {
-    if (user) {
-      sessionStorage.setItem("sso-login", "true"); // ✅ Important: only set when user exists
-      navigate("/dashboard");
-    }
-  }, [user]);*/
-
-
   useEffect(() => {
     const clearOnReload = () => {
       if (process.env.NODE_ENV === "development") {
@@ -256,11 +230,11 @@ export default function SSOLogin({ onSignIn }) {
       .filter((data) => data.slug !== "twitter" && data.slug !== "instagram")
       .map((data, index) => (
         <Button
-  key={index}
-  variant="outline"
-  className="border-[var(--primary)] h-11 hover:bg-[var(--accent)] text-[var(--accent)] hover:text-white flex items-center justify-center gap-2"
-  onClick={() => handleSSOLogin(data.slug)}
->
+          key={index}
+          variant="outline"
+          className="border-[var(--primary)] h-11 hover:bg-[var(--accent)] text-[var(--accent)] hover:text-white flex items-center justify-center gap-2"
+          onClick={() => handleSSOLogin(data.slug)}
+        >
   <data.icon className="w-6 h-6 text-black" />
   <p className="text-sm font-bold tracking-wider uppercase text-black">
     {data.slug}

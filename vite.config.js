@@ -21,6 +21,9 @@ export default defineConfig({
       'dev.lookk.ai',
       'demo.lookk.ai'
     ],
-    cors: true
+    cors: true,
+    fs: {
+      strict: false,
+    }
   }
 });
