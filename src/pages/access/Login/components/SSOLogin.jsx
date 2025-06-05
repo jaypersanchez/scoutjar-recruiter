@@ -53,19 +53,19 @@ export default function SSOLogin({ onSignIn }) {
 
   const navigate = useNavigate();
 
-  /*useEffect(() => {
+  useEffect(() => {
   try {
     const sso = sessionStorage.getItem("sso-login");
     const data = JSON.parse(sso);
     if (data && typeof data === "object" && data.user_id) {
-      //navigate("/dashboard");
-      navigate("/");
+      navigate("/dashboard");
+      //navigate("/");
     }
   } catch (err) {
     sessionStorage.removeItem("sso-login");
     console.warn("Invalid sso-login in sessionStorage");
   }
-}, [navigate]);*/
+}, [navigate]);
 
 
 

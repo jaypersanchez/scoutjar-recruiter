@@ -73,7 +73,7 @@ export default function LoginForm({ onSignIn }) {
       }
 
       // Always redirect to /dashboard after login
-      //navigate("/dashboard");
+      navigate("/dashboard");
       //navigate("/");
     } catch (err) {
       console.error("Login error:", err.message);

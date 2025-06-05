@@ -54,9 +54,17 @@ const PAGE_ROUTES: Array<PageRouteProps> = [
         Component: DashboardPage,
         hidden: true,
       },
+          {
+      path: "dashboard",  // ✅ now you can explicitly navigate to /dashboard
+      label: "Dashboard",
+      icon: RiDashboardFill,
+      Component: DashboardPage,
+      hidden: false,
+    },
+
       {
         index: true,
-        // path: "scout-for-talent",
+        path: "scout-for-talent",
         label: "Scout for Talent",
         icon: MdPersonSearch,
         Component: ScoutForTalentPage,
