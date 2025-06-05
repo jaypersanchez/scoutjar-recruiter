@@ -58,7 +58,8 @@ export default function SSOLogin({ onSignIn }) {
     const sso = sessionStorage.getItem("sso-login");
     const data = JSON.parse(sso);
     if (data && typeof data === "object" && data.user_id) {
-      navigate("/dashboard");
+      //navigate("/dashboard");
+      navigate("/");
     }
   } catch (err) {
     sessionStorage.removeItem("sso-login");
