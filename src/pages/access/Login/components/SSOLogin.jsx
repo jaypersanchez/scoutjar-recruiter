@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom"
 import { Button } from "@/common/components/ui";
 import {
   FaGoogle,
@@ -49,6 +50,14 @@ const createUserProfile = async (user) => {
 };
 
 export default function SSOLogin({ onSignIn }) {
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user || sessionStorage.getItem("sso-login")) {
+      navigate("/dashboard"); // ✅ Explicit redirect
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
     const clearOnReload = () => {
