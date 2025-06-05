@@ -55,14 +55,17 @@ export default function SSOLogin({ onSignIn }) {
 
   useEffect(() => {
   try {
-    const ssoData = JSON.parse(sessionStorage.getItem("sso-login"));
-    if (ssoData?.user_id) {
+    const sso = sessionStorage.getItem("sso-login");
+    const data = JSON.parse(sso);
+    if (data && typeof data === "object" && data.user_id) {
       navigate("/dashboard");
     }
-  } catch {
-    // Invalid or no JSON — do nothing
+  } catch (err) {
+    sessionStorage.removeItem("sso-login");
+    console.warn("Invalid sso-login in sessionStorage");
   }
 }, [navigate]);
+
 
 
   /*useEffect(() => {
