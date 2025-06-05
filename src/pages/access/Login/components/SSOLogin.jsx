@@ -54,19 +54,32 @@ export default function SSOLogin({ onSignIn }) {
   const navigate = useNavigate();
 
   useEffect(() => {
+  try {
+    const ssoData = JSON.parse(sessionStorage.getItem("sso-login"));
+    if (ssoData?.user_id) {
+      navigate("/dashboard");
+    }
+  } catch {
+    // Invalid or no JSON — do nothing
+  }
+}, [navigate]);
+
+
+  /*useEffect(() => {
     if (user || sessionStorage.getItem("sso-login")) {
       navigate("/dashboard"); // ✅ Explicit redirect
     }
-  }, [user, navigate]);
+  }, [user, navigate]);*/
 
-  useEffect(() => {
+
+  /*useEffect(() => {
     if (user) {
       sessionStorage.setItem("sso-login", "true");
       navigate("/dashboard");
     } else if (sessionStorage.getItem("sso-login")) {
       navigate("/dashboard");
     }
-  }, [user, navigate]);
+  }, [user, navigate]);*/
 
   /*useEffect(() => {
     if (user) {
