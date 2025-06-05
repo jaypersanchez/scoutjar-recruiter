@@ -53,11 +53,19 @@ export default function SSOLogin({ onSignIn }) {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (user || sessionStorage.getItem("sso-login")) {
       navigate("/dashboard"); // ✅ Explicit redirect
     }
-  }, [user, navigate]);
+  }, [user, navigate]);*/
+
+  useEffect(() => {
+    if (user) {
+      sessionStorage.setItem("sso-login", "true"); // ✅ Important: only set when user exists
+      navigate("/dashboard");
+    }
+  }, [user]);
+
 
   useEffect(() => {
     const clearOnReload = () => {
