@@ -29,7 +29,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md mt-6 space-y-8">
         <LoginForm onSignIn={handleSignIn}/>
         <Divider label="Or continue with" />
-        <SSOLogin onSignIn={handleSignIn} />
+        {/*<SSOLogin onSignIn={handleSignIn} />*/}
 
         {/*<SSOLogin
           onSignIn={(slug) => {
