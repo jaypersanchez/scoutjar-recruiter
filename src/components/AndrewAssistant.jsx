@@ -12,7 +12,7 @@ export default function AndrewAssistant() {
 
   const toggleAssistant = () => setIsOpen(!isOpen);
 
-  const AIbaseURL = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}`;
+  const AIbaseURL = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}`;
 
   useEffect(() => {
     setQuery("");
