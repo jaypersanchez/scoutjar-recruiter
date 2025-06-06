@@ -13,8 +13,8 @@ export default function TalentDetailModal({
   const [shortlistStatus, setShortlistStatus] = useState(null);
   const [isShortlisting, setIsShortlisting] = useState(false);
   const [explanation, setExplanation] = useState("⏳ Generating explanation...");
-  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}`;
-  const serverBaseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
+  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}`;
+  const serverBaseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}`;
   console.log("🧪 Modal props on load", {
     applicant,
     jobTitle,

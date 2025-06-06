@@ -19,7 +19,7 @@ export default function ProfileForm() {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [profileData, setProfileData] = useState({});
 
-  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
+  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}`;
 
   useEffect(() => {
   const data = sessionStorage.getItem("sso-login");
