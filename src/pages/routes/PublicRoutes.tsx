@@ -46,6 +46,7 @@ const PAGE_ROUTES: Array<PageRouteProps> = [
   {
     id: "public",
     path: "/",
+    Component: ScoutForTalentPage,
     children: [
       {
         index: true,

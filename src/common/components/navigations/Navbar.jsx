@@ -38,11 +38,11 @@ export default function Navbar({ className }) {
           <FlexBox className="gap-2">
             <img
               className="h-8 cursor-pointer rounded-md"
-              src="/lookk.png"
+              src="/recruiter/lookk.png"
               onClick={() => navigate("/")}
             />
             <p className="text-xl font-bold leading-9 uppercase tracking-tight text-center text-gray-600 lg:text-start">
-              ScoutJar
+              LooKK
             </p>
           </FlexBox>
         </FlexBox>
