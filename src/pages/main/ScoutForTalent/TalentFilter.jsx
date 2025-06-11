@@ -13,14 +13,14 @@ function TalentFilter({ onResults }) {
   const [jobTitles, setJobTitles] = useState([]);
   const [suggestingSkills, setSuggestingSkills] = useState(false);
 
-  useEffect(() => {
+  /*useEffect(() => {
     const delay = setTimeout(() => {
       if (jobTitle.trim() && jobDescription.trim()) {
         autoSuggestFields();
       }
     }, 800);
     return () => clearTimeout(delay);
-  }, [jobTitle, jobDescription]);
+  }, [jobTitle, jobDescription]);*/
 
   useEffect(() => {
     const fetchJobTitles = async () => {
@@ -37,7 +37,7 @@ function TalentFilter({ onResults }) {
     fetchJobTitles();
   }, []);
 
-  const autoSuggestFields = async () => {
+  /*const autoSuggestFields = async () => {
     if (suggestingSkills) return;
     setSuggestingSkills(true);
     try {
@@ -58,7 +58,49 @@ function TalentFilter({ onResults }) {
     } finally {
       setSuggestingSkills(false);
     }
-  };
+  };*/
+
+  const autoSuggestFields = async () => {
+  if (suggestingSkills) return;
+  setSuggestingSkills(true);
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}/suggest-fields`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ job_title: jobTitle, job_description: jobDescription }),
+      }
+    );
+    const data = await response.json();
+
+    // Append suggestions to user-provided input
+    if (data.suggested_skills) {
+      setSkills((prev) =>
+        prev ? `${prev}, ${data.suggested_skills}` : data.suggested_skills
+      );
+    }
+
+    if (data.industry_experience) {
+      setIndustryExperience((prev) =>
+        prev && prev !== data.industry_experience
+          ? `${prev}, ${data.industry_experience}`
+          : data.industry_experience
+      );
+    }
+
+    if (data.years_experience !== undefined) {
+      setYearsExperience((prev) =>
+        prev && prev !== data.years_experience ? data.years_experience : prev
+      );
+    }
+  } catch (err) {
+    console.error("Error suggesting fields:", err);
+  } finally {
+    setSuggestingSkills(false);
+  }
+};
+
 
   const handleExecuteQuery = async () => {
     const normalizedJobTitle = jobTitle ? jobTitle.toLowerCase().replace(/\s+/g, ",") : null;
@@ -190,6 +232,10 @@ function TalentFilter({ onResults }) {
             >
               {suggestingSkills ? <span className="animate-looking">👀 Looking...</span> : "Suggest Skills"}
             </button>
+            <small className="text-muted">
+              Suggestions will be added to your input
+            </small>
+
           </div>
         </div>
 
