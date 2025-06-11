@@ -26,7 +26,7 @@ function TalentFilter({ onResults }) {
     const fetchJobTitles = async () => {
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}/job-titles/all`
+          `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}/job-titles/all`
         );
         const data = await response.json();
         setJobTitles(data || []);
@@ -42,7 +42,7 @@ function TalentFilter({ onResults }) {
     setSuggestingSkills(true);
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}/suggest-fields`,
+        `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}/suggest-fields`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -71,7 +71,7 @@ function TalentFilter({ onResults }) {
       years_experience: yearsExperience || 0,
     };
 
-    const baseUrl = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}`;
+    const baseUrl = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}`;
     setLoading(true);
     try {
       const controller = new AbortController();
@@ -86,12 +86,15 @@ function TalentFilter({ onResults }) {
 
       clearTimeout(timeout);
       const data = await response.json();
+      
       const transformed = (data.matches || []).map((item) => ({
         talent_id: item.talent_id,
         full_name: item.name || item.full_name || "N/A",
         email: item.email || "n/a@example.com",
         desired_salary: parseFloat(item.desired_salary) || 0,
         location: item.location || "Unknown",
+        country: item.country || "",
+        country_code: item.country_code || "",
         skills: Array.isArray(item.skills) ? item.skills : [],
         work_preferences: typeof item.work_preferences === "object" ? item.work_preferences : {},
         availability: item.availability || "Unknown",
@@ -102,7 +105,14 @@ function TalentFilter({ onResults }) {
         education: item.education || "",
         years_experience: parseFloat(item.years_experience) || 0,
         resume: item.resume || "",
+        profile_mode: typeof item.profile_mode === "string" ? item.profile_mode : null,
       }));
+
+      console.log("🔍 Transformed profile_modes:", transformed.map(t => ({
+  id: t.talent_id,
+  name: t.full_name,
+  mode: t.profile_mode
+})));
 
       // ✅ Send results and job context
       onResults &&

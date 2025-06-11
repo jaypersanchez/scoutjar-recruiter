@@ -6,7 +6,7 @@ export default function ApplicantFilter({ onFilter }) {
   const [talentId, setTalentId] = useState("");
   const [selectedJob, setSelectedJob] = useState("");
   const [jobs, setJobs] = useState([]);
-  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
+  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}`;
   useEffect(() => {
     const storedUser = sessionStorage.getItem("sso-login");
     const user = storedUser ? JSON.parse(storedUser) : null;

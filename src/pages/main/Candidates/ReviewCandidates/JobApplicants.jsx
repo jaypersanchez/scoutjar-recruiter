@@ -12,7 +12,7 @@ export default function JobApplicants() {
   const itemsPerPage = 15;
   const [selectedApplicant, setSelectedApplicant] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
+  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}`;
 
   useEffect(() => {
     const storedUser = sessionStorage.getItem("sso-login");
@@ -113,7 +113,7 @@ export default function JobApplicants() {
       <h2>Job Applicants</h2>
       <ApplicantFilter onFilter={handleFilter} />
 
-      <table className="results-table">
+     {/*} <table className="results-table">
         <thead>
           <tr>
             <th>Application ID</th>
@@ -154,7 +154,37 @@ export default function JobApplicants() {
             </tr>
           ))}
         </tbody>
-      </table>
+      </table>*/}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  {currentApplicants.map((applicant) => (
+    <div
+      key={applicant.application_id}
+      onClick={() => {
+        setSelectedApplicant(applicant);
+        setShowModal(true);
+      }}
+      className="bg-white border rounded-lg p-4 shadow hover:shadow-md transition cursor-pointer"
+    >
+      <div className="flex justify-between items-center mb-2">
+        <h3 className="font-semibold text-lg text-indigo-700">
+          #{applicant.application_id}
+        </h3>
+        <span className="text-xs px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full">
+          {applicant.application_status || "Pending"}
+        </span>
+      </div>
+
+      <p className="text-sm text-gray-700"><strong>Email:</strong> {applicant.email}</p>
+      <p className="text-sm text-gray-700"><strong>Talent ID:</strong> {applicant.talent_id}</p>
+      <p className="text-sm text-gray-700"><strong>User ID:</strong> {applicant.user_id}</p>
+      <p className="text-sm text-gray-700"><strong>Job:</strong> {applicant.job_title} (#{applicant.job_id})</p>
+      <p className="text-sm text-gray-700"><strong>Recruiter ID:</strong> {applicant.recruiter_id}</p>
+      <p className="text-sm text-gray-600 mt-2"><strong>Applied:</strong> {new Date(applicant.application_date).toLocaleString()}</p>
+    </div>
+  ))}
+</div>
+
 
       <div className="mt-4 text-center">
         <button

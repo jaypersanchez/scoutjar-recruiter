@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";useEffect
 import { Link, useNavigate } from "react-router-dom"; // ← useNavigate here
 import { TextField } from "@/common/components/input-fields";
 import { LuEye, LuEyeClosed } from "react-icons/lu";
@@ -13,7 +13,7 @@ export default function LoginForm({ onSignIn }) {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate(); // ← navigate initialized
-  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
+  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}`;
   useEffect(() => {
     const clearOnReload = () => {
       if (process.env.NODE_ENV === "development") {
@@ -74,6 +74,7 @@ export default function LoginForm({ onSignIn }) {
 
       // Always redirect to /dashboard after login
       navigate("/dashboard");
+      //navigate("/");
     } catch (err) {
       console.error("Login error:", err.message);
       alert(err.message);

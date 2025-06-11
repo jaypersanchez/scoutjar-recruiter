@@ -12,8 +12,8 @@ export default function ShortlistedCandidates() {
   const [showModal, setShowModal] = useState(false);
   const [viewMode, setViewMode] = useState("job");
 
-  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
-  const AIbaseUrl = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}`;
+  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}`;
+  const AIbaseUrl = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}`;
 
   const storedUser = sessionStorage.getItem("sso-login");
   const user = storedUser ? JSON.parse(storedUser) : null;
@@ -143,7 +143,7 @@ export default function ShortlistedCandidates() {
               ))}
             </select>
           </div>
-          {selectedGroup && selectedGroup.candidates?.length > 0 ? (
+          {/*{selectedGroup && selectedGroup.candidates?.length > 0 ? (
             <table className="min-w-full border-collapse results-table">
               <thead><tr className="bg-gray-200">
                 <th className="px-4 py-2 border">Shortlist ID</th>
@@ -170,11 +170,38 @@ export default function ShortlistedCandidates() {
             </table>
           ) : (
             <p className="text-center">No shortlisted candidates for this job.</p>
-          )}
+          )}*/}
+          {selectedGroup && selectedGroup.candidates?.length > 0 ? (
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    {selectedGroup.candidates.map((c) => (
+      <div
+        key={c.shortlist_id}
+        onClick={() => handleCandidateClick(c)}
+        className="bg-white border rounded-lg shadow p-4 hover:shadow-md cursor-pointer transition"
+      >
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="font-semibold text-indigo-700">#{c.shortlist_id}</h3>
+          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+            Job #{c.job_id}
+          </span>
+        </div>
+        <p className="text-sm text-gray-700"><strong>Talent ID:</strong> {c.talent_id}</p>
+        <p className="text-sm text-gray-700"><strong>Name:</strong> {c.full_name}</p>
+        <p className="text-sm text-gray-700"><strong>Email:</strong> {c.email}</p>
+        <p className="text-sm text-gray-600"><strong>Added:</strong> {new Date(c.added_at).toLocaleString()}</p>
+      </div>
+    ))}
+  </div>
+) : (
+  <p className="text-center">No shortlisted candidates for this job.</p>
+)}
+
+
+
         </>
       )}
 
-      {viewMode === "ai" && (
+      {/*{viewMode === "ai" && (
         aiShortlisted?.length > 0 ? (
           <table className="min-w-full border-collapse results-table">
             <thead><tr className="bg-purple-100">
@@ -203,7 +230,75 @@ export default function ShortlistedCandidates() {
         ) : (
           <p className="text-center">No AI-shortlisted candidates found.</p>
         )
-      )}
+      )}*/}
+
+      {/*{viewMode === "ai" && (
+        aiShortlisted?.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {aiShortlisted.map((c) => (
+              <div
+                key={c.shortlist_id}
+                onClick={() => handleCandidateClick(c)}
+                className="bg-white border rounded-lg shadow p-4 hover:shadow-md cursor-pointer transition"
+              >
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="font-semibold text-purple-700">#{c.shortlist_id}</h3>
+                  <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full">
+                    AI Shortlisted
+                  </span>
+                </div>
+                <p className="text-sm text-gray-700"><strong>Talent ID:</strong> {c.talent_id}</p>
+                <p className="text-sm text-gray-700"><strong>Name:</strong> {c.full_name}</p>
+                <p className="text-sm text-gray-700"><strong>Email:</strong> {c.email}</p>
+                <p className="text-sm text-gray-600"><strong>Added:</strong> {new Date(c.added_at).toLocaleString()}</p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-center">No AI-shortlisted candidates found.</p>
+        )
+      )}*/}
+
+      {viewMode === "ai" && (
+  aiShortlisted?.length > 0 ? (
+    <div className="overflow-x-auto">
+      <table className="min-w-full table-auto text-sm text-left">
+        <thead>
+          <tr className="bg-gray-100 text-gray-800 font-medium">
+            <th className="px-3 py-2 border-b">Talent ID</th>
+            <th className="px-3 py-2 border-b">Name</th>
+            <th className="px-3 py-2 border-b">Email</th>
+            <th className="px-3 py-2 border-b">Added</th>
+          </tr>
+        </thead>
+        <tbody>
+          {aiShortlisted.map((c, index) => (
+            <tr
+              key={c.shortlist_id}
+              className={`${
+                index % 2 === 0 ? "bg-white" : "bg-blue-50"
+              } hover:bg-blue-100 transition cursor-pointer`}
+              onClick={() => handleCandidateClick(c)}
+            >
+              <td className="px-3 py-2 border-b text-gray-700">{c.talent_id}</td>
+              <td className="px-3 py-2 border-b text-gray-800">{c.full_name}</td>
+              <td className="px-3 py-2 border-b text-gray-700">{c.email || "—"}</td>
+              <td className="px-3 py-2 border-b text-gray-600">
+                {c.added_at ? new Date(c.added_at).toLocaleString() : "—"}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  ) : (
+    <p className="text-center text-gray-600 mt-4">No AI-shortlisted candidates found.</p>
+  )
+)}
+
+
+
+
 
       {showModal && selectedCandidate && (
         <TalentDetailModal applicant={selectedCandidate} onClose={closeModal} />

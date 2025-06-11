@@ -11,7 +11,7 @@ export default function MessageTalentModal({ applicant, onClose }) {
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [historyError, setHistoryError] = useState("");
 
-  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
+  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}`;
 
   // Retrieve the recruiter (scout) user info from sessionStorage
   const storedUser = sessionStorage.getItem("sso-login");

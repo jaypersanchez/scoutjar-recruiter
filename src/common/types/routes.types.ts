@@ -1,3 +1,4 @@
+import { JSX } from "react";
 import { IconType } from "react-icons/lib";
 
 import {
@@ -8,13 +9,13 @@ import {
 
 export interface PageIndexRoutePath extends IndexRouteObject {
   icon?: IconType;
-  label?: string;
+  label?: string | JSX.Element;
   hidden: boolean;
 }
 
 export interface PageNonIndexRoutePath extends NonIndexRouteObject {
   icon?: IconType;
-  label?: string;
+  label?: string | JSX.Element;
   hidden: boolean;
 }
 

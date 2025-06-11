@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
 export default function ChatWindow({ recruiterId, talent, closeChat }) {
-  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
+  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}`;
 
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");

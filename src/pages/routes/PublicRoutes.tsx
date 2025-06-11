@@ -40,11 +40,13 @@ import {
 } from "react-icons/fa6";
 import { PiListChecksFill } from "react-icons/pi";
 import { FaUserFriends, FaUserCircle } from "react-icons/fa";
+import { MdInfoOutline } from "react-icons/md";
 
 const PAGE_ROUTES: Array<PageRouteProps> = [
   {
     id: "public",
     path: "/",
+    Component: ScoutForTalentPage,
     children: [
       {
         index: true,
@@ -53,9 +55,17 @@ const PAGE_ROUTES: Array<PageRouteProps> = [
         Component: DashboardPage,
         hidden: true,
       },
+          {
+      path: "dashboard",  // ✅ now you can explicitly navigate to /dashboard
+      label: "Dashboard",
+      icon: RiDashboardFill,
+      Component: DashboardPage,
+      hidden: false,
+    },
+
       {
         index: true,
-        // path: "scout-for-talent",
+        path: "scout-for-talent",
         label: "Scout for Talent",
         icon: MdPersonSearch,
         Component: ScoutForTalentPage,
@@ -108,7 +118,23 @@ const PAGE_ROUTES: Array<PageRouteProps> = [
       },
       {
         path: "posted",
-        label: "Job Postings",
+        label: (
+                  <span className="flex items-center gap-1 relative group">
+            Live Openings
+            <span className="relative flex items-center cursor-pointer">
+              <MdInfoOutline
+                className="inline w-4 h-4 text-gray-500 hover:text-primary"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  window.location.href = "/jobs/posted";
+                }}
+              />
+              <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:flex bg-black text-white text-xs px-2 py-1 rounded shadow-md z-50 whitespace-nowrap">
+                View Job Postings
+              </span>
+            </span>
+          </span>
+        ),
         icon: IoMdListBox,
         Component: JobsPosted,
         hidden: false,

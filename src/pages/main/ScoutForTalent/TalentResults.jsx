@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import TalentDetailModal from "../Candidates/ReviewCandidates/TalentDetailModal";
+import BadgeAplus from "../../../assets/images/badges/aplus.png";
+import BadgeA from "../../../assets/images/badges/a.png";
+import BadgeBplus from "../../../assets/images/badges/bplus.png";
+import BadgeB from "../../../assets/images/badges/b.png";
+import BadgeC from "../../../assets/images/badges/c.png";
+import BadgeD from "../../../assets/images/badges/d.png";
 
-function getBadgeInfo(score) {
+/*function getBadgeInfo(score) {
   const numericScore = Number(score);
   if (numericScore >= 90) return { badge: "A+", color: "#2e8b57", icon: "🚀" };
   if (numericScore >= 70) return { badge: "A", color: "#3cb371", icon: "🔥" };
@@ -10,6 +16,17 @@ function getBadgeInfo(score) {
   if (numericScore >= 20) return { badge: "B", color: "#f0e68c", icon: "🔧" };
   if (numericScore >= 15) return { badge: "C", color: "#ffa07a", icon: "🧐" };
   return { badge: "D", color: "#a9a9a9", icon: "🐢" };
+}*/
+
+function getBadgeInfo(score) {
+  const numericScore = Number(score);
+  if (numericScore >= 90) return { badge: "A+", image: BadgeAplus };
+  if (numericScore >= 70) return { badge: "A", image: BadgeA };
+  if (numericScore >= 50) return { badge: "A−", image:BadgeAplus };
+  if (numericScore >= 30) return { badge: "B+", image:BadgeB };
+  if (numericScore >= 20) return { badge: "B", image:BadgeC };
+  if (numericScore >= 15) return { badge: "C", image:BadgeD };
+  return { badge: "D", image:BadgeD };
 }
 
 function TalentResults({ results, jobTitle, jobDescription, requiredSkills }) {
@@ -22,9 +39,11 @@ function TalentResults({ results, jobTitle, jobDescription, requiredSkills }) {
   const [shortlistStatus, setShortlistStatus] = useState({});
   const [isShortlisting, setIsShortlisting] = useState({});
   const [currentPage, setCurrentPage] = useState(0);
+  const [messageTalent, setMessageTalent] = useState(null);
 
-  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
-  const AIbaseUrl = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}`;
+
+  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}`;
+  const AIbaseUrl = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}`;
 
   const rowsPerPage = 15;
 
@@ -197,11 +216,19 @@ function TalentResults({ results, jobTitle, jobDescription, requiredSkills }) {
       }}>
         {currentResults.length > 0 ? (
           currentResults.map((profile) => {
-            const { badge, color, icon } = getBadgeInfo(profile.match_score);
+            const { badge, image } = getBadgeInfo(profile.match_score);
             return (
               <div
                 key={profile.talent_id}
-                onClick={() => handleRowClick(profile)}
+                /*onClick={() => handleRowClick(profile)}*/
+                onClick={() => {
+                  if (profile.profile_mode === "passive" || !profile.profile_mode) {
+                    setMessageTalent(profile);  // new state
+                  } else {
+                    handleRowClick(profile);
+                  }
+                }}
+
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
@@ -218,10 +245,37 @@ function TalentResults({ results, jobTitle, jobDescription, requiredSkills }) {
                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#f9fafb"}
               >
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: "1.25rem", fontWeight: "bold", color: "#2d3748" }}>
+
+                  {/*<div style={{ fontSize: "1.25rem", fontWeight: "bold", color: "#2d3748" }}>
                     #{profile.talent_id} - {profile.full_name}
-                  </div>
-                  <div style={{ fontSize: "1rem", color: "#4a5568", marginTop: "6px" }}>
+                  </div>*/}
+                  {profile.profile_mode === "passive" || !profile.profile_mode ? (
+                    <>
+                      <div style={{ fontSize: "1.25rem", fontWeight: "bold", color: "#2d3748" }}>
+                        #{profile.talent_id} - {profile.full_name}
+                      </div>
+                      <div style={{ fontSize: "1rem", color: "#4a5568", marginTop: "6px" }}>
+                        ⭐ This candidate is highly sought after.
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div style={{ fontSize: "1.25rem", fontWeight: "bold", color: "#2d3748" }}>
+                        #{profile.talent_id} - {profile.full_name} - {profile.profile_mode}
+                      </div>
+                      <div style={{ fontSize: "1rem", color: "#4a5568", marginTop: "6px" }}>
+                        {profile.email}
+                      </div>
+                      <div style={{ fontSize: "1rem", color: "#4a5568", marginTop: "6px" }}>
+                        📍 {profile.location} | 🛠️ {profile.skills?.join(", ") || "No Skills"} | 🏢 {profile.work_preferences?.work_mode}
+                      </div>
+                      <div style={{ fontSize: "0.95rem", color: "#718096", marginTop: "6px" }}>
+                        Availability: {profile.availability || "N/A"}
+                      </div>
+                    </>
+                  )}
+
+                  {/*<div style={{ fontSize: "1rem", color: "#4a5568", marginTop: "6px" }}>
                     {profile.email}
                   </div>
                   <div style={{ fontSize: "1rem", color: "#4a5568", marginTop: "6px" }}>
@@ -229,7 +283,7 @@ function TalentResults({ results, jobTitle, jobDescription, requiredSkills }) {
                   </div>
                   <div style={{ fontSize: "0.95rem", color: "#718096", marginTop: "6px" }}>
                     Availability: {profile.availability || "N/A"}
-                  </div>
+                  </div>*/}
                   {/*{profile.explanation && (
                     <div style={{ fontSize: "1.0rem", fontWeight: "bold",color: "#2d3748", marginTop: "8px" }}>
                       {profile.explanation}
@@ -239,19 +293,24 @@ function TalentResults({ results, jobTitle, jobDescription, requiredSkills }) {
 
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "8px", minWidth: "150px" }}>
                   <div style={{
-                    backgroundColor: `${color}20`,
-                    color,
-                    fontWeight: "900",
+                   fontWeight: "900",
                     fontSize: "1.3rem",
                     padding: "8px 14px",
                     borderRadius: "12px",
                     display: "inline-flex",
                     alignItems: "center",
                     gap: "6px",
+                    backgroundColor: "#edf2f7", // subtle gray
+                    color: "#2d3748" // strong readable text
                   }}>
-                    <span style={{ fontSize: "1.5rem", lineHeight: "1" }}>{icon}</span>
+                    <img
+                      src={image}
+                      alt={badge}
+                      style={{ width: "28px", height: "28px", objectFit: "contain" }}
+                    />
+
                     {Math.round(profile.match_score)}%
-                    <small style={{ fontSize: "0.8rem", marginLeft: "4px" }}>({badge})</small>
+                    {/*<small style={{ fontSize: "0.8rem", marginLeft: "4px" }}>({badge})</small>*/}
                   </div>
 
                   <button

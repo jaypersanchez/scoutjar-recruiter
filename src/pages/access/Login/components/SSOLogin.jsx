@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom"
 import { Button } from "@/common/components/ui";
 import {
   FaGoogle,
@@ -34,7 +35,7 @@ const createUserProfile = async (user) => {
     user_type: "Scout",
   };
 
-  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
+  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}`;
   const response = await fetch(`${baseUrl}/user_profiles`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -49,6 +50,22 @@ const createUserProfile = async (user) => {
 };
 
 export default function SSOLogin({ onSignIn }) {
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+  try {
+    const sso = sessionStorage.getItem("sso-login");
+    const data = JSON.parse(sso);
+    if (data && typeof data === "object" && data.user_id) {
+      navigate("/dashboard");
+      //navigate("/");
+    }
+  } catch (err) {
+    sessionStorage.removeItem("sso-login");
+    console.warn("Invalid sso-login in sessionStorage");
+  }
+}, [navigate]);
 
   useEffect(() => {
     const clearOnReload = () => {
@@ -213,11 +230,11 @@ export default function SSOLogin({ onSignIn }) {
       .filter((data) => data.slug !== "twitter" && data.slug !== "instagram")
       .map((data, index) => (
         <Button
-  key={index}
-  variant="outline"
-  className="border-[var(--primary)] h-11 hover:bg-[var(--accent)] text-[var(--accent)] hover:text-white flex items-center justify-center gap-2"
-  onClick={() => handleSSOLogin(data.slug)}
->
+          key={index}
+          variant="outline"
+          className="border-[var(--primary)] h-11 hover:bg-[var(--accent)] text-[var(--accent)] hover:text-white flex items-center justify-center gap-2"
+          onClick={() => handleSSOLogin(data.slug)}
+        >
   <data.icon className="w-6 h-6 text-black" />
   <p className="text-sm font-bold tracking-wider uppercase text-black">
     {data.slug}

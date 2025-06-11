@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
 import { cn } from "@/common/lib/utils";
-
 import { WidgetBox } from "@/common/components/layouts";
 import { TextField } from "@/common/components/input-fields";
-
 import { FaUserCircle } from "react-icons/fa";
 
 export default function ProfileForm() {
@@ -17,64 +15,108 @@ export default function ProfileForm() {
   const [website, setWebsite] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [logo, setLogo] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [profileData, setProfileData] = useState({});
 
-  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
+  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}`;
 
   useEffect(() => {
-    const data = sessionStorage.getItem("sso-login");
-    if (data) {
-      try {
-        const parsed = JSON.parse(data);
-        setSsoData({
-          full_name: parsed.full_name || "",
-          email: parsed.email || "",
-          recruiter_id: parsed.recruiter_id || null,
-        });
+  const data = sessionStorage.getItem("sso-login");
+  if (data) {
+    try {
+      const parsed = JSON.parse(data);
+      setSsoData({
+        full_name: parsed.full_name || "",
+        email: parsed.email || "",
+        recruiter_id: parsed.recruiter_id || null,
+      });
 
-        if (parsed.recruiter_id) {
-          fetch(`${baseUrl}/talent-profiles/by-recruiter/${parsed.recruiter_id}`)
-            .then((res) => {
-              if (!res.ok) throw new Error("Profile not found");
-              return res.json();
-            })
-            .then((data) => {
-              if (data.company_name) setCompany(data.company_name);
-              if (data.company_website) setWebsite(data.company_website);
-            })
-            .catch((err) => {
-              console.error("Error loading recruiter data:", err);
-            });
-        }
-      } catch (error) {
-        console.error("Error parsing sso-login data", error);
+      if (parsed.recruiter_id) {
+        fetch(`${baseUrl}/talent-profiles/by-recruiter/${parsed.recruiter_id}`)
+          .then((res) => res.ok ? res.json() : Promise.reject("Profile not found"))
+          .then((data) => {
+            if (data.company_name) setCompany(data.company_name);
+            if (data.company_website) setWebsite(data.company_website);
+            setProfileData(data); // ✅ This ensures company_logo and other fields are available
+          })
+          .catch((err) => console.error("Error loading recruiter data:", err));
       }
+    } catch (error) {
+      console.error("Error parsing sso-login data", error);
     }
-  }, []);
+  }
+}, []);
+
+
+  const handleLogoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setLogo(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
+
+  const handleLogoClick = () => {
+    document.getElementById('logoInput').click();
+  };
 
   const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setStatusMessage("");
+
+  const formData = new FormData();
+  formData.append("recruiter_id", ssoData.recruiter_id);
+  formData.append("company_name", company);
+  formData.append("company_website", website);
+  if (logo) {
+    formData.append("company_logo", logo);
+  }
+
+  try {
+    const res = await fetch(`${baseUrl}/talent-profiles/update-recruiter-profile`, {
+      method: "POST",
+      body: formData, // DO NOT set headers when using FormData
+    });
+
+    if (!res.ok) throw new Error("Failed to update profile");
+
+    await res.json();
+    setStatusMessage("✅ Profile updated successfully!");
+  } catch (err) {
+    console.error("❌ Update failed:", err);
+    setStatusMessage("❌ Failed to update profile.");
+  } finally {
+    setLoading(false);
+  }
+};
+
+  /*const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setStatusMessage("");
 
-    const payload = {
-      recruiter_id: ssoData.recruiter_id,
-      company,
-      website,
-    };
+    
+    const formData = new FormData();
+    formData.append("recruiter_id", ssoData.recruiter_id);
+    formData.append("company_name", company);
+    formData.append("company_website", website);
+    if (logo) {
+        formData.append("company_logo", logo);
+    }
+
 
     try {
-      const res = await fetch(`${baseUrl}/talent-profiles/update`, {
+      const res = await fetch(`${baseUrl}/talent-profiles/update-recruiter-profile`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        headers: { "Content-Type": "multipart/form-data" },
+        body: formData, //JSON.stringify(payload),
       });
 
-      if (!res.ok) {
-        throw new Error("Failed to update profile");
-      }
+      if (!res.ok) throw new Error("Failed to update profile");
 
-      const data = await res.json();
-      console.log("✅ Profile updated:", data);
+      await res.json();
       setStatusMessage("✅ Profile updated successfully!");
     } catch (err) {
       console.error("❌ Update failed:", err);
@@ -82,98 +124,95 @@ export default function ProfileForm() {
     } finally {
       setLoading(false);
     }
-  };
+  };*/
 
   return (
-    <form className="grid grid-cols-2 gap-6" onSubmit={handleSubmit}>
-      <WidgetBox className="flex-col gap-6">
-        <div className="space-y-6">
-          <div className="flex flex-col justify-center flex-1 space-y-2.5">
-            <div
-              className={cn(
-                "p-2 mx-auto border-2 border-dashed border-gray-600/20 rounded-full w-36 h-36"
-              )}
-            >
-              <img
-                src="/logo.png"
-                alt="logo"
-                className="object-cover w-full h-full rounded-full"
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-1 gap-x-6 gap-y-3">
-            <TextField
-              label="Company name"
-              type="text"
-              name="company"
-              id="company"
-              autoComplete="company"
-              placeholder="Sample Company"
-              value={company}
-              onChange={(e) => setCompany(e.target.value)}
-              required
-            />
-            <TextField
-              label="Website"
-              type="url"
-              name="website"
-              id="website"
-              autoComplete="website"
-              placeholder="https://www.sample-company.com"
-              value={website}
-              onChange={(e) => setWebsite(e.target.value)}
-              required
-            />
-          </div>
-        </div>
-      </WidgetBox>
-      <WidgetBox className="flex-col gap-6">
-        <div className="space-y-6">
-          <div className="flex flex-col justify-center flex-1 space-y-2.5">
-            <div
-              className={cn(
-                "p-2 mx-auto border-2 border-dashed border-gray-600/20 rounded-full w-36 h-36"
-              )}
-            >
-              <FaUserCircle className="object-cover w-full h-full rounded-full text-primary" />
-            </div>
-          </div>
-          <div className="grid grid-cols-1 gap-x-6 gap-y-3">
-            <TextField
-              label="Full name"
-              type="text"
-              name="fullname"
-              id="fullname"
-              autoComplete="fullname"
-              placeholder="John Doe"
-              value={ssoData.full_name}
-              readOnly
-              required
-            />
-            <TextField
-              label="Email address"
-              type="email"
-              name="email"
-              id="email"
-              autoComplete="email"
-              placeholder="john.doe@example.com"
-              value={ssoData.email}
-              readOnly
-              required
-            />
-          </div>
-          <div className="text-sm text-gray-600 mt-2">{statusMessage}</div>
-          <div className="mt-4">
-            <button
-              type="submit"
-              className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700 disabled:opacity-50"
-              disabled={loading}
-            >
-              {loading ? "Saving..." : "Save Profile"}
-            </button>
-          </div>
-        </div>
-      </WidgetBox>
-    </form>
+    <form className="profile-form-container" onSubmit={handleSubmit}>
+  {/*<div className="logo-section">
+    <img src="/logo.png" alt="Logo" className="logo-img" />
+  </div>*/}
+
+  {/*  {profileData.company_logo && (
+  <img
+    src={`${baseUrl}${profileData.company_logo}`}
+    alt="Current company logo"
+    style={{ width: "120px", height: "120px", borderRadius: "50%", objectFit: "cover", marginBottom: "10px" }}
+  />
+)}*/}
+
+  <div className="logo-section">
+  <input
+    id="logoInput"
+    type="file"
+    accept="image/*"
+    style={{ display: "none" }}
+    onChange={handleLogoChange}
+  />
+  
+  <img
+    src={
+      previewUrl
+        ? previewUrl
+        : profileData.company_logo
+        ? `${baseUrl}${profileData.company_logo}`
+        : "/lookk.png"
+    }
+    alt="Company Logo"
+    onClick={handleLogoClick}
+    style={{
+      cursor: "pointer",
+      borderRadius: "50%",
+      width: "120px",
+      height: "120px",
+      objectFit: "cover",
+      border: "2px solid #ccc",
+      marginBottom: "10px",
+    }}
+    title="Click to upload company logo"
+  />
+</div>
+
+
+
+  <div className="profile-fields">
+    <div className="readonly-field">
+      <label>Full Name</label>
+      <input type="text" value={ssoData.full_name} readOnly />
+    </div>
+
+    <div className="readonly-field">
+      <label>Email</label>
+      <input type="email" value={ssoData.email} readOnly />
+    </div>
+
+    <div className="editable-field">
+      <label>Company Name</label>
+      <input
+        type="text"
+        value={company}
+        onChange={(e) => setCompany(e.target.value)}
+        required
+      />
+    </div>
+
+    <div className="editable-field">
+      <label>Company Website</label>
+      <input
+        type="url"
+        value={website}
+        onChange={(e) => setWebsite(e.target.value)}
+        required
+      />
+    </div>
+  </div>
+
+  <div className="button-wrapper">
+    <button type="submit" disabled={loading}>
+      {loading ? "Saving..." : "Save Profile"}
+    </button>
+    <p className="status-msg">{statusMessage}</p>
+  </div>
+</form>
+
   );
 }

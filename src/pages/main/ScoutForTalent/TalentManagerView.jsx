@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
 import TalentDetailModal from "../Candidates/ReviewCandidates/TalentDetailModal";
+import MessageTalentModal from "../Candidates/ReviewCandidates/MessageTalentModal";
+import BadgeAplus from "../../../assets/images/badges-alternative/aplus.png";
+import BadgeA from "../../../assets/images/badges-alternative/a.png";
+import BadgeBplus from "../../../assets/images/badges-alternative/bplus.png";
+import BadgeB from "../../../assets/images/badges-alternative/b.png";
+import BadgeC from "../../../assets/images/badges-alternative/c.png";
+import BadgeD from "../../../assets/images/badges-alternative/d.png";
+import BadgeE from "../../../assets/images/badges-alternative/e.png"
+
 
 function TalentManagerView({
   results = [],
@@ -15,11 +24,13 @@ function TalentManagerView({
   const [shortlistStatus, setShortlistStatus] = useState({});
   const [isShortlisting, setIsShortlisting] = useState({});
   const [selectedTalent, setSelectedTalent] = useState(null);
+  const [messageTalent, setMessageTalent] = useState(null);
 
-  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT}`;
-  const AIbaseUrl = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}${import.meta.env.VITE_SCOUTJAR_AI_BASE_PORT}`;
-
+  const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}`;
+  const AIbaseUrl = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}`;
+  
   useEffect(() => {
+    
     fetch(`${baseUrl}/locations/all`)
       .then((res) => res.json())
       .then(setLocationOptions)
@@ -96,7 +107,7 @@ function TalentManagerView({
     }
   };
 
-  const getBadgeInfo = (score) => {
+  /*const getBadgeInfo = (score) => {
     const n = Number(score);
     if (n >= 90) return { badge: "A+", icon: "🚀" };
     if (n >= 70) return { badge: "A", icon: "🔥" };
@@ -104,7 +115,30 @@ function TalentManagerView({
     if (n >= 30) return { badge: "B", icon: "💼" };
     if (n >= 20) return { badge: "C", icon: "🧐" };
     return { badge: "D", icon: "🐢" };
-  };
+  };*/
+
+  /*const getBadgeInfo = (score) => {
+    const n = Number(score);
+    if (n >= 90) return { badge: "A+", image: BadgeAplus };
+    if (n >= 70) return { badge: "A", image: BadgeA };
+    if (n >= 50) return { badge: "B+", image: BadgeBplus };
+    if (n >= 30) return { badge: "B", image: BadgeB };
+    if (n >= 20) return { badge: "C", image: BadgeC };
+    return { badge: "D", image: BadgeD };
+  };*/
+
+  const getBadgeInfo = (score) => {
+  const n = Number(score);
+  if (n >= 90) return { badge: "A++", image: BadgeAplus }; // You may swap this with a separate Dark Green image if needed
+  if (n >= 80) return { badge: "A+", image: BadgeAplus };
+  if (n >= 70) return { badge: "A", image: BadgeA };
+  if (n >= 60) return { badge: "B+", image: BadgeBplus };
+  if (n >= 50) return { badge: "B", image: BadgeB };
+  if (n >= 40) return { badge: "C", image: BadgeC };
+  if (n >= 30) return { badge: "D", image: BadgeD };
+  return { badge: "E", image: BadgeE };
+};
+
 
   return (
     <div className="p-4 overflow-x-auto">
@@ -114,6 +148,66 @@ function TalentManagerView({
 
       {/* Filters: location, availability, work mode */}
       {/* ... (your filter controls remain unchanged) ... */}
+      {/* Filters */}
+<div className="flex flex-wrap gap-4 mb-6">
+  <div>
+    <label className="block font-medium text-sm text-gray-700 mb-1">Location</label>
+    <input
+      type="text"
+      value={locationSearchInput}
+      onChange={(e) => setLocationSearchInput(e.target.value)}
+      placeholder="Search city/country..."
+      className="border border-gray-300 px-3 py-2 rounded w-64"
+    />
+    <div className="border border-gray-300 p-2 mt-2 max-h-40 overflow-y-scroll rounded bg-white w-64">
+      {locationOptions
+        .filter((loc) =>
+          loc.label.toLowerCase().includes(locationSearchInput.toLowerCase())
+        )
+        .map((loc, idx) => (
+          <label key={idx} className="block mb-1 text-sm">
+            <input
+              type="checkbox"
+              checked={selectedLocations.includes(loc.value)}
+              onChange={() => toggleLocation(loc.value)}
+              className="mr-2"
+            />
+            {loc.label}
+          </label>
+        ))}
+    </div>
+  </div>
+
+  <div>
+    <label className="block font-medium text-sm text-gray-700 mb-1">Availability</label>
+    <select
+      value={availabilityFilter}
+      onChange={(e) => setAvailabilityFilter(e.target.value)}
+      className="border border-gray-300 px-3 py-2 rounded"
+    >
+      <option value="">All</option>
+      <option value="Immediate">Immediate</option>
+      <option value="Two Weeks Notice">Two Weeks Notice</option>
+      <option value="1 Month">1 Month</option>
+      <option value="2 Months">2 Months</option>
+      <option value="3 Months">3 Months</option>
+    </select>
+  </div>
+
+  <div>
+    <label className="block font-medium text-sm text-gray-700 mb-1">Work Mode</label>
+    <select
+      value={workModeFilter}
+      onChange={(e) => setWorkModeFilter(e.target.value)}
+      className="border border-gray-300 px-3 py-2 rounded"
+    >
+      <option value="">All</option>
+      <option value="Remote">Remote</option>
+      <option value="On-site">On-site</option>
+      <option value="Hybrid">Hybrid</option>
+    </select>
+  </div>
+</div>
 
       {/* Table */}
       <table className="w-full border-collapse text-sm text-left">
@@ -123,6 +217,8 @@ function TalentManagerView({
             <th className="p-2">Name</th>
             <th className="p-2">Location</th>
             <th className="p-2">Skills</th>
+            <th className="p-2">Desired Salary</th>
+            <th className="p-2">Work Mode</th>
             <th className="p-2">Availability</th>
             <th className="p-2">Match %</th>
             <th className="p-2">Badge</th>
@@ -131,41 +227,103 @@ function TalentManagerView({
         </thead>
         <tbody>
   {filteredResults.map((profile, index) => {
-    const { badge, icon } = getBadgeInfo(profile.match_score);
-    // Conditional background color
-    const rowClass = index % 2 === 0 ? 'bg-blue-50' : 'bg-white'; // Light gray for even rows, white for odd
+    const { badge, image } = getBadgeInfo(profile.match_score);
+    const isPassive = profile.profile_mode === "passive" || !profile.profile_mode;
+    const rowClass = index % 2 === 0 ? "bg-blue-50" : "bg-white";
 
     return (
       <tr
         key={profile.talent_id}
-        className={`${rowClass} border-b hover:bg-gray-100 cursor-pointer`} // Adding hover effect for rows
-        onClick={() => setSelectedTalent(profile)}
+        className={`${rowClass} border-b hover:bg-gray-100 cursor-pointer`}
+        onClick={() => {
+          if (!isPassive) setSelectedTalent(profile);
+        }}
       >
         <td className="p-2 text-gray-500">{index + 1}</td>
-        <td className="p-2 font-medium text-gray-800">{profile.full_name}</td>
-        <td className="p-2 text-gray-700">{profile.location || "—"}</td>
-        <td className="p-2 text-gray-700">{profile.skills?.join(", ") || "No Skills"}</td>
-        <td className="p-2 text-gray-700">{profile.availability || "N/A"}</td>
-        <td className="p-2 font-semibold text-green-700">{Math.round(profile.match_score)}%</td>
-        <td className="p-2 text-center">
-          <div className="text-2xl">{icon}</div>
-          <div className="text-sm font-semibold text-gray-700">{badge}</div>
-        </td>
+
+        {isPassive ? (
+          <>
+            <td colSpan={6} className="p-2 text-sm text-gray-600 italic">
+              ⭐ This candidate is highly sought after.
+            </td>
+          </>
+        ) : (
+          <>
+            <td className="p-2 font-medium text-gray-800">{profile.full_name}</td>
+            <td className="p-2 text-gray-700">
+              <div className="flex items-center gap-2">
+                {profile.country_code && (
+                  <img
+                    src={`https://flagcdn.com/w40/${profile.country_code
+                      .toLowerCase()
+                      .slice(0, 2)}.png`}
+                    alt={profile.country_code}
+                    style={{ width: 20, height: 14, borderRadius: "2px", objectFit: "cover" }}
+                    onError={(e) => {
+                      e.target.style.display = "none";
+                    }}
+                  />
+                )}
+                <span>{profile.location || "—"}</span>
+              </div>
+            </td>
+            <td className="p-2 text-gray-700">
+              {profile.skills?.join(", ") || "No Skills"}
+            </td>
+            <td className="p-2 text-gray-700">
+              {profile.desired_salary || "N/A"}
+            </td>
+            <td className="p-2 text-gray-700">
+              {profile.work_preferences?.work_mode || "N/A"}
+            </td>
+            <td className="p-2 text-gray-700">
+              {profile.availability || "N/A"}
+            </td>
+          </>
+        )}
+
         <td className="p-2">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleAiShortlist(profile.talent_id);
-            }}
-            disabled={isShortlisting[profile.talent_id]}
-            className="text-xs bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
-          >
-            {isShortlisting[profile.talent_id] ? "..." : "📌 Shortlist"}
-          </button>
-          {shortlistStatus[profile.talent_id] && (
-            <div className="text-xs mt-1 text-blue-600">
-              {shortlistStatus[profile.talent_id]}
-            </div>
+          <span className="text-2xl font-bold text-green-700">
+            {Math.round(profile.match_score)}%
+          </span>
+        </td>
+
+        <td className="p-2">
+          <div className="flex items-center justify-start gap-2">
+            <img src={image} alt={badge} className="w-8 h-8 object-contain" />
+          </div>
+        </td>
+
+        <td className="p-2">
+          {isPassive ? (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setMessageTalent(profile);
+                //alert("To contact this talent, please use the messaging feature in Talent View.");
+              }}
+              className="text-xs bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600"
+            >
+              💬 Message
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleAiShortlist(profile.talent_id);
+                }}
+                disabled={isShortlisting[profile.talent_id]}
+                className="text-xs bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+              >
+                {isShortlisting[profile.talent_id] ? "..." : "📌 Shortlist"}
+              </button>
+              {shortlistStatus[profile.talent_id] && (
+                <div className="text-xs mt-1 text-blue-600">
+                  {shortlistStatus[profile.talent_id]}
+                </div>
+              )}
+            </>
           )}
         </td>
       </tr>
@@ -173,23 +331,32 @@ function TalentManagerView({
   })}
 </tbody>
 
+
       </table>
 
       {filteredResults.length === 0 && (
         <div className="text-center mt-8 text-gray-500">No matching talents found.</div>
       )}
 
-      {/* Modal */}
-      {selectedTalent && (
-        <TalentDetailModal
-          applicant={selectedTalent}
-          onClose={() => setSelectedTalent(null)}
-          showShortlist={true}
-          jobTitle={jobTitle}
-          jobDescription={jobDescription}
-          requiredSkills={requiredSkills}
-        />
-      )}
+      {/* Modals */}
+{selectedTalent && (
+  <TalentDetailModal
+    applicant={selectedTalent}
+    onClose={() => setSelectedTalent(null)}
+    showShortlist={true}
+    jobTitle={jobTitle}
+    jobDescription={jobDescription}
+    requiredSkills={requiredSkills}
+  />
+)}
+
+{messageTalent && (
+  <MessageTalentModal
+    applicant={messageTalent}
+    onClose={() => setMessageTalent(null)}
+  />
+)}
+
     </div>
   );
 }
