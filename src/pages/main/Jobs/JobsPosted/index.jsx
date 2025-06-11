@@ -21,6 +21,30 @@ export default function JobsPosted() {
   const recruiterId = user ? user.recruiter_id : null;
   const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}`;
   const AIbaseUrl = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}`;
+  const [jobCurrencies, setJobCurrencies] = useState({});
+
+  const currencySymbols = {
+    USD: "$",
+    EUR: "€",
+    ILS: "₪"
+  };
+
+  const fetchCurrencies = async (jobsList) => {
+  const currencies = {};
+  await Promise.all(
+    jobsList.map(async (job) => {
+      try {
+        const res = await fetch(`${baseUrl}/jobs/currency/${job.job_id}`);
+        const data = await res.json();
+        currencies[job.job_id] = data.currency || 'USD';
+      } catch (err) {
+        currencies[job.job_id] = 'USD';
+      }
+    })
+  );
+  setJobCurrencies(currencies);
+};
+
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -36,6 +60,7 @@ export default function JobsPosted() {
         const data = await response.json();
         setJobs(data);
         fetchApplicantCounts(data.map((job) => job.job_id));
+        fetchCurrencies(data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -319,7 +344,9 @@ export default function JobsPosted() {
                 📍 {job.location} | 🧠 {(job.required_skills || []).join(", ")} | 💼 {job.employment_type} | 🏢 {job.work_mode}
               </div>
               <div style={{ fontSize: "0.95rem", color: "#718096", marginTop: "6px" }}>
-                Experience: {job.experience_level || "N/A"} | Salary: {job.salary_range?.[0]} - {job.salary_range?.[1]}
+                {/*Experience: {job.experience_level || "N/A"} | Salary: {job.salary_range?.[0]} - {job.salary_range?.[1]}*/}
+                Experience: {job.experience_level || "N/A"} | Salary: {currencySymbols[jobCurrencies[job.job_id] || 'USD']}{job.salary_range?.[0]} - {currencySymbols[jobCurrencies[job.job_id] || 'USD']}{job.salary_range?.[1]}
+
               </div>
               <div style={{ fontSize: "0.95rem", color: "#718096", marginTop: "6px" }}>
                 📅 Posted: {new Date(job.date_posted).toLocaleDateString()} | Applicants: {applicantCounts[job.job_id] ?? 0}

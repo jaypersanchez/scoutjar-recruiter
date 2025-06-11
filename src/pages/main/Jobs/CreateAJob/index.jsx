@@ -5,6 +5,7 @@ export default function CreateAJob() {
   const storedUser = sessionStorage.getItem("sso-login");
   const user = storedUser ? JSON.parse(storedUser) : null;
   const recruiterId = user ? user.recruiter_id : null;
+  const [jobCurrencies, setJobCurrencies] = useState({});
 
   const [formData, setFormData] = useState({
     job_title: "",
@@ -16,7 +17,15 @@ export default function CreateAJob() {
     salary_max: "",
     work_mode: "Remote",
     locations: [],
+    salary_currency: "USD"
   });
+  const currencySymbols = {
+    USD: "$",
+    EUR: "€",
+    ILS: "₪"
+  };
+
+  const salarySymbol = currencySymbols[formData.salary_currency] || "$";
 
   const [jobTitleOptions, setJobTitleOptions] = useState([]);
   const [locationOptions, setLocationOptions] = useState([]);
@@ -28,6 +37,7 @@ export default function CreateAJob() {
 
   const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}`;
   const AIbaseUrl = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}`;
+
 
   useEffect(() => {
     fetch(`${baseUrl}/job-titles`)
@@ -187,6 +197,7 @@ export default function CreateAJob() {
       ],
       work_mode: formData.work_mode,
       location: location,
+      salary_currency: formData.salary_currency
     };
 
     try {
@@ -222,6 +233,23 @@ export default function CreateAJob() {
       console.error("Error posting job:", error);
     }
   };
+
+const fetchCurrencies = async (jobsList) => {
+  const currencies = {};
+  await Promise.all(
+    jobsList.map(async (job) => {
+      try {
+        const res = await fetch(`${baseUrl}/jobs/currency/${job.job_id}`);
+        const data = await res.json();
+        currencies[job.job_id] = data.currency || 'USD';
+      } catch (err) {
+        currencies[job.job_id] = 'USD';
+      }
+    })
+  );
+  setJobCurrencies(currencies);
+};
+
 
   return (
     <div className="max-w-7xl mx-auto p-8">
@@ -349,27 +377,48 @@ export default function CreateAJob() {
 
         {/* Salary Range */}
         <div className="form-group">
-          <label className="form-label">Salary Range</label>
-          <div className="salary-range-inputs">
-            <input
-              type="number"
-              step="0.01"
-              name="salary_min"
-              className="form-input salary-input"
-              placeholder="Min"
-              value={formData.salary_min}
-              onChange={handleChange}
-            />
-            <input
-              type="number"
-              step="0.01"
-              name="salary_max"
-              className="form-input salary-input"
-              placeholder="Max"
-              value={formData.salary_max}
-              onChange={handleChange}
-            />
-          </div>
+  <label className="form-label">Salary Range</label>
+  <div className="salary-range-inputs flex gap-2">
+    <div className="flex items-center gap-1">
+      <span>{salarySymbol}</span>
+      <input
+        type="number"
+        step="0.01"
+        name="salary_min"
+        className="form-input salary-input"
+        placeholder="Min"
+        value={formData.salary_min}
+        onChange={handleChange}
+      />
+    </div>
+    <div className="flex items-center gap-1">
+      <span>{salarySymbol}</span>
+      <input
+        type="number"
+        step="0.01"
+        name="salary_max"
+        className="form-input salary-input"
+        placeholder="Max"
+        value={formData.salary_max}
+        onChange={handleChange}
+      />
+    </div>
+  </div>
+</div>
+
+        {/* Currency Drop Down */}
+        <div className="form-group">
+          <label className="form-label">Salary Currency</label>
+          <select
+            name="salary_currency"
+            className="form-input"
+            value={formData.salary_currency}
+            onChange={handleChange}
+          >
+            <option value="USD">USD ($)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="ILS">ILS (₪)</option>
+          </select>
         </div>
 
         {/* Work Mode */}
