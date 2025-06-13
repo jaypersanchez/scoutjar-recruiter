@@ -23,6 +23,11 @@ export default function LoginPage() {
         <p className="text-balance text-sm text-gray-400">
           Sign in to your account
         </p>
+        <div className="bg-yellow-50 border border-yellow-300 text-yellow-900 rounded-md p-3 mt-4 text-sm font-medium shadow-sm">
+          ⚠️ <strong>First time here?</strong> A user account and profile is automatically created when you sign in.
+          Just sign-in using your social media account or provide a valid email address and password.  
+          You can update your account details later in the <strong>Settings - Profile</strong> section.
+        </div>
       </div>
 
 

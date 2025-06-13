@@ -60,7 +60,7 @@ const PAGE_ROUTES: Array<PageRouteProps> = [
       label: "Dashboard",
       icon: RiDashboardFill,
       Component: DashboardPage,
-      hidden: false,
+      hidden: true,
     },
 
       {

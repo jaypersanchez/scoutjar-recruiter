@@ -47,12 +47,49 @@ function TalentResults({ results, jobTitle, jobDescription, requiredSkills }) {
 
   const rowsPerPage = 15;
 
-  useEffect(() => {
+  /*useEffect(() => {
     fetch(`${baseUrl}/locations/all`)
       .then((res) => res.json())
       .then(setLocationOptions)
       .catch((err) => console.error("Failed to load locations:", err));
-  }, []);
+  }, []);*/
+
+    useEffect(() => {
+  fetch(`${baseUrl}/locations/all`)
+    .then((res) => res.json())
+    .then((originalLocations) => {
+      const augmented = originalLocations.flatMap(loc => {
+        const extras = [];
+
+        const label = loc.label || "";
+        const value = loc.value || loc.label;
+
+        if (label.includes("United Kingdom")) {
+          const baseLabel = label.replace("United Kingdom", "").trim().replace(/,$/, "");
+
+          extras.push({
+            ...loc,
+            label: `${baseLabel}, UK`,
+            value: `${baseLabel}, UK`
+          });
+
+          extras.push({
+            ...loc,
+            label: `${baseLabel}, Britain`,
+            value: `${baseLabel}, Britain`
+          });
+        }
+
+        return [{ ...loc, label, value }, ...extras];
+      });
+
+      setLocationOptions(augmented);
+    })
+    .catch((err) => console.error("Failed to load locations:", err));
+}, []);
+
+
+
 
   const normalize = (str) => (str || "").toLowerCase().replace(/\s+/g, " ").trim();
 
