@@ -1,3 +1,4 @@
+import React from "react";
 import { Outlet } from "react-router-dom";
 import { FlexBox, FlexCol } from "@/common/components/flexbox";
 import { Footer } from "@/common/components/layouts";

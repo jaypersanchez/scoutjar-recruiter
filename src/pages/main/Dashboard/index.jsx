@@ -1,3 +1,4 @@
+import React from "react";
 import { FlexBox } from "@/common/components/flexbox";
 
 export default function DashboardPage() {

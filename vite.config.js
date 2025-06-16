@@ -1,10 +1,12 @@
+import { defineConfig } from "vite";
 import path from "path";
 import react from "@vitejs/plugin-react-swc";
 import tailwindcss from "@tailwindcss/vite";
 import history from "connect-history-api-fallback";
 
-export default {
-  base: "/recruiter/", // Ensure this matches your router basename
+export default defineConfig({
+  base: "/recruiter/",
+
   plugins: [
     react(),
     tailwindcss(),
@@ -17,19 +19,23 @@ export default {
             disableDotRule: true,
             htmlAcceptHeaders: ["text/html", "application/xhtml+xml"],
             rewrites: [
-              // allow serving static assets
-              { from: /^\/recruiter\/.*\.(png|jpg|svg|ico|woff2?)$/, to: ctx => ctx.parsedUrl.pathname }
-            ]
+              {
+                from: /^\/recruiter\/.*\.(png|jpe?g|svg|ico|woff2?|ttf|js|css)$/,
+                to: ctx => ctx.parsedUrl.pathname,
+              },
+            ],
           })
         );
-      }
-    }
+      },
+    },
   ],
+
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
   },
+
   server: {
     host: true,
     port: 5173,
@@ -39,4 +45,9 @@ export default {
       strict: false,
     },
   },
-};
+
+  build: {
+    outDir: "dist",
+    emptyOutDir: true,
+  },
+});

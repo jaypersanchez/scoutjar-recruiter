@@ -1,7 +1,8 @@
+import React from "react";
 import { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/common/lib/utils";
-import PAGE_ROUTES from "@/pages/routes/PublicRoutes";
+import PAGE_ROUTES from "@/pages/routes/PublicRoutes.jsx";
 import { navigations } from "@/common/utils/fnRoutes";
 import { Button } from "@/common/components/ui";
 import { FlexBox } from "@/common/components/flexbox";

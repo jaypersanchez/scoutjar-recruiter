@@ -1,6 +1,7 @@
+import React from "react";
 import { useEffect } from "react";
 import { RouterProvider } from "react-router-dom";
-import Routers from "./routes";
+import Routers from "./pages/LoginPage";
 import AndrewAssistant from "@/components/AndrewAssistant";
 
 
@@ -19,8 +20,26 @@ export default function App() {
 
   return (
     <>
-      <RouterProvider router={Routers} />
+      <ErrorBoundary>
+        <RouterProvider router={Routers} />
+      </ErrorBoundary>
       <AndrewAssistant />
     </>
+  );
+}
+
+function ErrorBoundary({ children }) {
+  return (
+    <React.Suspense fallback={<div>Loading...</div>}>
+      <React.ErrorBoundary
+        fallbackRender={({ error }) => (
+          <div style={{ color: "red" }}>
+            <strong>Routing Error:</strong> {error.message}
+          </div>
+        )}
+      >
+        {children}
+      </React.ErrorBoundary>
+    </React.Suspense>
   );
 }
