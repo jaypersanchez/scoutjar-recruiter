@@ -46,7 +46,7 @@ export default function UserMenu() {
   const handleLogout = () => {
     sessionStorage.removeItem("sso-login");
     logout();
-    navigate("/auth", { replace: true });
+    navigate("/recruiter/login", { replace: true });
   };
 
   return (

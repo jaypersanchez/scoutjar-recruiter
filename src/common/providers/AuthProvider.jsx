@@ -39,7 +39,8 @@ export default function AuthProvider({ children }) {
       localStorage.setItem("token", JSON.stringify(user));
 
       const isAuthPage = location.pathname === "/recruiter";
-      navigate(isAuthPage ? "/" : location.pathname);
+      //navigate(isAuthPage ? "/" : location.pathname);
+      navigate("/recruiter/dashboard", { replace: true });
     } else {
       localStorage.removeItem("token");
       navigate("/recruiter/login");
