@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { useState, useEffect } from "react";
 import "@/common/styles/App.css";
 import TalentDetailModal from "../ReviewCandidates/TalentDetailModal";
 

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
+import { useState } from "react";
 import "@/common/styles/App.css";
 import TalentSidebar from "./TalentSidebar";
 import SearchForJob from "./sidebar-components/job-search";

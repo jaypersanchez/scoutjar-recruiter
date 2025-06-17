@@ -11,12 +11,14 @@ import {
   
 } from "react-icons/fa";
 import { signInWithPopup, fetchSignInMethodsForEmail } from "firebase/auth";
-import {
+/*import {
   auth,
   googleProvider,
   githubProvider,
   twitterProvider,
-} from "../firebase/firebaseConfig";
+} from "../firebase/firebaseConfig";*/
+import { auth, googleProvider, githubProvider, twitterProvider, firebaseConfig } from "@/firebase/firebaseConfig";
+
 
 const SSOProviders = [
   { id: 0, slug: "github", icon: FaGithub },
@@ -59,7 +61,7 @@ export default function SSOLogin({ onSignIn }) {
     const sso = sessionStorage.getItem("sso-login");
     const data = JSON.parse(sso);
     if (data && typeof data === "object" && data.user_id) {
-      navigate("/dashboard");
+      navigate("/recruiter/dashboard");
       //navigate("/");
     }
   } catch (err) {

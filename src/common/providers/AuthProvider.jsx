@@ -1,4 +1,5 @@
-import { React, useEffect, useState, createContext } from "react";
+//import { Page404 } from "@/common/components/layouts/Page404";
+import { useEffect, useState, createContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -37,11 +38,11 @@ export default function AuthProvider({ children }) {
     if (user) {
       localStorage.setItem("token", JSON.stringify(user));
 
-      const isAuthPage = location.pathname === "/auth";
+      const isAuthPage = location.pathname === "/recruiter";
       navigate(isAuthPage ? "/" : location.pathname);
     } else {
       localStorage.removeItem("token");
-      navigate("/auth");
+      navigate("/recruiter/login");
     }
   }, [user, location.pathname, navigate]);
 

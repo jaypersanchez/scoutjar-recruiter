@@ -6,6 +6,9 @@ import { FlexCol } from "@/common/components/flexbox";
 import  LoginForm  from "./LoginForm";
 import  SSOLogin  from "./SSOLogin"
 
+console.log("LoginForm:", LoginForm);
+console.log("SSOLogin:", SSOLogin);
+
 export default function LoginPage() {
   const { login } = useAuth();
 
@@ -13,7 +16,7 @@ export default function LoginPage() {
 
   const handleSignIn = (userData) => {
     login(userData); //login({ id: "XYZABC123456", name: "John Doe" });
-    navigate("/");
+    navigate("/recruiter/dashboard");
   };
 
   return (

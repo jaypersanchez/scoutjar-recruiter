@@ -131,7 +131,7 @@ export default function LoginForm({ onSignIn }) {
   <div className="flex flex-col items-center mobile:flex-row gap-y-6 mt-6">
     <div className="flex items-center order-last space-x-2 mobile:order-first">
       <Link
-        to="/auth/reset-password"
+        to="/recruiter/reset-password"
         className="text-sm font-medium leading-none tracking-wide text-neutral-500 hover:underline underline-offset-4"
       >
         Forgot your password?

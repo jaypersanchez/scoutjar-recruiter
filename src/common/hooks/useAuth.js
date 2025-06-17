@@ -1,5 +1,7 @@
+import * as React from "react";
 import { useContext } from "react";
-import { AuthContext } from "@/common/providers/AuthProvider";
+//import AuthProvider from "@/common/providers/AuthProvider"; // ✅
+import { AuthContext } from "@/common/providers/AuthProvider"; 
 
 export default function useAuth() {
 

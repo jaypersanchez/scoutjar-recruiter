@@ -1,11 +1,14 @@
 import React from "react";
 import { useEffect } from "react";
 import { RouterProvider } from "react-router-dom";
-import Routers from "./pages/LoginPage";
+//import Routers from "./pages/LoginPage";
+import Routers from "@/routes/index.jsx"; 
+
 import AndrewAssistant from "@/components/AndrewAssistant";
 
 
 export default function App() {
+console.log("App loaded"); // Confirm App renders at all
 
   useEffect(() => {
     const clearOnReload = () => {
@@ -20,9 +23,7 @@ export default function App() {
 
   return (
     <>
-      <ErrorBoundary>
-        <RouterProvider router={Routers} />
-      </ErrorBoundary>
+      <RouterProvider router={Routers} />
       <AndrewAssistant />
     </>
   );

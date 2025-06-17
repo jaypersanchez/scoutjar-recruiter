@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { useState, useEffect } from "react";
 import TalentDetailModal from "../Candidates/ReviewCandidates/TalentDetailModal";
 import BadgeAplus from "../../../assets/images/badges/aplus.png";
 import BadgeA from "../../../assets/images/badges/a.png";

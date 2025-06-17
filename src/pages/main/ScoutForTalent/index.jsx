@@ -1,6 +1,7 @@
 // At the top of the file
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+import React from "react";
+import { useState } from "react";
 import TalentFilter from "./TalentFilter";
 import TalentResults from "./TalentResults";
 import TalentDisplaySwitcher from "./TalentDisplaySwitcher";

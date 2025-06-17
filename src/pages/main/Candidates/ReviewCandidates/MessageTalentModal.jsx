@@ -1,6 +1,7 @@
 // At the top of the file
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { useState, useEffect } from "react";
 
 export default function MessageTalentModal({ applicant, onClose }) {
   const [message, setMessage] = useState("");

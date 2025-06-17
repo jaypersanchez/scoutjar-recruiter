@@ -3,11 +3,11 @@ import path from "path";
 import react from "@vitejs/plugin-react-swc";
 import tailwindcss from "@tailwindcss/vite";
 import history from "connect-history-api-fallback";
+const isProd = process.env.NODE_ENV === 'production';
 
 export default defineConfig({
-  base: "/recruiter/",
-
-  plugins: [
+  base: isProd ? '/recruiter/' : '/',
+  plugins: [,
     react(),
     tailwindcss(),
     {
@@ -45,7 +45,6 @@ export default defineConfig({
       strict: false,
     },
   },
-
   build: {
     outDir: "dist",
     emptyOutDir: true,
