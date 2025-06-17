@@ -18,12 +18,25 @@ export default defineConfig({
             index: "/recruiter/index.html",
             disableDotRule: true,
             htmlAcceptHeaders: ["text/html", "application/xhtml+xml"],
-            rewrites: [
+            /*rewrites: [
               {
                 from: /^\/recruiter\/.*\.(png|jpe?g|svg|ico|woff2?|ttf|js|css)$/,
                 to: ctx => ctx.parsedUrl.pathname,
               },
-            ],
+            ],*/
+            rewrites: [
+  {
+    // ✅ Skip fallback for static assets like images
+    from: /^\/recruiter\/.*\.(png|jpe?g|svg|ico|woff2?|ttf|js|css|map)$/i,
+    to: ctx => ctx.parsedUrl.pathname, // allow direct access
+  },
+  {
+    // ✅ Fallback only for recruiter app routes
+    from: /^\/recruiter\/.*$/,
+    to: "/recruiter/index.html",
+  },
+],
+
           })
         );
       },

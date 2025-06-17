@@ -58,7 +58,19 @@ export default function AuthProvider({ children }) {
       navigate("/recruiter/dashboard", { replace: true });
     }
   } else {
-    if (!location.pathname.startsWith("/recruiter/login")) {
+    /*if (!location.pathname.startsWith("/recruiter/login")) {
+      navigate("/recruiter/login", { replace: true });
+    }*/
+    const allowedPublicRoutes = [
+      "/recruiter/login",
+      "/recruiter/reset-password",
+    ];
+
+    const isAllowed = allowedPublicRoutes.some(path =>
+      location.pathname.startsWith(path)
+    );
+
+    if (!isAllowed) {
       navigate("/recruiter/login", { replace: true });
     }
   }
