@@ -45,7 +45,7 @@ import { MdInfoOutline } from "react-icons/md";
 const PAGE_ROUTES = [
   {
     id: "public",
-    path: "/",
+    path: "",
     Component: ScoutForTalentPage,
     children: [
       {
@@ -55,17 +55,17 @@ const PAGE_ROUTES = [
         Component: DashboardPage,
         hidden: true,
       },
-          {
-      path: "dashboard",  // ✅ now you can explicitly navigate to /dashboard
+          /*{
+      path: "/recruiter/dashboard",  // ✅ now you can explicitly navigate to /dashboard
       label: "Dashboard",
       icon: RiDashboardFill,
       Component: DashboardPage,
       hidden: true,
-    },
+    },*/
 
       {
         index: true,
-        path: "scout-for-talent",
+        path: "/recruiter/scout-for-talent",
         label: "Scout for Talent",
         icon: MdPersonSearch,
         Component: ScoutForTalentPage,
@@ -105,7 +105,7 @@ const PAGE_ROUTES = [
   // Jobs Routes
   {
     id: "jobs",
-    path: "jobs",
+    path: "/recruiter/jobs",
     parentId: "public",
     icon: BsFillBriefcaseFill,
     children: [
@@ -145,33 +145,33 @@ const PAGE_ROUTES = [
   // Candidates Routes
   {
     id: "candidates",
-    path: "candidates",
+    path: "/recruiter/candidates",
     parentId: "public",
     icon: FaUserFriends,
     children: [
       {
-        path: "interview",
+        path: "/recruiter/interview",
         label: "Interview",
         icon: FaUserGroup,
         Component: InterviewCandidatesPage,
         hidden: true,
       },
       {
-        path: "evaluate",
+        path: "/recruiter/evaluate",
         label: "Evaluate",
         icon: RiUserSearchFill,
         Component: EvaluateCandidatesPage,
         hidden: true,
       },
       {
-        path: "onboard",
+        path: "/recruiter/onboard",
         label: "Onboard",
         icon: FaUserCheck,
         Component: OnboardCandidatesPage,
         hidden: true,
       },
       {
-        path: "reject",
+        path: "/recruiter/reject",
         label: "Reject",
         icon: FaUserMinus,
         Component: RejectCandidatesPage,
@@ -197,7 +197,7 @@ const PAGE_ROUTES = [
   // User Routes
   {
     id: "user",
-    path: "user",
+    path: "/recruiter/user",
     children: [
       {
         path: "profile",

@@ -34,7 +34,7 @@ export default function AuthProvider({ children }) {
   }, []);
 
   // Sync localStorage whenever `user` changes
-  useEffect(() => {
+  /*useEffect(() => {
     if (user) {
       localStorage.setItem("token", JSON.stringify(user));
 
@@ -45,7 +45,25 @@ export default function AuthProvider({ children }) {
       localStorage.removeItem("token");
       navigate("/recruiter/login");
     }
-  }, [user, location.pathname, navigate]);
+  }, [user, location.pathname, navigate]);*/
+  useEffect(() => {
+  if (user) {
+    const isOnAuthPage = [
+      "/recruiter/login",
+      "/recruiter/reset-password",
+      "/recruiter/reset-password/:token"
+    ].some(authPath => location.pathname.startsWith(authPath));
+
+    if (isOnAuthPage) {
+      navigate("/recruiter/dashboard", { replace: true });
+    }
+  } else {
+    if (!location.pathname.startsWith("/recruiter/login")) {
+      navigate("/recruiter/login", { replace: true });
+    }
+  }
+}, [user, location.pathname, navigate]);
+
 
   return (
     <AuthContext.Provider
