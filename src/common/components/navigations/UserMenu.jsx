@@ -20,7 +20,7 @@ import { FaPowerOff } from "react-icons/fa6";
 const menu = [
   {
     label: "Profile",
-    link: "/user/profile",
+    link: "/recruiter/profile",
   },
 ];
 

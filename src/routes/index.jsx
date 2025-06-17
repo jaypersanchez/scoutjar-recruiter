@@ -65,7 +65,7 @@ const Routers = createBrowserRouter([
           { path: "candidates/review", element: <ReviewCandidates /> },
           { path: "candidates/shortlist", element: <ShortlistCandidates /> },
 
-          { path: "user/profile", element: <Profile /> },
+          { path: "profile", element: <Profile /> },
         ],
       },
     ],

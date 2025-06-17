@@ -44,6 +44,15 @@ import { MdInfoOutline } from "react-icons/md";
 
 const PAGE_ROUTES = [
   {
+    id: "scout",
+    path: "/recruiter/scout-for-talent",
+    label: "Scout for Talent",
+    icon: MdPersonSearch,
+    Component: ScoutForTalentPage,
+    hidden: false,
+  },
+
+  {
     id: "public",
     path: "",
     Component: ScoutForTalentPage,
@@ -63,14 +72,14 @@ const PAGE_ROUTES = [
       hidden: true,
     },*/
 
-      {
+      /*{
         index: true,
         path: "/recruiter/scout-for-talent",
         label: "Scout for Talent",
         icon: MdPersonSearch,
         Component: ScoutForTalentPage,
         hidden: false,
-      },
+      },*/
       {
         path: "talent",
         label: "Talent",
@@ -193,22 +202,17 @@ const PAGE_ROUTES = [
       },
     ],
   },
-
-  // User Routes
   {
-    id: "user",
-    path: "/recruiter/user",
-    children: [
-      {
-        path: "profile",
-        label: "Profile",
-        icon: FaUserCircle,
-        Component: ProfilePage,
-        hidden: false,
-      },
-    ],
-  },
+  id: "profile",
+  path: "/recruiter/profile",
+  label: "Profile",
+  icon: FaUserCircle,
+  Component: ProfilePage,
+  hidden: true,
+}
 
+
+  
   // Nested Routes with dynamic paths
   // {
   //   id: "view-jobs",

@@ -110,8 +110,8 @@ export default function Sidebar({ className }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [isWrapped, setWrapped] = useState(false);
-  const navigationList = navigations(PAGE_ROUTES, ["user"]);
-
+  //const navigationList = navigations(PAGE_ROUTES, ["user"]);
+  const navigationList = navigations(PAGE_ROUTES);
   const isActive = (link) => {
     const parentLocation = `/${location.pathname.split("/").at(1).toString()}`;
     return location.pathname === link || parentLocation === link;
