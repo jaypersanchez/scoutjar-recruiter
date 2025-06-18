@@ -39,7 +39,7 @@ export default function Navbar({ className }) {
           <FlexBox className="gap-2">
             <img
               className="h-8 cursor-pointer rounded-md"
-              src="/recruiter/lookk.png"
+              src="/assets/lookk.png"
               onClick={() => navigate("/")}
             />
             <p className="text-xl font-bold leading-9 uppercase tracking-tight text-center text-gray-600 lg:text-start">

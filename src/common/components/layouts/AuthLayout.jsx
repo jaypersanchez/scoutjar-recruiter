@@ -2,16 +2,13 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import { FlexBox, FlexCol } from "@/common/components/flexbox";
 import { Footer } from "@/common/components/layouts";
-import lookkLogo from "../../../assets/images/lookk.png"
-//import avatar_bg from "../../../assets/images/avatar_bg.svg"
-
 
 export default function AuthLayout() {
   return (
     <FlexBox className="bg-secondary">
       <FlexCol className="min-h-screen px-1 select-none min-w-[375px] max-w-7xl lg:max-w-2xl flex-1 mx-auto">
         <FlexBox className="gap-2 justify-center px-4 pt-4 md:px-6 lg:justify-start">
-          <img src="lookk.png" className="w-8 rounded-md" alt="LooKK Logo"/>
+          <img src="/assets/lookk.png" className="w-8 rounded-md" alt="LooKK Logo"/>
           <p className="text-xl font-bold leading-9 uppercase tracking-tight text-center text-primary lg:text-start">
             LooKK
           </p>
@@ -27,7 +24,7 @@ export default function AuthLayout() {
       </FlexCol>
       <div className="relative flex-1 hidden lg:block bg-transparent">
         <img
-          src={lookkLogo}
+          src="avatars_bg.svg"
           alt="bg-login"
           className="object-cover w-sm xl:w-2xl mx-auto"
         />
