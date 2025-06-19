@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
+import { useState } from "react";
 import TalentResults from "./TalentResults";
 import TalentManagerView from "./TalentManagerView";
 

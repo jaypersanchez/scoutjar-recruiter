@@ -1,7 +1,8 @@
+import React from "react";
 import { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/common/lib/utils";
-import PAGE_ROUTES from "@/pages/routes/PublicRoutes";
+import PAGE_ROUTES from "@/pages/routes/PublicRoutes.jsx";
 import { navigations } from "@/common/utils/fnRoutes";
 import { Button } from "@/common/components/ui";
 import { FlexBox } from "@/common/components/flexbox";
@@ -109,8 +110,8 @@ export default function Sidebar({ className }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [isWrapped, setWrapped] = useState(false);
-  const navigationList = navigations(PAGE_ROUTES, ["user"]);
-
+  //const navigationList = navigations(PAGE_ROUTES, ["user"]);
+  const navigationList = navigations(PAGE_ROUTES);
   const isActive = (link) => {
     const parentLocation = `/${location.pathname.split("/").at(1).toString()}`;
     return location.pathname === link || parentLocation === link;
@@ -132,7 +133,7 @@ export default function Sidebar({ className }) {
       >
         <header className="flex flex-row w-full items-center text-white h-16 mt-2 mb-8">
           <FlexBox className="gap-2 flex-1 pl-2" onClick={() => navigate("/")}>
-            <img className="rounded-md h-8 w-8" src="/recruiter/lookk.png" />
+            <img className="rounded-md h-8 w-8" src="/assets/lookk.png" />
             <p
               className={cn(
                 "text-xl font-bold leading-9 uppercase tracking-tight text-center text-gray-600 lg:text-start",

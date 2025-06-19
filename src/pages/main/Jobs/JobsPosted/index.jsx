@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useEffect, useState } from "react";
 import MatchExplanationModal from "./MatchExplanationModal";
 import "@/common/styles/App.css";
 

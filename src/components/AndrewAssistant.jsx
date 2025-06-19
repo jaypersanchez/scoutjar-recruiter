@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { useState, useEffect } from "react";
 import AndrewMessageModal from "./AndrewMessageModal";
 
 export default function AndrewAssistant() {

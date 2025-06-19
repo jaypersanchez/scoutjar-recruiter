@@ -1,3 +1,4 @@
+import React from "react";
 import { cn } from "@/common/lib/utils";
 
 export default function WidgetBox({ className, ...props }) {

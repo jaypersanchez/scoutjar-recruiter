@@ -1,11 +1,13 @@
+import { defineConfig } from "vite";
 import path from "path";
 import react from "@vitejs/plugin-react-swc";
 import tailwindcss from "@tailwindcss/vite";
 import history from "connect-history-api-fallback";
+const isProd = process.env.NODE_ENV === 'production';
 
-export default {
-  base: "/recruiter/", // Ensure this matches your router basename
-  plugins: [
+export default defineConfig({
+  base: isProd ? '/recruiter/' : '/',
+  plugins: [,
     react(),
     tailwindcss(),
     {
@@ -16,20 +18,37 @@ export default {
             index: "/recruiter/index.html",
             disableDotRule: true,
             htmlAcceptHeaders: ["text/html", "application/xhtml+xml"],
-            rewrites: [
-              // allow serving static assets
-              { from: /^\/recruiter\/.*\.(png|jpg|svg|ico|woff2?)$/, to: ctx => ctx.parsedUrl.pathname }
-            ]
+            /*rewrites: [
+              {
+                from: /^\/recruiter\/.*\.(png|jpe?g|svg|ico|woff2?|ttf|js|css)$/,
+                to: ctx => ctx.parsedUrl.pathname,
+              },
+            ],*/
+            /*rewrites: [
+              {
+                // ✅ Skip fallback for static assets like images
+                from: /^\/recruiter\/.*\.(png|jpe?g|svg|ico|woff2?|ttf|js|css|pdf|map)$/i,
+                to: ctx => ctx.parsedUrl.pathname, // allow direct access
+              },
+              {
+                // ✅ Fallback only for recruiter app routes
+                from: /^\/recruiter\/.*$/,
+                to: "/recruiter/index.html",
+              },
+            ],*/
+
           })
         );
-      }
-    }
+      },
+    },
   ],
+
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
   },
+
   server: {
     host: true,
     port: 5173,
@@ -39,4 +58,8 @@ export default {
       strict: false,
     },
   },
-};
+  build: {
+    outDir: "dist",
+    emptyOutDir: true,
+  },
+});

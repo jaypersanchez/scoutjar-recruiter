@@ -23,4 +23,6 @@ export type PageRouteProps = Omit<RouteObject, "children"> & {
   children?: Array<PageIndexRoutePath | PageNonIndexRoutePath>;
   parentId?: string;
   icon?: IconType;
+  label?: string; // ✅ Add this line
+  hidden?: boolean; // (also add if you're using it elsewhere)
 };

@@ -1,3 +1,4 @@
+import React from "react";
 import { cn } from "@/common/lib/utils";
 
 export default function Footer() {
@@ -11,7 +12,7 @@ export default function Footer() {
         Copyright &copy; LooKK {new Date().getFullYear()}
         &nbsp;&nbsp;&nbsp;&nbsp;
         <a
-          href="/TermsCondition.pdf"
+          href="/assets/TermsCondition.pdf"
           target="_blank"
           rel="noopener noreferrer"
           className="underline text-neutral-400 hover:text-neutral-300 transition"

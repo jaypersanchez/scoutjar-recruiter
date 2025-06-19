@@ -1,3 +1,4 @@
+import React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/common/hooks";
@@ -19,7 +20,7 @@ import { FaPowerOff } from "react-icons/fa6";
 const menu = [
   {
     label: "Profile",
-    link: "/user/profile",
+    link: "/recruiter/profile",
   },
 ];
 
@@ -45,7 +46,7 @@ export default function UserMenu() {
   const handleLogout = () => {
     sessionStorage.removeItem("sso-login");
     logout();
-    navigate("/auth", { replace: true });
+    navigate("/recruiter/login", { replace: true });
   };
 
   return (

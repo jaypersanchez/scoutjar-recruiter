@@ -1,3 +1,4 @@
+//import { Page404 } from "@/common/components/layouts/Page404";
 import { useEffect, useState, createContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -33,17 +34,48 @@ export default function AuthProvider({ children }) {
   }, []);
 
   // Sync localStorage whenever `user` changes
-  useEffect(() => {
+  /*useEffect(() => {
     if (user) {
       localStorage.setItem("token", JSON.stringify(user));
 
-      const isAuthPage = location.pathname === "/auth";
-      navigate(isAuthPage ? "/" : location.pathname);
+      const isAuthPage = location.pathname === "/recruiter";
+      //navigate(isAuthPage ? "/" : location.pathname);
+      navigate("/recruiter/dashboard", { replace: true });
     } else {
       localStorage.removeItem("token");
-      navigate("/auth");
+      navigate("/recruiter/login");
     }
-  }, [user, location.pathname, navigate]);
+  }, [user, location.pathname, navigate]);*/
+  useEffect(() => {
+  if (user) {
+    const isOnAuthPage = [
+      "/recruiter/login",
+      "/recruiter/reset-password",
+      "/recruiter/reset-password/:token"
+    ].some(authPath => location.pathname.startsWith(authPath));
+
+    if (isOnAuthPage) {
+      navigate("/recruiter/dashboard", { replace: true });
+    }
+  } else {
+    /*if (!location.pathname.startsWith("/recruiter/login")) {
+      navigate("/recruiter/login", { replace: true });
+    }*/
+    const allowedPublicRoutes = [
+      "/recruiter/login",
+      "/recruiter/reset-password",
+    ];
+
+    const isAllowed = allowedPublicRoutes.some(path =>
+      location.pathname.startsWith(path)
+    );
+
+    if (!isAllowed) {
+      navigate("/recruiter/login", { replace: true });
+    }
+  }
+}, [user, location.pathname, navigate]);
+
 
   return (
     <AuthContext.Provider

@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function ChatWindow({ recruiterId, talent, closeChat }) {
   const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}`;
