@@ -1,4 +1,4 @@
-import React, { ReactNode, JSX } from "react";
+import React from "react";
 //import { IconType } from "react-icons/lib";
 
 import {
@@ -9,13 +9,13 @@ import {
 
 export interface PageIndexRoutePath extends IndexRouteObject {
   icon?: React.ReactNode;
-  label?: string | JSX.Element;
+  label?: string;
   hidden: boolean;
 }
 
 export interface PageNonIndexRoutePath extends NonIndexRouteObject {
   icon?: React.ReactNode;
-  label?: string | JSX.Element;
+  label?: string;
   hidden: boolean;
 }
 
