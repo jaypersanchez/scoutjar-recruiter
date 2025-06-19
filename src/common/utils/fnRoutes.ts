@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { omit, startCase, flatMap } from "lodash";
+import { startCase, flatMap } from "lodash";
 import { PageRouteProps } from "../types/routes.types";
 
 export type NavigationItem = {
@@ -32,17 +32,18 @@ export function navigations(routes: PageRouteProps[], excludeIds: string[] = [])
     const hasChildren = Array.isArray(route.children) && route.children.length > 0;
 
     if (hasChildren) {
-      const visibleChildren = route.children.filter(
+      /*const visibleChildren = route.children.filter(
         (child) => !child.hidden && !child.path?.includes(":")
-      );
+      ) || [];*/
+      const visibleChildren = route.children?.filter(child => true) ?? [];
 
       if (visibleChildren.length > 0) {
         return {
           icon: route.icon || null,
-          label: route.label || getLabelFromPath(route.path),
+          label: route.label || getLabelFromPath(route.path || ""),
           children: visibleChildren.map((child) => ({
             icon: child.icon || null,
-            label: child.label || getLabelFromPath(child.path),
+            label: child.label || getLabelFromPath(child.path || ""),
             path: getFullPath(route.path, child.path),
           })),
         };
@@ -55,7 +56,7 @@ export function navigations(routes: PageRouteProps[], excludeIds: string[] = [])
     if (!route.path?.includes(":")) {
       return {
         icon: route.icon || null,
-        label: route.label || getLabelFromPath(route.path),
+        label: route.label || getLabelFromPath(route.path || ""),
         path: getFullPath(route.path),
       };
     }

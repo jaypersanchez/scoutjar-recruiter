@@ -1,4 +1,3 @@
-import * as React from "react";
 import FlexBox from "./FlexBox";
 import FlexCenter from "./FlexCenter";
 import FlexCol from "./FlexCol";
