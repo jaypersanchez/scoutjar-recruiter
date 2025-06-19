@@ -2,13 +2,28 @@ import { ReactNode } from "react";
 import { startCase, flatMap } from "lodash";
 import { PageRouteProps } from "../types/routes.types";
 
-export type NavigationItem = {
+/*export type NavigationItem = {
   path: string;
   label: string;
   icon: ReactNode;
   children?: NavigationItem[];
-};
+};*/
 
+export type NavigationItem =
+  | {
+      path: string;
+      label: string;
+      icon: ReactNode;
+      children?: undefined;
+    }
+  | {
+      path?: string;
+      label: string;
+      icon: ReactNode;
+      children: NavigationItem[];
+    };
+
+    
 const getLabelFromPath = (path: string): string => {
   return path
     .replace(/^\/+/g, "")
