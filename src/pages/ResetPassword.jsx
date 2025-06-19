@@ -36,7 +36,9 @@ export default function ResetPassword() {
         />
         <button type="submit" className="login-button">Send Reset Link</button>
       </form>
-      {sent && <p className="status-msg">Please check your email for the reset link.</p>}
+      {sent && <p className="status-msg">If your email is a registered account, you 
+        will receive an email password reset link.  
+        Please check your email for the reset link.</p>}
     </div>
   );
 }
