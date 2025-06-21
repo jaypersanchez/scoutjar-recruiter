@@ -43,6 +43,15 @@ import { FaUserFriends, FaUserCircle } from "react-icons/fa";
 import { MdInfoOutline } from "react-icons/md";
 
 const PAGE_ROUTES = [
+    {
+    id: "dashboard",
+    path: "/recruiter/dashboard",
+    label: "Dashboard",
+    icon: RiDashboardFill,
+    Component: DashboardPage,
+    hidden: false, // this makes it show in the sidebar
+  },
+
   {
     id: "scout",
     path: "/recruiter/scout-for-talent",
@@ -64,12 +73,12 @@ const PAGE_ROUTES = [
         Component: DashboardPage,
         hidden: true,
       },
-          /*{
+         /* {
       path: "/recruiter/dashboard",  // ✅ now you can explicitly navigate to /dashboard
       label: "Dashboard",
       icon: RiDashboardFill,
       Component: DashboardPage,
-      hidden: true,
+      hidden: false,
     },*/
 
       /*{
