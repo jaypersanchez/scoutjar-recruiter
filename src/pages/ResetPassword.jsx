@@ -7,11 +7,13 @@ export default function ResetPassword() {
 
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
-  const baseUrl = import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL;
-
+  const serverUrl = import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL;
+  const port = import.meta.env.VITE_SCOUTJAR_SERVER_BASE_PORT
+  const baseUrl = `${serverUrl}:${port}`
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await fetch(`${baseUrl}/reset-password/request-reset`, {
+    const res = await fetch(`${serverUrl}/reset-password/request-reset`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),

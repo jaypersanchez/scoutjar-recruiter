@@ -51,7 +51,7 @@ export default function ResetPasswordToken() {
       const data = await res.json();
       if (res.ok) {
         alert("Password updated successfully!");
-        navigate("/auth"); // go back to login page
+        navigate("/recruiter/login"); // go back to login page
       } else {
         setError(data.error || "Failed to reset password.");
       }
