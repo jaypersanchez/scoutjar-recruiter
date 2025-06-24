@@ -63,44 +63,50 @@ export default function DashboardAnalytics() {
 
   return (
     <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        gap: "16px",
-        width: "100%"
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          padding: "16px",
-          border: "1px solid #e2e8f0",
-          borderRadius: "8px",
-          backgroundColor: "#f9fafb"
-        }}
-      >
-        <h2 style={{ fontSize: "1.25rem", fontWeight: "bold", marginBottom: "12px" }}>
-          Jobs by Location
-        </h2>
-        <Bar data={jobsByLocation()} />
-      </div>
+  style={{
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: "16px",
+    width: "100%",
+    marginBottom: "2rem"
+  }}
+>
+  {/* Jobs by Location */}
+  <div
+    style={{
+      display: "flex",
+      flexDirection: "column",
+      padding: "16px",
+      border: "1px solid #e2e8f0",
+      borderRadius: "8px",
+      backgroundColor: "#f9fafb",
+      height: "300px", // ↓ smaller height
+    }}
+  >
+    <h2 style={{ fontSize: "1rem", fontWeight: "bold", marginBottom: "8px" }}>
+      Jobs by Location
+    </h2>
+    <Bar data={jobsByLocation()} options={{ maintainAspectRatio: false }} height={240} />
+  </div>
 
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          padding: "16px",
-          border: "1px solid #e2e8f0",
-          borderRadius: "8px",
-          backgroundColor: "#f9fafb"
-        }}
-      >
-        <h2 style={{ fontSize: "1.25rem", fontWeight: "bold", marginBottom: "12px" }}>
-          Applicants per Job
-        </h2>
-        <Pie data={applicantsPerJob()} />
-      </div>
-    </div>
+  {/* Applicants per Job */}
+  <div
+    style={{
+      display: "flex",
+      flexDirection: "column",
+      padding: "16px",
+      border: "1px solid #e2e8f0",
+      borderRadius: "8px",
+      backgroundColor: "#f9fafb",
+      height: "300px", // ↓ smaller height
+    }}
+  >
+    <h2 style={{ fontSize: "1rem", fontWeight: "bold", marginBottom: "8px" }}>
+      Applicants per Job
+    </h2>
+    <Pie data={applicantsPerJob()} options={{ maintainAspectRatio: false }} height={240} />
+  </div>
+</div>
+
   );
 }
