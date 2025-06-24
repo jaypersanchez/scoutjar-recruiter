@@ -15,9 +15,10 @@ export default function DashboardAnalytics() {
   const [applications, setApplications] = useState([]);
 
   useEffect(() => {
+    console.log(`${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}/dashboard`)
     const loadDashboardData = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/dashboard`);
+        const res = await fetch(`${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}/dashboard`);
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         const data = await res.json();
         setJobs(data.jobs_table || []);
