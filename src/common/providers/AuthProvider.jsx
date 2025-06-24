@@ -64,6 +64,7 @@ export default function AuthProvider({ children }) {
     const allowedPublicRoutes = [
       "/recruiter/login",
       "/recruiter/reset-password",
+      "/recruiter/terms", 
     ];
 
     const isAllowed = allowedPublicRoutes.some(path =>

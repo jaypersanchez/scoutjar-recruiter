@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/common/hooks";
 import { Divider } from "@/common/components/ui";
 import { FlexCol } from "@/common/components/flexbox";
@@ -51,14 +51,20 @@ export default function LoginPage() {
 
       <p className="text-sm font-medium text-center text-gray-500 mt-4 px-4">
         By signing in to LooKK, you agree to our{" "}
-        <a
+        <Link
+    to="/recruiter/terms"
+    className="underline font-semibold text-gray-600 hover:text-gray-800 transition"
+  >
+    Terms&nbsp;and&nbsp;Conditions
+  </Link>
+        {/*<a
           href={`${import.meta.env.BASE_URL}TermsCondition.pdf`}
           target="_blank"
           rel="noopener noreferrer"
           className="underline font-semibold text-gray-600 hover:text-gray-800 transition"
         >
           Terms&nbsp;and&nbsp;Conditions
-        </a>
+        </a>*/}
         
       </p>
 

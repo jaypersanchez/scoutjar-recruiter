@@ -31,6 +31,9 @@ import RejectCandidates from "@/pages/main/Candidates/RejectCandidates";
 import ReviewCandidates from "@/pages/main/Candidates/ReviewCandidates";
 import ShortlistCandidates from "@/pages/main/Candidates/ShortlistCandidates";
 
+// Legal 
+import TermsAndConditions from "@/pages/legal/TermsAndConditions";
+
 // ✅ User
 import Profile from "@/pages/main/Users/Profile";
 
@@ -43,6 +46,7 @@ const Routers = createBrowserRouter([
       { path: "login", element: <LoginPage /> },
       { path: "reset-password", element: <ResetPassword /> },
       { path: "reset-password/:token", element: <ResetPasswordToken /> },
+      { path: "terms", element: <TermsAndConditions /> },
 
       // 👇 All authenticated routes wrapped in PageLayout
       {
