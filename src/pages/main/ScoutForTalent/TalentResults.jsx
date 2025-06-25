@@ -41,6 +41,9 @@ function TalentResults({ results, jobTitle, jobDescription, requiredSkills }) {
   const [isShortlisting, setIsShortlisting] = useState({});
   const [currentPage, setCurrentPage] = useState(0);
   const [messageTalent, setMessageTalent] = useState(null);
+  const [minSalary, setMinSalary] = useState("");
+  const [maxSalary, setMaxSalary] = useState("");
+  const [selectedCurrency, setSelectedCurrency] = useState("USD");
 
 
   const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}`;
@@ -113,7 +116,25 @@ function TalentResults({ results, jobTitle, jobDescription, requiredSkills }) {
       ? normalize(profile.work_preferences?.work_mode) === normalize(workModeFilter)
       : true;
 
-    return matchesLocation && matchesAvailability && matchesWorkMode;
+      const salary = Number(profile.desired_salary || 0);
+      const currency = profile.currency || "USD";
+
+      const matchesSalary =
+        (!minSalary || salary >= Number(minSalary)) &&
+        (!maxSalary || salary <= Number(maxSalary));
+
+      const matchesCurrency = selectedCurrency ? currency === selectedCurrency : true;
+
+
+    //return matchesLocation && matchesAvailability && matchesWorkMode;
+    return (
+      matchesLocation &&
+      matchesAvailability &&
+      matchesWorkMode &&
+      matchesSalary &&
+      matchesCurrency
+    );
+
   });
 
   const totalPages = Math.ceil(filteredResults.length / rowsPerPage);
@@ -239,6 +260,43 @@ function TalentResults({ results, jobTitle, jobDescription, requiredSkills }) {
               <option value="Hybrid">Hybrid</option>
             </select>
           </div>
+
+          {/** Currency section */}
+          <div className="filter-column filter-field">
+            <label>Currency</label>
+            <select
+              value={selectedCurrency}
+              onChange={(e) => setSelectedCurrency(e.target.value)}
+              className="login-input"
+            >
+              <option value="USD">USD</option>
+              <option value="EUR">EUR</option>
+              <option value="ILS">ILS</option>
+            </select>
+          </div>
+
+          <div className="filter-column filter-field">
+            <label>Min Salary</label>
+            <input
+              type="number"
+              value={minSalary}
+              onChange={(e) => setMinSalary(e.target.value)}
+              className="login-input"
+              placeholder="e.g., 1000"
+            />
+          </div>
+
+          <div className="filter-column filter-field">
+            <label>Max Salary</label>
+            <input
+              type="number"
+              value={maxSalary}
+              onChange={(e) => setMaxSalary(e.target.value)}
+              className="login-input"
+              placeholder="e.g., 3000"
+            />
+          </div>
+
         </div>
       </div>
 

@@ -146,12 +146,12 @@ export default function TalentDetailModal({
   >
     Approach
   </button>
-  <button
+  {/*<button
     onClick={handleMailto}
     className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
   >
     Send Email
-  </button>
+  </button>*/}
   {showShortlist && applicant.job_id && (
     <button
       onClick={handleShortlist}

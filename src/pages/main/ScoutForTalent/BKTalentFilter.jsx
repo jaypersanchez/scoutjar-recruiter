@@ -183,7 +183,7 @@ function TalentFilter({ onResults }) {
 
   return (
     <div className="talent-filter-container">
-      <h2 className="text-center text-primary text-2xl font-bold mb-6">Talent Scout</h2>
+      <h2 className="text-center text-primary text-2xl font-bold mb-6">Talent Filter</h2>
       <form
         className="filter-form"
         onSubmit={(e) => {
@@ -273,7 +273,7 @@ function TalentFilter({ onResults }) {
           </div>
           <div className="filter-field">
           <label>
-  Minimum Threshold (%)
+  Match Threshold (%)
   <span
     title="Filters talents by how closely they match your job post. Use clear titles and detailed descriptions for better results."
     style={{

@@ -23,6 +23,9 @@ export default function JobsPosted() {
   const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}`;
   const AIbaseUrl = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}`;
   const [jobCurrencies, setJobCurrencies] = useState({});
+  const [expandedJobs, setExpandedJobs] = useState({});
+  const [applicantsByJob, setApplicantsByJob] = useState({});
+
 
   const currencySymbols = {
     USD: "$",
@@ -92,6 +95,26 @@ export default function JobsPosted() {
       setLoading(false);
     }
   }, [recruiterId]);
+
+  /*const fetchApplicantsForJob = async (jobId) => {
+      try {
+        const response = await fetch(`${baseUrl}/job-applicants/job/${jobId}`);
+        const data = await response.json();
+        setApplicantsByJob((prev) => ({ ...prev, [jobId]: data }));
+      } catch (err) {
+        console.error("Error fetching applicants for job", jobId, err);
+      }
+    };*/
+    const fetchApplicantsForJob = async (jobId) => {
+      try {
+        const response = await fetch(`${baseUrl}/job-applicants/job/${jobId}/recruiter/${recruiterId}`);
+        if (!response.ok) throw new Error("Failed to fetch applicants");
+        const data = await response.json();
+        setApplicantsByJob((prev) => ({ ...prev, [jobId]: data }));
+      } catch (err) {
+        console.error("Error fetching applicants for job", jobId, err);
+      }
+    };
 
   const askAndrew = async (job) => {
     setAndrewLoading(job.job_id);
@@ -323,15 +346,23 @@ export default function JobsPosted() {
         {jobs.map((job) => (
           <div
             key={job.job_id}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "10px",
-              padding: "16px",
-              border: "1px solid #e2e8f0",
-              borderRadius: "8px",
-              backgroundColor: "#f9fafb"
-            }}
+              onClick={() => {
+                setExpandedJobs((prev) => ({
+                  ...prev,
+                  [job.job_id]: !prev[job.job_id],
+                }));
+                if (!applicantsByJob[job.job_id]) fetchApplicantsForJob(job.job_id);
+              }}
+              style={{
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
+                padding: "16px",
+                border: "1px solid #e2e8f0",
+                borderRadius: "8px",
+                backgroundColor: "#f9fafb"
+              }}
           >
             {/* Job Details */}
             <div>
@@ -355,7 +386,7 @@ export default function JobsPosted() {
             </div>
 
             {/* Ask LooKK Button */}
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            {/*<div style={{ display: "flex", justifyContent: "flex-end" }}>
               <button
                 onClick={() => askAndrew(job)}
                 disabled={andrewLoading === job.job_id}
@@ -371,7 +402,7 @@ export default function JobsPosted() {
               >
                 {andrewLoading === job.job_id ? "LooKKing..." : "✨ Ask LooKK"}
               </button>
-            </div>
+            </div>*/}
 
             {/* Matched Talents */}
             {andrewMatches[job.job_id] && (
@@ -436,6 +467,26 @@ export default function JobsPosted() {
                 </div>
               </div>
             )}
+            {expandedJobs[job.job_id] && applicantsByJob[job.job_id] && (
+              <div style={{ marginTop: "10px", padding: "12px", backgroundColor: "#f7fafc", borderRadius: "6px" }}>
+                <h4 style={{ fontWeight: "bold", fontSize: "1rem", marginBottom: "6px" }}>Applicants for this job:</h4>
+                <ul style={{ paddingLeft: "16px", listStyle: "disc" }}>
+                  {applicantsByJob[job.job_id].map((applicant) => (
+                    <li key={applicant.talent_id} style={{ marginBottom: "10px", lineHeight: "1.5" }}>
+    <strong>{applicant.full_name || applicant.name}</strong> — {applicant.email || "No email"}
+    <div style={{ marginLeft: "12px", fontSize: "0.9rem", color: "#4a5568" }}>
+      📍 Location: {applicant.location || "N/A"}<br />
+      🛠 Skills: {(applicant.skills || []).join(", ") || "N/A"}<br />
+      💰 Desired Salary: {applicant.desired_salary || "N/A"}<br />
+      🏢 Work Mode: {applicant.work_mode || "N/A"}<br />
+      🕒 Availability: {applicant.availability || "N/A"}
+    </div>
+  </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
           </div>
         ))}
       </div>

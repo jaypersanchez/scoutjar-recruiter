@@ -49,6 +49,21 @@ export default function UserMenu() {
     navigate("/recruiter/login", { replace: true });
   };
 
+  if (ssoData?.email === "default@email") {
+  return (
+    <div className="ml-auto text-xs text-red-500 italic pr-2 pt-2">
+      Session expired.{" "}
+      <span
+        onClick={handleLogout}
+        className="underline cursor-pointer hover:text-red-700"
+      >
+        Click here to re-authenticate
+      </span>
+      .
+    </div>
+  );
+}
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

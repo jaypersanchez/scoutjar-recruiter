@@ -26,6 +26,9 @@ function TalentManagerView({
   const [isShortlisting, setIsShortlisting] = useState({});
   const [selectedTalent, setSelectedTalent] = useState(null);
   const [messageTalent, setMessageTalent] = useState(null);
+  const [minSalary, setMinSalary] = useState("");
+  const [maxSalary, setMaxSalary] = useState("");
+  const [selectedCurrency, setSelectedCurrency] = useState("USD");
 
   const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}`;
   const AIbaseUrl = `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}`;
@@ -58,7 +61,24 @@ function TalentManagerView({
       ? normalize(profile.work_preferences?.work_mode) === normalize(workModeFilter)
       : true;
 
-    return matchesLocation && matchesAvailability && matchesWorkMode;
+    const salary = Number(profile.desired_salary || 0);
+    const currency = profile.currency || "USD";
+
+    const matchesSalary =
+      (!minSalary || salary >= Number(minSalary)) &&
+      (!maxSalary || salary <= Number(maxSalary));
+
+    const matchesCurrency = selectedCurrency ? currency === selectedCurrency : true;
+
+    return (
+      matchesLocation &&
+      matchesAvailability &&
+      matchesWorkMode &&
+      matchesSalary &&
+      matchesCurrency
+    );
+
+    //return matchesLocation && matchesAvailability && matchesWorkMode;
   });
 
   const toggleLocation = (value) => {
@@ -208,6 +228,43 @@ function TalentManagerView({
       <option value="Hybrid">Hybrid</option>
     </select>
   </div>
+
+        <div className="filter-column filter-field">
+  <label>Currency</label>
+  <select
+    value={selectedCurrency}
+    onChange={(e) => setSelectedCurrency(e.target.value)}
+    className="login-input"
+  >
+    <option value="USD">USD</option>
+    <option value="EUR">EUR</option>
+    <option value="ILS">ILS</option>
+  </select>
+</div>
+
+<div className="filter-column filter-field">
+  <label>Min Salary</label>
+  <input
+    type="number"
+    value={minSalary}
+    onChange={(e) => setMinSalary(e.target.value)}
+    className="login-input"
+    placeholder="e.g., 1000"
+  />
+</div>
+
+<div className="filter-column filter-field">
+  <label>Max Salary</label>
+  <input
+    type="number"
+    value={maxSalary}
+    onChange={(e) => setMaxSalary(e.target.value)}
+    className="login-input"
+    placeholder="e.g., 3000"
+  />
+</div>
+
+
 </div>
 
       {/* Table */}
