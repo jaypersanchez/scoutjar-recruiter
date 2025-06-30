@@ -202,65 +202,65 @@ export default function ShortlistedCandidates() {
         </>
       )}
 
-      {/*{viewMode === "ai" && (
-        aiShortlisted?.length > 0 ? (
-          <table className="min-w-full border-collapse results-table">
-            <thead><tr className="bg-purple-100">
-              <th className="px-4 py-2 border">Shortlist ID</th>
-              <th className="px-4 py-2 border">Talent ID</th>
-              <th className="px-4 py-2 border">Full Name</th>
-              <th className="px-4 py-2 border">Email</th>
-              <th className="px-4 py-2 border">Added At</th>
-            </tr></thead>
-            <tbody>
-              {aiShortlisted.map((c) => (
-                <tr
-                  key={c.shortlist_id}
-                  className="hover:bg-purple-50 cursor-pointer"
-                  onClick={() => handleCandidateClick(c)}
-                >
-                  <td className="px-4 py-2 border text-center">{c.shortlist_id}</td>
-                  <td className="px-4 py-2 border text-center">{c.talent_id}</td>
-                  <td className="px-4 py-2 border text-center">{c.full_name}</td>
-                  <td className="px-4 py-2 border text-center">{c.email}</td>
-                  <td className="px-4 py-2 border text-center">{new Date(c.added_at).toLocaleString()}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p className="text-center">No AI-shortlisted candidates found.</p>
-        )
-      )}*/}
+{viewMode === "ai" && (
+  aiShortlisted?.length > 0 ? (
+    <div className="overflow-x-auto">
+      <table className="min-w-full table-auto text-sm text-left border border-gray-300">
+        <thead className="bg-purple-100 text-purple-800 font-medium">
+          <tr>
+            <th className="px-3 py-2 border">Job ID</th>
+            <th className="px-3 py-2 border">Job Description</th>
+            <th className="px-3 py-2 border">Talent ID</th>
+            <th className="px-3 py-2 border">Name</th>
+            <th className="px-3 py-2 border">Location</th>
+            <th className="px-3 py-2 border">Skills</th>
+            <th className="px-3 py-2 border">Desired Salary</th>
+            <th className="px-3 py-2 border">Work Mode</th>
+            <th className="px-3 py-2 border">Availability</th>
+            <th className="px-3 py-2 border">Match %</th>
+            <th className="px-3 py-2 border">Badge</th>
+            <th className="px-3 py-2 border">Added</th>
+          </tr>
+        </thead>
+        <tbody>
+          {aiShortlisted.map((c, index) => (
+            <tr
+              key={c.shortlist_id}
+              className={`${
+                index % 2 === 0 ? "bg-white" : "bg-blue-50"
+              } hover:bg-blue-100 transition cursor-pointer`}
+              onClick={() => handleCandidateClick(c)}
+            >
+              <td className="px-3 py-2 border">{c.job_id}</td>
+              <td className="px-3 py-2 border">{c.job_description || "No description"}</td>
+              <td className="px-3 py-2 border">{c.talent_id}</td>
+              <td className="px-3 py-2 border">{c.full_name}</td>
+              <td className="px-3 py-2 border">{c.location || "N/A"}</td>
+              <td className="px-3 py-2 border">{c.skills || "N/A"}</td>
+              <td className="px-3 py-2 border">
+                {c.desired_salary ? `₱${c.desired_salary}` : "N/A"}
+              </td>
+              <td className="px-3 py-2 border">{c.work_preferences || "N/A"}</td>
+              <td className="px-3 py-2 border">{c.availability || "N/A"}</td>
+              <td className="px-3 py-2 border">
+                {c.match_score !== null && c.match_score !== undefined ? `${c.match_score}%` : "N/A"}
+              </td>
+              <td className="px-3 py-2 border">{c.badge || "N/A"}</td>
+              <td className="px-3 py-2 border">
+                {c.added_at ? new Date(c.added_at).toLocaleString() : "—"}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  ) : (
+    <p className="text-center text-gray-600 mt-4">No AI-shortlisted candidates found.</p>
+  )
+)}
+
 
       {/*{viewMode === "ai" && (
-        aiShortlisted?.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {aiShortlisted.map((c) => (
-              <div
-                key={c.shortlist_id}
-                onClick={() => handleCandidateClick(c)}
-                className="bg-white border rounded-lg shadow p-4 hover:shadow-md cursor-pointer transition"
-              >
-                <div className="flex justify-between items-center mb-2">
-                  <h3 className="font-semibold text-purple-700">#{c.shortlist_id}</h3>
-                  <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full">
-                    AI Shortlisted
-                  </span>
-                </div>
-                <p className="text-sm text-gray-700"><strong>Talent ID:</strong> {c.talent_id}</p>
-                <p className="text-sm text-gray-700"><strong>Name:</strong> {c.full_name}</p>
-                <p className="text-sm text-gray-700"><strong>Email:</strong> {c.email}</p>
-                <p className="text-sm text-gray-600"><strong>Added:</strong> {new Date(c.added_at).toLocaleString()}</p>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-center">No AI-shortlisted candidates found.</p>
-        )
-      )}*/}
-
-      {viewMode === "ai" && (
   aiShortlisted?.length > 0 ? (
     <div className="overflow-x-auto">
       <table className="min-w-full table-auto text-sm text-left">
@@ -281,6 +281,7 @@ export default function ShortlistedCandidates() {
               } hover:bg-blue-100 transition cursor-pointer`}
               onClick={() => handleCandidateClick(c)}
             >
+              
               <td className="px-3 py-2 border-b text-gray-700">{c.talent_id}</td>
               <td className="px-3 py-2 border-b text-gray-800">{c.full_name}</td>
               <td className="px-3 py-2 border-b text-gray-700">{c.email || "—"}</td>
@@ -295,7 +296,8 @@ export default function ShortlistedCandidates() {
   ) : (
     <p className="text-center text-gray-600 mt-4">No AI-shortlisted candidates found.</p>
   )
-)}
+
+)}*/}
 
 
 
