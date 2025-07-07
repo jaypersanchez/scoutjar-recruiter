@@ -312,131 +312,116 @@ function TalentResults({ results, jobTitle, jobDescription, requiredSkills }) {
       }}>
         {currentResults.length > 0 ? (
           currentResults.map((profile) => {
-            const { badge, image } = getBadgeInfo(profile.match_score);
-            return (
-              <div
-                key={profile.talent_id}
-                /*onClick={() => handleRowClick(profile)}*/
-                onClick={() => {
-                  if (profile.profile_mode === "passive" || !profile.profile_mode) {
-                    setMessageTalent(profile);  // new state
-                  } else {
-                    handleRowClick(profile);
-                  }
-                }}
+  const { badge, image } = getBadgeInfo(profile.match_score);
+  return (
+    <div
+      key={profile.talent_id}
+      onClick={() => {
+        if (profile.profile_mode === "passive" || !profile.profile_mode) {
+          setMessageTalent(profile);
+        } else {
+          handleRowClick(profile);
+        }
+      }}
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: "16px",
+        border: "1px solid #e2e8f0",
+        borderRadius: "8px",
+        backgroundColor: "#f9fafb",
+        cursor: "pointer",
+        width: "100%",
+        transition: "background-color 0.2s ease",
+      }}
+      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#edf2f7")}
+      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#f9fafb")}
+    >
+      <div style={{ flex: 1 }}>
+        <>
+          <div style={{ fontSize: "1.25rem", fontWeight: "bold", color: "#2d3748" }}>
+            #{profile.talent_id} - {profile.full_name}
+          </div>
 
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  padding: "16px",
-                  border: "1px solid #e2e8f0",
-                  borderRadius: "8px",
-                  backgroundColor: "#f9fafb",
-                  cursor: "pointer",
-                  width: "100%",
-                  transition: "background-color 0.2s ease",
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#edf2f7"}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#f9fafb"}
-              >
-                <div style={{ flex: 1 }}>
+          {profile.profile_mode === "passive" && (
+            <div style={{ fontSize: "1rem", color: "#4a5568", marginTop: "6px" }}>
+              ⭐ This candidate is highly sought after.
+            </div>
+          )}
 
-                  {/*<div style={{ fontSize: "1.25rem", fontWeight: "bold", color: "#2d3748" }}>
-                    #{profile.talent_id} - {profile.full_name}
-                  </div>*/}
-                  {profile.profile_mode === "passive" || !profile.profile_mode ? (
-                    <>
-                      <div style={{ fontSize: "1.25rem", fontWeight: "bold", color: "#2d3748" }}>
-                        #{profile.talent_id} - {profile.full_name}
-                      </div>
-                      <div style={{ fontSize: "1rem", color: "#4a5568", marginTop: "6px" }}>
-                        ⭐ This candidate is highly sought after.
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div style={{ fontSize: "1.25rem", fontWeight: "bold", color: "#2d3748" }}>
-                        #{profile.talent_id} - {profile.full_name} - {profile.profile_mode}
-                      </div>
-                      <div style={{ fontSize: "1rem", color: "#4a5568", marginTop: "6px" }}>
-                        {profile.email}
-                      </div>
-                      <div style={{ fontSize: "1rem", color: "#4a5568", marginTop: "6px" }}>
-                        📍 {profile.location} | 🛠️ {profile.skills?.join(", ") || "No Skills"} | 🏢 {profile.work_preferences?.work_mode}
-                      </div>
-                      <div style={{ fontSize: "0.95rem", color: "#718096", marginTop: "6px" }}>
-                        Availability: {profile.availability || "N/A"}
-                      </div>
-                    </>
-                  )}
+          <div style={{ fontSize: "1rem", color: "#4a5568", marginTop: "6px" }}>
+            {profile.email}
+          </div>
+          <div style={{ fontSize: "1rem", color: "#4a5568", marginTop: "6px" }}>
+            📍 {profile.location} | 🛠️ {profile.skills?.join(", ") || "No Skills"} | 🏢{" "}
+            {profile.work_preferences?.work_mode}
+          </div>
+          <div style={{ fontSize: "0.95rem", color: "#718096", marginTop: "6px" }}>
+            Availability: {profile.availability || "N/A"}
+          </div>
+        </>
+      </div>
 
-                  {/*<div style={{ fontSize: "1rem", color: "#4a5568", marginTop: "6px" }}>
-                    {profile.email}
-                  </div>
-                  <div style={{ fontSize: "1rem", color: "#4a5568", marginTop: "6px" }}>
-                    📍 {profile.location} | 🛠️ {profile.skills?.join(", ") || "No Skills"} | 🏢 {profile.work_preferences?.work_mode}
-                  </div>
-                  <div style={{ fontSize: "0.95rem", color: "#718096", marginTop: "6px" }}>
-                    Availability: {profile.availability || "N/A"}
-                  </div>*/}
-                  {/*{profile.explanation && (
-                    <div style={{ fontSize: "1.0rem", fontWeight: "bold",color: "#2d3748", marginTop: "8px" }}>
-                      {profile.explanation}
-                    </div>
-                  )}*/}
-                </div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-end",
+          gap: "8px",
+          minWidth: "150px",
+        }}
+      >
+        <div
+          style={{
+            fontWeight: "900",
+            fontSize: "1.3rem",
+            padding: "8px 14px",
+            borderRadius: "12px",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "6px",
+            backgroundColor: "#edf2f7",
+            color: "#2d3748",
+          }}
+        >
+          <img
+            src={image}
+            alt={badge}
+            style={{ width: "28px", height: "28px", objectFit: "contain" }}
+          />
+          {Math.round(profile.match_score)}%
+        </div>
 
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "8px", minWidth: "150px" }}>
-                  <div style={{
-                   fontWeight: "900",
-                    fontSize: "1.3rem",
-                    padding: "8px 14px",
-                    borderRadius: "12px",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    backgroundColor: "#edf2f7", // subtle gray
-                    color: "#2d3748" // strong readable text
-                  }}>
-                    <img
-                      src={image}
-                      alt={badge}
-                      style={{ width: "28px", height: "28px", objectFit: "contain" }}
-                    />
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            handleAiShortlist(profile.talent_id);
+          }}
+          disabled={isShortlisting[profile.talent_id]}
+          style={{
+            fontSize: "11px",
+            backgroundColor: "#4c51bf",
+            color: "white",
+            padding: "4px 8px",
+            borderRadius: "6px",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          {isShortlisting[profile.talent_id] ? "..." : "📌 Shortlist"}
+        </button>
 
-                    {Math.round(profile.match_score)}%
-                    {/*<small style={{ fontSize: "0.8rem", marginLeft: "4px" }}>({badge})</small>*/}
-                  </div>
+        {shortlistStatus[profile.talent_id] && (
+          <div style={{ fontSize: "10px", color: "#4c51bf" }}>
+            {shortlistStatus[profile.talent_id]}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+})
 
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleAiShortlist(profile.talent_id);
-                    }}
-                    disabled={isShortlisting[profile.talent_id]}
-                    style={{
-                      fontSize: "11px",
-                      backgroundColor: "#4c51bf",
-                      color: "white",
-                      padding: "4px 8px",
-                      borderRadius: "6px",
-                      border: "none",
-                      cursor: "pointer",
-                    }}
-                  >
-                    {isShortlisting[profile.talent_id] ? "..." : "📌 Shortlist"}
-                  </button>
-
-                  {shortlistStatus[profile.talent_id] && (
-                    <div style={{ fontSize: "10px", color: "#4c51bf" }}>
-                      {shortlistStatus[profile.talent_id]}
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })
         ) : (
           <div style={{ textAlign: "center", color: "#718096", fontSize: "1.2rem" }}>
             No matching talents found.

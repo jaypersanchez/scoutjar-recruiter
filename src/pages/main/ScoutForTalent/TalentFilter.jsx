@@ -130,7 +130,7 @@ function TalentFilter({ onResults }) {
       clearTimeout(timeout);
       const data = await response.json();
       
-      const transformed = (data.matches || []).map((item) => ({
+      /*const transformed = (data.matches || []).map((item) => ({
         talent_id: item.talent_id,
         full_name: item.name || item.full_name || "N/A",
         email: item.email || "n/a@example.com",
@@ -149,7 +149,31 @@ function TalentFilter({ onResults }) {
         years_experience: parseFloat(item.years_experience) || 0,
         resume: item.resume || "",
         profile_mode: typeof item.profile_mode === "string" ? item.profile_mode : null,
-      }));
+      }));*/
+      const transformed = (data.matches || []).map((item) => {
+        const isPassive = item.profile_mode === "passive";
+        return {
+          talent_id: item.talent_id,
+          full_name: isPassive ? "Highly sought-after candidate" : (item.name || item.full_name || "N/A"),
+          email: isPassive ? "hidden@lookk.ai" : (item.email || "n/a@example.com"),
+          desired_salary: parseFloat(item.desired_salary) || 0,
+          location: item.location || "Unknown",
+          country: item.country || "",
+          country_code: item.country_code || "",
+          skills: Array.isArray(item.skills) ? item.skills : [],
+          work_preferences: typeof item.work_preferences === "object" ? item.work_preferences : {},
+          availability: item.availability || "Unknown",
+          match_score: parseFloat(item.match_score) || 0,
+          explanation: item.explanation || "No explanation provided.",
+          bio: item.bio || "",
+          experience: item.experience || "",
+          education: item.education || "",
+          years_experience: parseFloat(item.years_experience) || 0,
+          resume: item.resume || "",
+          profile_mode: typeof item.profile_mode === "string" ? item.profile_mode : null,
+        };
+      });
+
 
       console.log("🔍 Transformed profile_modes:", transformed.map(t => ({
   id: t.talent_id,

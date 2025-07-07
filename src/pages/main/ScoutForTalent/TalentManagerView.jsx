@@ -299,66 +299,68 @@ function TalentManagerView({
       >
         <td className="p-2 text-gray-500">{index + 1}</td>
 
-        {isPassive ? (
-          <>
-            <td colSpan={6} className="p-2 text-sm text-gray-600 italic">
-              ⭐ This candidate is highly sought after.
-            </td>
-          </>
-        ) : (
-          <>
-            <td className="p-2 font-medium text-gray-800">{profile.full_name}</td>
-            <td className="p-2 text-gray-700">
-              <div className="flex items-center gap-2">
-                {profile.country_code && (
-                  <img
-                    src={`https://flagcdn.com/w40/${profile.country_code
-                      .toLowerCase()
-                      .slice(0, 2)}.png`}
-                    alt={profile.country_code}
-                    style={{ width: 20, height: 14, borderRadius: "2px", objectFit: "cover" }}
-                    onError={(e) => {
-                      e.target.style.display = "none";
-                    }}
-                  />
-                )}
-                <span>{profile.location || "—"}</span>
+        {/* here drop-in the unified row */}
+        <>
+          <td className="p-2 font-medium text-gray-800">
+            {profile.full_name}
+            {isPassive && (
+              <div className="text-xs text-gray-500 italic">
+                ⭐ This candidate is highly sought after.
               </div>
-            </td>
-            <td className="p-2 text-gray-700">
-              {profile.skills?.join(", ") || "No Skills"}
-            </td>
-            <td className="p-2 text-gray-700">
-              {profile.desired_salary || "N/A"}
-            </td>
-            <td className="p-2 text-gray-700">
-              {profile.work_preferences?.work_mode || "N/A"}
-            </td>
-            <td className="p-2 text-gray-700">
-              {profile.availability || "N/A"}
-            </td>
-          </>
-        )}
+            )}
+          </td>
+          <td className="p-2 text-gray-700">
+            <div className="flex items-center gap-2">
+              {profile.country_code && (
+                <img
+                  src={`https://flagcdn.com/w40/${profile.country_code
+                    .toLowerCase()
+                    .slice(0, 2)}.png`}
+                  alt={profile.country_code}
+                  style={{
+                    width: 20,
+                    height: 14,
+                    borderRadius: "2px",
+                    objectFit: "cover",
+                  }}
+                  onError={(e) => {
+                    e.target.style.display = "none";
+                  }}
+                />
+              )}
+              <span>{profile.location || "—"}</span>
+            </div>
+          </td>
+          <td className="p-2 text-gray-700">
+            {profile.skills?.join(", ") || "No Skills"}
+          </td>
+          <td className="p-2 text-gray-700">
+            {profile.desired_salary || "N/A"}
+          </td>
+          <td className="p-2 text-gray-700">
+            {profile.work_preferences?.work_mode || "N/A"}
+          </td>
+          <td className="p-2 text-gray-700">
+            {profile.availability || "N/A"}
+          </td>
+        </>
 
         <td className="p-2">
           <span className="text-2xl font-bold text-green-700">
             {Math.round(profile.match_score)}%
           </span>
         </td>
-
         <td className="p-2">
           <div className="flex items-center justify-start gap-2">
             <img src={image} alt={badge} className="w-8 h-8 object-contain" />
           </div>
         </td>
-
         <td className="p-2">
           {isPassive ? (
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 setMessageTalent(profile);
-                //alert("To contact this talent, please use the messaging feature in Talent View.");
               }}
               className="text-xs bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600"
             >
@@ -388,6 +390,7 @@ function TalentManagerView({
     );
   })}
 </tbody>
+
 
 
       </table>
