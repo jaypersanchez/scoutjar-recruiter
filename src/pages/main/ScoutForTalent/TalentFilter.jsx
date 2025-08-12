@@ -38,29 +38,7 @@ function TalentFilter({ onResults }) {
     fetchJobTitles();
   }, []);
 
-  /*const autoSuggestFields = async () => {
-    if (suggestingSkills) return;
-    setSuggestingSkills(true);
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_SCOUTJAR_AI_BASE_URL}/suggest-fields`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ job_title: jobTitle, job_description: jobDescription }),
-        }
-      );
-      const data = await response.json();
-      if (data.suggested_skills) setSkills(data.suggested_skills);
-      if (data.industry_experience) setIndustryExperience(data.industry_experience);
-      if (data.years_experience !== undefined) setYearsExperience(data.years_experience);
-    } catch (err) {
-      console.error("Error suggesting fields:", err);
-    } finally {
-      setSuggestingSkills(false);
-    }
-  };*/
-
+  
   const autoSuggestFields = async () => {
   if (suggestingSkills) return;
   setSuggestingSkills(true);
@@ -130,26 +108,6 @@ function TalentFilter({ onResults }) {
       clearTimeout(timeout);
       const data = await response.json();
       
-      /*const transformed = (data.matches || []).map((item) => ({
-        talent_id: item.talent_id,
-        full_name: item.name || item.full_name || "N/A",
-        email: item.email || "n/a@example.com",
-        desired_salary: parseFloat(item.desired_salary) || 0,
-        location: item.location || "Unknown",
-        country: item.country || "",
-        country_code: item.country_code || "",
-        skills: Array.isArray(item.skills) ? item.skills : [],
-        work_preferences: typeof item.work_preferences === "object" ? item.work_preferences : {},
-        availability: item.availability || "Unknown",
-        match_score: parseFloat(item.match_score) || 0,
-        explanation: item.explanation || "No explanation provided.",
-        bio: item.bio || "",
-        experience: item.experience || "",
-        education: item.education || "",
-        years_experience: parseFloat(item.years_experience) || 0,
-        resume: item.resume || "",
-        profile_mode: typeof item.profile_mode === "string" ? item.profile_mode : null,
-      }));*/
       const transformed = (data.matches || []).map((item) => {
         const isPassive = item.profile_mode === "passive";
         return {

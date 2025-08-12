@@ -44,6 +44,7 @@ function TalentResults({ results, jobTitle, jobDescription, requiredSkills }) {
   const [minSalary, setMinSalary] = useState("");
   const [maxSalary, setMaxSalary] = useState("");
   const [selectedCurrency, setSelectedCurrency] = useState("USD");
+  const [showLocationModal, setShowLocationModal] = useState(false);
 
 
   const baseUrl = `${import.meta.env.VITE_SCOUTJAR_SERVER_BASE_URL}`;
@@ -51,12 +52,7 @@ function TalentResults({ results, jobTitle, jobDescription, requiredSkills }) {
 
   const rowsPerPage = 15;
 
-  /*useEffect(() => {
-    fetch(`${baseUrl}/locations/all`)
-      .then((res) => res.json())
-      .then(setLocationOptions)
-      .catch((err) => console.error("Failed to load locations:", err));
-  }, []);*/
+  
 
     useEffect(() => {
   fetch(`${baseUrl}/locations/all`)
@@ -204,32 +200,26 @@ function TalentResults({ results, jobTitle, jobDescription, requiredSkills }) {
       <div className="filter-form">
         <div className="filter-row">
           <div className="filter-column filter-field" style={{ flex: 1 }}>
-            <label>Location</label>
-            <input
-              type="text"
-              value={locationSearchInput}
-              onChange={(e) => setLocationSearchInput(e.target.value)}
-              placeholder="Search city/country..."
-              className="login-input"
-            />
-            <div className="scrollable-options" style={{ maxHeight: "150px", overflowY: "scroll", border: "1px solid #ccc", marginTop: "5px", padding: "5px" }}>
-              {locationOptions
-                .filter((loc) =>
-                  loc.label.toLowerCase().includes(locationSearchInput.toLowerCase())
-                )
-                .map((loc, idx) => (
-                  <label key={idx} style={{ display: "block", marginBottom: "3px" }}>
-                    <input
-                      type="checkbox"
-                      checked={selectedLocations.includes(loc.value)}
-                      onChange={() => toggleLocation(loc.value)}
-                      style={{ marginRight: "8px" }}
-                    />
-                    {loc.label}
-                  </label>
-                ))}
-            </div>
-          </div>
+  <label>Location</label>
+  <button
+    type="button"
+    className="form-button"
+    onClick={() => setShowLocationModal(true)}
+    style={{ padding: '0.6rem 1rem' }}
+  >
+    {selectedLocations.length > 0
+      ? `Locations (${selectedLocations.length})`
+      : 'Choose locations'}
+  </button>
+
+  {selectedLocations.length > 0 && (
+    <div style={{ marginTop: '8px', fontSize: '0.9rem', color: '#444' }}>
+      {selectedLocations.slice(0, 3).join(', ')}
+      {selectedLocations.length > 3 ? '…' : ''}
+    </div>
+  )}
+</div>
+
 
           <div className="filter-column filter-field">
             <label>Availability</label>
@@ -447,6 +437,68 @@ function TalentResults({ results, jobTitle, jobDescription, requiredSkills }) {
           requiredSkills={requiredSkills}
         />
       )}
+
+            {/* Modal */}
+      {selectedTalent && (
+        <TalentDetailModal
+          applicant={selectedTalent}
+          onClose={handleCloseDetailModal}
+          showShortlist={false}
+          jobTitle={jobTitle}
+          jobDescription={jobDescription}
+          requiredSkills={requiredSkills}
+        />
+      )}
+
+      {/* Location Modal */}
+      {showLocationModal && (
+        <div className="modal-overlay" onClick={() => setShowLocationModal(false)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h4>Select Locations</h4>
+              <button className="modal-close" onClick={() => setShowLocationModal(false)}>✕</button>
+            </div>
+
+            <input
+              type="text"
+              value={locationSearchInput}
+              onChange={(e) => setLocationSearchInput(e.target.value)}
+              placeholder="Search city/country..."
+              className="login-input"
+              style={{ marginBottom: '0.5rem' }}
+            />
+
+            <div className="scrollable-options">
+              {locationOptions
+                .filter(loc => loc.label.toLowerCase().includes(locationSearchInput.toLowerCase()))
+                .map((loc, idx) => (
+                  <label key={idx} style={{ display: 'block', marginBottom: '6px' }}>
+                    <input
+                      type="checkbox"
+                      checked={selectedLocations.includes(loc.value)}
+                      onChange={() => toggleLocation(loc.value)}
+                      style={{ marginRight: '8px' }}
+                    />
+                    {loc.label}
+                  </label>
+                ))}
+            </div>
+
+            <div className="modal-actions">
+              <button className="form-button" onClick={() => setShowLocationModal(false)}>Apply</button>
+              <button
+                className="form-button"
+                style={{ background: '#e5e7eb', color: '#111' }}
+                onClick={() => { setSelectedLocations([]); setLocationSearchInput(''); }}
+              >
+                Clear
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
     </div>
   );
 }
